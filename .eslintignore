@@ -1,0 +1,8 @@
+# Ignore built files
+client/build/*
+
+# Ignore data files
+data/*
+
+# Ignore asset files
+assets/*

@@ -1,0 +1,26 @@
+@import './core/index'; 
+
+/* postCSS allows support for CSS custom properties
+ * SASS variables are also supported
+ */
+
+:root {
+  --spacer: rem(20px);
+}
+
+.demo {
+  background-color: var(--grayLight);
+  font-style: italic;
+  margin: var(--spacer) 0;
+  padding: var(--spacer);
+  text-align: center;
+}
+
+/* Media Breakpoints:
+ * sm, md, lg, xl
+
+@media (--smMax) {
+  // mobile device styles here
+}
+
+*/

@@ -1,0 +1,17 @@
+{
+  "plugins": [
+    "react-hot-loader/babel",
+    "transform-object-rest-spread",
+    "transform-class-properties",
+    ["module-resolver", {
+      "root": [
+        "./client/**",
+        "./client/src/**"
+      ],
+    }]
+  ],
+  "presets": [
+    "env",
+    "react"
+  ]
+}
