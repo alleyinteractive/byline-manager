@@ -39,8 +39,9 @@ function register_profile() {
 		'rewrite'             => true,
 		'capability_type'     => 'post',
 		'map_meta_cap'        => null,
-		'supports'            => [ 'title', 'editor' ],
-		'show_in_rest'        => true,
+		'menu_icon'           => 'dashicons-id',
+		'menu_position'       => 71,
+		'supports'            => [ 'title', 'editor', 'revisions' ],
 	] );
 }
 add_action( 'init', __NAMESPACE__ . '\register_profile' );
@@ -107,3 +108,18 @@ function delete_byline_by_profile_id( $post_id ) {
 	}
 }
 add_action( 'before_delete_post', __NAMESPACE__ . '\delete_byline_by_profile_id' );
+
+/**
+ * Set the title field placeholder text on profile posts.
+ *
+ * @param string   $title Placeholder text.
+ * @param \WP_Post $post  Post object.
+ * @return string If $post is a profile, the new placeholder text. Else $text.
+ */
+function profile_post_title_placeholder( $title, $post ) {
+	if ( PROFILE_POST_TYPE === $post->post_type ) {
+		return __( 'Display Name', 'byline-manager' );
+	}
+	return $title;
+}
+add_filter( 'enter_title_here', __NAMESPACE__ . '\profile_post_title_placeholder', 10, 2 );
