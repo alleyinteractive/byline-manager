@@ -22,4 +22,7 @@ define( __NAMESPACE__ . '\PATH', __DIR__ . '/' );
 define( __NAMESPACE__ . '\URL', trailingslashit( plugins_url( '', __FILE__ ) ) );
 
 // Asset loader.
-require_once( PATH . 'inc/assets.php' );
+require_once PATH . 'inc/assets.php';
+
+// Data structures.
+require_once PATH . 'inc/data-structures.php';
