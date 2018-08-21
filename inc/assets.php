@@ -16,15 +16,17 @@ define( __NAMESPACE__ . '\BUILD_PATH', PATH . 'client/build/' );
  * @param string $hook Page suffix.
  */
 function admin_enqueue_scripts( $hook ) {
-	if ( 'toplevel_page_byline-manager' === $hook ) {
-		if ( ! empty( $_GET['fe-dev'] ) ) {
+	if (
+		in_array( $hook, [ 'post-new.php', 'edit.php' ], true )
+		&& in_array( get_post_type(), get_supported_post_types(), true )
+	) {
+		if ( ! empty( $_GET['bm-dev'] ) ) {
 			wp_enqueue_script( 'byline-manager-dev', '//localhost:8080/dev.bundle.js', [], '0.1.0', true );
 		} else {
 			wp_enqueue_script( 'byline-manager-js', get_asset_uri( 'main.js' ), [], '0.1.0', true );
 			wp_enqueue_style( 'byline-manager-css', get_asset_uri( 'main.css' ), [], '0.1.0' );
 		}
 	}
-
 }
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\admin_enqueue_scripts' );
 
