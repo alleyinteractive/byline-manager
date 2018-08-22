@@ -10,8 +10,14 @@ import {
 } from 'react-sortable-hoc';
 import Autocomplete from 'react-autocomplete';
 
-const SortableItem = SortableElement(({ name, image, removeItem }) => (
-  <li>
+const SortableItem = SortableElement(({
+  bylineId,
+  name,
+  image,
+  removeItem,
+}) => (
+  <li className="byline-list-item">
+    <input type="hidden" name="byline_profiles[]" value={bylineId} />
     <img src={image} alt={name} />
     <span>{name}</span>
     <button
@@ -32,6 +38,7 @@ const BylineList = SortableContainer(({ profiles, removeItem }) => (
       <SortableItem
         key={`item-${profile.id}`}
         index={index}
+        bylineId={profile.byline_id}
         name={profile.name}
         image={profile.image}
         removeItem={() => removeItem(profile.id)}
@@ -42,7 +49,7 @@ const BylineList = SortableContainer(({ profiles, removeItem }) => (
 
 class BylineMetaBox extends Component {
   state = {
-    profiles: [],
+    profiles: window.bylineData.profiles || [],
     search: '',
     searchResults: [],
   };
@@ -70,7 +77,7 @@ class BylineMetaBox extends Component {
 
   doProfileSearch = (fragment) => {
     fetch(
-      `https://dow-jones.alley.test/wp-json/byline-manager/v1/authors?s=${fragment}`
+      `${window.bylineData.apiUrl}?s=${fragment}`
     )
       .then((res) => res.json())
       .then((rawResults) => {
@@ -84,7 +91,7 @@ class BylineMetaBox extends Component {
 
   render() {
     const inputProps = {
-      placeholder: 'Search for authors',
+      placeholder: 'Search for an author to add to the byline',
       onKeyDown: (e) => {
         if (13 === e.keyCode) {
           e.preventDefault();
@@ -94,11 +101,10 @@ class BylineMetaBox extends Component {
 
     return (
       <div className="byline-list">
-        <BylineList
-          profiles={this.state.profiles}
-          onSortEnd={this.onSortEnd}
-          lockAxis="y"
-          removeItem={this.removeItem}
+        <input
+          type="hidden"
+          name="post_byline_nonce"
+          value={window.bylineData.nonce}
         />
         <Autocomplete
           inputProps={inputProps}
@@ -141,6 +147,13 @@ class BylineMetaBox extends Component {
               {item.name}
             </div>
           )}
+        />
+        <BylineList
+          profiles={this.state.profiles}
+          onSortEnd={this.onSortEnd}
+          lockAxis="y"
+          helperClass="byline-list-item"
+          removeItem={this.removeItem}
         />
       </div>
     );

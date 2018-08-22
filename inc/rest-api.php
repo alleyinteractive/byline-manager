@@ -32,7 +32,7 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_routes' );
  * @return \WP_REST_Response REST API response.
  */
 function rest_search( \WP_REST_Request $request ) {
-	$authors = get_posts( [
+	$profiles = get_posts( [
 		'post_type'        => PROFILE_POST_TYPE,
 		's'                => $request->get_param( 's' ),
 		'suppress_filters' => false,
@@ -41,13 +41,7 @@ function rest_search( \WP_REST_Request $request ) {
 	] );
 
 	// Build the REST response data.
-	$data = array_map( function( $author ) {
-		return [
-			'id'    => $author->ID,
-			'name'  => $author->post_title,
-			'image' => get_the_post_thumbnail_url( $author, [ 50, 50 ] ),
-		];
-	}, $authors );
+	$data = array_map( __NAMESPACE__ . '\get_profile_data', $profiles );
 
 	// Send the response.
 	return rest_ensure_response( $data );
