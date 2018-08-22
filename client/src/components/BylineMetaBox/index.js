@@ -40,12 +40,6 @@ const BylineList = SortableContainer(({ profiles, removeItem }) => (
   </ol>
 ));
 
-const fakeRequest = () => [
-  { id: 123, name: 'John Smith', image: '//placehold.it/50x50?text=john' },
-  { id: 456, name: 'Jane Doe', image: '//placehold.it/50x50?text=jane' },
-  { id: 789, name: 'Michelle Williamson', image: '//placehold.it/50x50' },
-];
-
 class BylineMetaBox extends Component {
   state = {
     profiles: [],
@@ -59,6 +53,8 @@ class BylineMetaBox extends Component {
     });
   };
 
+  delay = null;
+
   removeItem = (id) => {
     const { profiles } = this.state;
     const index = profiles.findIndex((item) => item.id === id);
@@ -70,6 +66,20 @@ class BylineMetaBox extends Component {
         ],
       });
     }
+  };
+
+  doProfileSearch = (fragment) => {
+    fetch(
+      `https://dow-jones.alley.test/wp-json/byline-manager/v1/authors?s=${fragment}`
+    )
+      .then((res) => res.json())
+      .then((rawResults) => {
+        const currentIds = this.state.profiles.map((profile) => profile.id);
+        const searchResults = rawResults.filter(
+          (result) => 0 > currentIds.indexOf(result.id)
+        );
+        this.setState({ searchResults });
+      });
   };
 
   render() {
@@ -99,6 +109,7 @@ class BylineMetaBox extends Component {
             // set the menu to only the selected item
             this.setState({
               search: '',
+              searchResults: [],
               profiles: [
                 ...this.state.profiles,
                 item,
@@ -108,10 +119,14 @@ class BylineMetaBox extends Component {
             // this.setState({ unitedStates: getStates() })
           }}
           onChange={(event, value) => {
+            clearTimeout(this.delay);
             this.setState({
               search: value,
-              searchResults: fakeRequest(),
             });
+
+            this.delay = setTimeout(() => {
+              this.doProfileSearch(value);
+            }, 500);
           }}
           renderMenu={(children) => (
             <div className="menu">

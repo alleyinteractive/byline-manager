@@ -41,7 +41,7 @@ function register_profile() {
 		'map_meta_cap'        => null,
 		'menu_icon'           => 'dashicons-id',
 		'menu_position'       => 71,
-		'supports'            => [ 'title', 'editor', 'revisions' ],
+		'supports'            => [ 'title', 'editor', 'revisions', 'thumbnail' ],
 	] );
 }
 add_action( 'init', __NAMESPACE__ . '\register_profile' );
