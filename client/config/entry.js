@@ -11,7 +11,6 @@ module.exports = function getEntry(mode) {
     case 'production':
       return {
         main: [
-          'babel-polyfill',
           path.join(appRoot, 'index.js'),
         ],
       };
