@@ -1,6 +1,10 @@
-// This is the main entry for webpack, load anything from here
+import React from 'react';
+import ReactDOM from 'react-dom';
+import BylineMetaBox from 'components/BylineMetaBox';
 
 import './styles/styles.scss';
 
-/* eslint-disable-next-line */
-console.log('Admin UI loaded');
+ReactDOM.render(
+  <BylineMetaBox />,
+  document.getElementById('byline-manager-metabox-root')
+);

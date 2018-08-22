@@ -21,8 +21,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( __NAMESPACE__ . '\PATH', __DIR__ . '/' );
 define( __NAMESPACE__ . '\URL', trailingslashit( plugins_url( '', __FILE__ ) ) );
 
+// Helpers.
+require_once PATH . 'inc/helpers.php';
+
 // Asset loader.
 require_once PATH . 'inc/assets.php';
 
 // Data structures.
 require_once PATH . 'inc/data-structures.php';
+
+// Admin interfaces.
+require_once PATH . 'inc/admin-ui.php';
+
+// REST API interfaces.
+require_once PATH . 'inc/rest-api.php';

@@ -41,7 +41,7 @@ function register_profile() {
 		'map_meta_cap'        => null,
 		'menu_icon'           => 'dashicons-id',
 		'menu_position'       => 71,
-		'supports'            => [ 'title', 'editor', 'revisions' ],
+		'supports'            => [ 'title', 'editor', 'revisions', 'thumbnail' ],
 	] );
 }
 add_action( 'init', __NAMESPACE__ . '\register_profile' );
@@ -50,11 +50,9 @@ add_action( 'init', __NAMESPACE__ . '\register_profile' );
  * Create the hidden byline taxonomy.
  */
 function register_byline() {
-	// Add the taxonomy for every post type that supports authors.
-	$post_types = get_post_types_by_support( 'author' );
-
-	register_taxonomy( BYLINE_TAXONOMY, $post_types, [
+	register_taxonomy( BYLINE_TAXONOMY, get_supported_post_types(), [
 		'public'       => false,
+		'sort'         => true,
 		'capabilities' => [
 			'manage_terms' => 'do_not_allow',
 			'edit_terms'   => 'do_not_allow',
