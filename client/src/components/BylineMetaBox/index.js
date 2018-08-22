@@ -112,7 +112,6 @@ class BylineMetaBox extends Component {
           value={this.state.search}
           getItemValue={(item) => item.name}
           onSelect={(value, item) => {
-            // set the menu to only the selected item
             this.setState({
               search: '',
               searchResults: [],
@@ -121,8 +120,6 @@ class BylineMetaBox extends Component {
                 item,
               ],
             });
-            // or you could reset it to a default list again
-            // this.setState({ unitedStates: getStates() })
           }}
           onChange={(event, value) => {
             clearTimeout(this.delay);
