@@ -28,9 +28,11 @@ function admin_enqueue_scripts( $hook ) {
 		}
 
 		wp_localize_script( 'byline-manager-js', 'bylineData', [
-			'apiUrl'   => home_url( '/wp-json/byline-manager/v1/authors' ),
-			'nonce'    => wp_create_nonce( 'set_byline_data' ),
-			'profiles' => array_map(
+			'addAuthorPlaceholder' => __( 'Search for an author to add to the byline', 'byline-manager' ),
+			'removeAuthorLabel'    => __( 'Remove author from byline', 'byline-manager' ),
+			'apiUrl'               => home_url( '/wp-json/byline-manager/v1/authors' ),
+			'nonce'                => wp_create_nonce( 'set_byline_data' ),
+			'profiles'             => array_map(
 				__NAMESPACE__ . '\get_profile_data',
 				get_profiles_for_post()
 			),

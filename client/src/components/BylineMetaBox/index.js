@@ -21,7 +21,7 @@ const SortableItem = SortableElement(({
     <img src={image} alt={name} />
     <span>{name}</span>
     <button
-      aria-label="remove"
+      aria-label={window.bylineData.removeAuthorLabel}
       onClick={(e) => {
         e.preventDefault();
         removeItem();
@@ -91,7 +91,7 @@ class BylineMetaBox extends Component {
 
   render() {
     const inputProps = {
-      placeholder: 'Search for an author to add to the byline',
+      placeholder: window.bylineData.addAuthorPlaceholder,
       onKeyDown: (e) => {
         if (13 === e.keyCode) {
           e.preventDefault();
