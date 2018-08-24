@@ -32,16 +32,20 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_routes' );
  * @return \WP_REST_Response REST API response.
  */
 function rest_search( \WP_REST_Request $request ) {
-	$profiles = get_posts( [
+	$posts = get_posts( [
 		'post_type'        => PROFILE_POST_TYPE,
 		's'                => $request->get_param( 's' ),
 		'suppress_filters' => false,
 		'orderby'          => 'title',
 		'order'            => 'asc',
 	] );
+	$profiles = array_filter( array_map(
+		[ 'Byline_Manager\Models\Profile', 'get_by_post' ],
+		$posts
+	) );
 
 	// Build the REST response data.
-	$data = array_map( __NAMESPACE__ . '\get_profile_data', $profiles );
+	$data = array_map( __NAMESPACE__ . '\get_profile_data_for_meta_box', $profiles );
 
 	// Send the response.
 	return rest_ensure_response( $data );

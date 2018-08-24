@@ -10,7 +10,7 @@ namespace Byline_Manager;
 /**
  * Sample test case.
  */
-class Profile_Byline_Sync_Test extends \WP_UnitTestCase {
+class Test_Profile_Byline_Sync extends \WP_UnitTestCase {
 	protected $profile_id;
 
 	public function setUp() {

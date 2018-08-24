@@ -7,8 +7,8 @@
 
 namespace Byline_Manager;
 
-define( __NAMESPACE__ . '\BUILD_URL', URL . 'client/build/' );
-define( __NAMESPACE__ . '\BUILD_PATH', PATH . 'client/build/' );
+const BUILD_URL  = URL . 'client/build/';
+const BUILD_PATH = PATH . 'client/build/';
 
 /**
  * Enqueue basic UI admin scripts and styles.
@@ -18,7 +18,7 @@ define( __NAMESPACE__ . '\BUILD_PATH', PATH . 'client/build/' );
 function admin_enqueue_scripts( $hook ) {
 	if (
 		in_array( $hook, [ 'post-new.php', 'post.php' ], true )
-		&& in_array( get_post_type(), get_supported_post_types(), true )
+		&& in_array( get_post_type(), Utils::get_supported_post_types(), true )
 	) {
 		if ( ! empty( $_GET['bm-dev'] ) ) {
 			wp_enqueue_script( 'byline-manager-js', '//localhost:8080/dev.bundle.js', [], '0.1.0', true );
@@ -33,8 +33,8 @@ function admin_enqueue_scripts( $hook ) {
 			'apiUrl'               => home_url( '/wp-json/byline-manager/v1/authors' ),
 			'nonce'                => wp_create_nonce( 'set_byline_data' ),
 			'profiles'             => array_map(
-				__NAMESPACE__ . '\get_profile_data',
-				get_profiles_for_post()
+				__NAMESPACE__ . '\get_profile_data_for_meta_box',
+				Utils::get_profiles_for_post()
 			),
 		] );
 	}

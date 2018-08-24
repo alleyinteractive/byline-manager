@@ -21,8 +21,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( __NAMESPACE__ . '\PATH', __DIR__ . '/' );
 define( __NAMESPACE__ . '\URL', trailingslashit( plugins_url( '', __FILE__ ) ) );
 
-// Helpers.
-require_once PATH . 'inc/helpers.php';
+// Autoloader.
+require_once PATH . 'inc/autoload.php';
+
+// Template Tags.
+require_once PATH . 'inc/template-tags.php';
 
 // Asset loader.
 require_once PATH . 'inc/assets.php';
