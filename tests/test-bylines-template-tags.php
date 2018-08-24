@@ -10,7 +10,7 @@ namespace Byline_Manager;
 use Byline_Manager\Models\Profile;
 
 /**
- * Test functionality related to the Profile object
+ * Test functionality related to the Profile object.
  */
 class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 

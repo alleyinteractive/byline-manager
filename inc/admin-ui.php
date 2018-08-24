@@ -66,7 +66,7 @@ function set_byline( $post_id, $post ) {
 	}
 
 	// Only proceed for permitted post types.
-	if ( ! in_array( $post->post_type, Utils::get_supported_post_types(), true ) ) {
+	if ( ! Utils::is_post_type_supported( $post->post_type ) ) {
 		return;
 	}
 

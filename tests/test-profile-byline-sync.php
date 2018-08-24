@@ -1,6 +1,6 @@
 <?php
 /**
- * Class SampleTest
+ * Profile Byline Sync Tests
  *
  * @package Byline_Manager
  */
@@ -8,7 +8,7 @@
 namespace Byline_Manager;
 
 /**
- * Sample test case.
+ * Test profile -> byline sync functionality.
  */
 class Test_Profile_Byline_Sync extends \WP_UnitTestCase {
 	protected $profile_id;

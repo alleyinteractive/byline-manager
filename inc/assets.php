@@ -18,7 +18,7 @@ const BUILD_PATH = PATH . 'client/build/';
 function admin_enqueue_scripts( $hook ) {
 	if (
 		in_array( $hook, [ 'post-new.php', 'post.php' ], true )
-		&& in_array( get_post_type(), Utils::get_supported_post_types(), true )
+		&& Utils::is_post_type_supported()
 	) {
 		if ( ! empty( $_GET['bm-dev'] ) ) {
 			wp_enqueue_script( 'byline-manager-js', '//localhost:8080/dev.bundle.js', [], '0.1.0', true );

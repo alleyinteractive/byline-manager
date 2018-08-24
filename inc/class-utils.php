@@ -32,6 +32,20 @@ class Utils {
 	}
 
 	/**
+	 * Is the given (or current) post type supported by Byline Manager?
+	 *
+	 * @param string|null $post_type Optional. Post type slug. Defaults to
+	 *                               current global post type.
+	 * @return bool True if yes, false if no.
+	 */
+	public static function is_post_type_supported( $post_type = null ) {
+		if ( ! $post_type ) {
+			$post_type = get_post_type();
+		}
+		return in_array( $post_type, self::get_supported_post_types(), true );
+	}
+
+	/**
 	 * Given a post, get the profile objects that build up its byline.
 	 *
 	 * @param \WP_Post|int $post Optional. Post object or ID. Defaults to current
