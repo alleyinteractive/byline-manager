@@ -77,7 +77,7 @@ class Utils {
 	 * @return int|false Post ID on success, false if the term is invalid, 0 if
 	 *                   the post ID was not found.
 	 */
-	public static function get_profile_id_by_byline_id( $byline_id ) {
+	public static function get_profile_id_by_byline_id( int $byline_id ) {
 		$term = get_term( $byline_id, BYLINE_TAXONOMY );
 		if ( ! $term instanceof \WP_Term ) {
 			return false;
