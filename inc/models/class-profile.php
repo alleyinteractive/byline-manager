@@ -176,14 +176,15 @@ class Profile {
 		}
 
 		// These fields are actually on the Post object.
-		if ( 'display_name' === $attribute ) {
-			return $this->get_post()->post_title;
-		} elseif ( 'user_nicename' === $attribute ) {
-			return $this->get_post()->post_name;
-		} elseif ( 'description' === $attribute ) {
-			return $this->get_post()->post_content;
-		} elseif ( 'post_id' === $attribute ) {
-			return $this->get_post()->ID;
+		switch ( $attribute ) {
+			case 'display_name':
+				return $this->get_post()->post_title;
+			case 'user_nicename':
+				return $this->get_post()->post_name;
+			case 'description':
+				return $this->get_post()->post_content;
+			case 'post_id':
+				return $this->get_post()->ID;
 		}
 
 		// Term ID (and byline ID) can get cached in the object.
