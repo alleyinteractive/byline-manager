@@ -7,6 +7,8 @@
 
 namespace Byline_Manager;
 
+use Byline_Manager\Models\Profile;
+
 /**
  * Register meta boxes used by the plugin.
  */
@@ -15,7 +17,7 @@ function register_meta_boxes() {
 		'byline-manager',
 		__( 'Byline', 'byline-manager' ),
 		__NAMESPACE__ . '\byline_meta_box',
-		get_supported_post_types()
+		Utils::get_supported_post_types()
 	);
 }
 add_action( 'add_meta_boxes', __NAMESPACE__ . '\register_meta_boxes' );
@@ -32,7 +34,7 @@ function byline_meta_box( $post ) {
 /**
  * Given a profile post object, build the necessary data needed by the meta box.
  *
- * @param \WP_Post $profile Post object.
+ * @param Profile $profile Profile object.
  * @return array {
  *     Necessary data to build the meta box.
  *
@@ -42,12 +44,12 @@ function byline_meta_box( $post ) {
  *     @type string $image     URL for profile's image.
  * }
  */
-function get_profile_data( $profile ) {
+function get_profile_data_for_meta_box( Profile $profile ) {
 	return [
-		'id'        => $profile->ID,
-		'byline_id' => absint( get_post_meta( $profile->ID, 'byline_id', true ) ),
-		'name'      => $profile->post_title,
-		'image'     => get_the_post_thumbnail_url( $profile, [ 50, 50 ] ),
+		'id'        => $profile->post_id,
+		'byline_id' => absint( get_post_meta( $profile->post_id, 'byline_id', true ) ),
+		'name'      => $profile->display_name,
+		'image'     => get_the_post_thumbnail_url( $profile->post_id, [ 50, 50 ] ),
 	];
 }
 
@@ -64,7 +66,7 @@ function set_byline( $post_id, $post ) {
 	}
 
 	// Only proceed for permitted post types.
-	if ( ! in_array( $post->post_type, get_supported_post_types(), true ) ) {
+	if ( ! Utils::is_post_type_supported( $post->post_type ) ) {
 		return;
 	}
 
@@ -80,29 +82,8 @@ function set_byline( $post_id, $post ) {
 	$byline_ids = ! empty( $_POST['byline_profiles'] )
 		? array_map( 'absint', $_POST['byline_profiles'] )
 		: [];
-	wp_set_object_terms( $post_id, $byline_ids, BYLINE_TAXONOMY, false );
 
-	// Set the byline meta on the post.
-	$byline = array_map( function( $byline_id ) {
-		$term = get_term( $byline_id, BYLINE_TAXONOMY );
-		if ( ! $term instanceof \WP_Term ) {
-			return null;
-		}
-		list( , $post_id ) = explode( '-', $term->name );
-		return [
-			'term_id' => $byline_id,
-			'post_id' => absint( $post_id ),
-		];
-	}, $byline_ids );
-
-	/**
-	 * Filter the meta associated with a byline, allowing plugins to store
-	 * additional information about the post's byline.
-	 *
-	 * @param array    $byline Byline metadata.
-	 * @param \WP_Post $post   Post object being saved.
-	 */
-	$byline = apply_filters( 'byline_manager_post_byline_meta', $byline, $post );
-	update_post_meta( $post_id, 'byline', $byline );
+	// Set the byline.
+	Utils::set_post_byline( $post_id, $byline_ids );
 }
 add_action( 'save_post', __NAMESPACE__ . '\set_byline', 10, 2 );

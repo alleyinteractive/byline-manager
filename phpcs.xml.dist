@@ -46,4 +46,10 @@
 			<property name="text_domain" type="array" value="byline-manager" />
 		</properties>
 	</rule>
+
+	<rule ref="WordPress.Security.EscapeOutput">
+		<properties>
+			<property name="customAutoEscapedFunctions" type="array" value="get_the_byline,get_the_byline_posts_links,get_the_byline_links" />
+		</properties>
+	</rule>
 </ruleset>

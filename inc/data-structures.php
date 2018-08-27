@@ -50,7 +50,7 @@ add_action( 'init', __NAMESPACE__ . '\register_profile' );
  * Create the hidden byline taxonomy.
  */
 function register_byline() {
-	register_taxonomy( BYLINE_TAXONOMY, get_supported_post_types(), [
+	register_taxonomy( BYLINE_TAXONOMY, Utils::get_supported_post_types(), [
 		'public'       => false,
 		'sort'         => true,
 		'capabilities' => [
