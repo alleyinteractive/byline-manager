@@ -77,7 +77,7 @@ class BylineMetaBox extends Component {
 
   doProfileSearch = (fragment) => {
     fetch(
-      `${window.bylineData.apiUrl}?s=${fragment}`
+      `${window.bylineData.profilesApiUrl}?s=${fragment}`
     )
       .then((res) => res.json())
       .then((rawResults) => {
@@ -100,12 +100,7 @@ class BylineMetaBox extends Component {
     };
 
     return (
-      <div className="byline-list">
-        <input
-          type="hidden"
-          name="post_byline_nonce"
-          value={window.bylineData.nonce}
-        />
+      <div className="byline-list byline-manager-meta-box">
         <Autocomplete
           inputProps={inputProps}
           items={this.state.searchResults}

@@ -18,7 +18,10 @@ const BUILD_PATH = PATH . 'client/build/';
 function admin_enqueue_scripts( $hook ) {
 	if (
 		in_array( $hook, [ 'post-new.php', 'post.php' ], true )
-		&& Utils::is_post_type_supported()
+		&& (
+			Utils::is_post_type_supported()
+			|| PROFILE_POST_TYPE === get_post_type()
+		)
 	) {
 		if ( ! empty( $_GET['bm-dev'] ) ) {
 			wp_enqueue_script( 'byline-manager-js', '//localhost:8080/dev.bundle.js', [], '0.1.0', true );
@@ -30,8 +33,9 @@ function admin_enqueue_scripts( $hook ) {
 		wp_localize_script( 'byline-manager-js', 'bylineData', [
 			'addAuthorPlaceholder' => __( 'Search for an author to add to the byline', 'byline-manager' ),
 			'removeAuthorLabel'    => __( 'Remove author from byline', 'byline-manager' ),
-			'apiUrl'               => home_url( '/wp-json/byline-manager/v1/authors' ),
-			'nonce'                => wp_create_nonce( 'set_byline_data' ),
+			'linkUserPlaceholder'  => __( 'Search for a user account by name', 'byline-manager' ),
+			'profilesApiUrl'       => home_url( '/wp-json/byline-manager/v1/authors' ),
+			'usersApiUrl'          => home_url( '/wp-json/byline-manager/v1/users' ),
 			'profiles'             => array_map(
 				__NAMESPACE__ . '\get_profile_data_for_meta_box',
 				Utils::get_profiles_for_post()

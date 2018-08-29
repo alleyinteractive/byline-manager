@@ -14,10 +14,16 @@ use Byline_Manager\Models\Profile;
  */
 function register_meta_boxes() {
 	add_meta_box(
-		'byline-manager',
+		'byline-manager-byline-meta-box',
 		__( 'Byline', 'byline-manager' ),
 		__NAMESPACE__ . '\byline_meta_box',
 		Utils::get_supported_post_types()
+	);
+	add_meta_box(
+		'byline-manager-user-link-meta-box',
+		__( 'User Account', 'byline-manager' ),
+		__NAMESPACE__ . '\user_link_meta_box',
+		PROFILE_POST_TYPE
 	);
 }
 add_action( 'add_meta_boxes', __NAMESPACE__ . '\register_meta_boxes' );
@@ -28,7 +34,34 @@ add_action( 'add_meta_boxes', __NAMESPACE__ . '\register_meta_boxes' );
  * @param \WP_Post $post Post object.
  */
 function byline_meta_box( $post ) {
+	wp_nonce_field( 'set_byline_data', 'post_byline_nonce' );
 	echo '<div id="byline-manager-metabox-root"></div>';
+}
+
+/**
+ * Output the user link meta box.
+ *
+ * @param \WP_Post $post Post object.
+ */
+function user_link_meta_box( $post ) {
+	$stored_id = absint( get_post_meta( $post->ID, 'user', true ) );
+	if ( ! empty( $stored_id ) ) {
+		$user = get_user_by( 'id', $stored_id );
+	} else {
+		$user = wp_get_current_user();
+	}
+	if ( $user instanceof \WP_User ) {
+		$userdata = get_user_data_for_meta_box( $user );
+	} else {
+		// Use stdClass so the JSON gets written as an empty object.
+		$userdata = new stdClass();
+	}
+
+	wp_nonce_field( 'set_user_link', 'profile_user_link_nonce' );
+	printf(
+		'<div id="byline-manager-user-link-root" data-user="%s"></div>',
+		esc_attr( wp_json_encode( $userdata ) )
+	);
 }
 
 /**
@@ -50,6 +83,24 @@ function get_profile_data_for_meta_box( Profile $profile ) {
 		'byline_id' => absint( get_post_meta( $profile->post_id, 'byline_id', true ) ),
 		'name'      => $profile->display_name,
 		'image'     => get_the_post_thumbnail_url( $profile->post_id, [ 50, 50 ] ),
+	];
+}
+
+/**
+ * Given a user object, build the data needed by the user link meta box.
+ *
+ * @param \WP_User $user User object.
+ * @return array {
+ *     Necessary data to build the meta box.
+ *
+ *     @type int    $id    User ID.
+ *     @type string $name  Display Name.
+ * }
+ */
+function get_user_data_for_meta_box( \WP_User $user ) {
+	return [
+		'id'   => $user->ID,
+		'name' => $user->display_name,
 	];
 }
 
@@ -87,3 +138,37 @@ function set_byline( $post_id, $post ) {
 	Utils::set_post_byline( $post_id, $byline_ids );
 }
 add_action( 'save_post', __NAMESPACE__ . '\set_byline', 10, 2 );
+
+/**
+ * Set the user link when a profile post is saved.
+ *
+ * @param int      $post_id Post ID being saved.
+ * @param \WP_Post $post    Post object being saved.
+ */
+function set_profile_user_link( $post_id, $post ) {
+	// Don't set user link on autosaves.
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	// Only proceed for the profile post type.
+	if ( ! PROFILE_POST_TYPE === $post->post_type ) {
+		return;
+	}
+
+	// Verify that the nonce is valid.
+	if (
+		empty( $_POST['profile_user_link_nonce'] )
+		|| ! wp_verify_nonce( $_POST['profile_user_link_nonce'], 'set_user_link' ) // WPCS: sanitization ok.
+	) {
+		return;
+	}
+
+	// Save the post meta.
+	if ( ! empty( $_POST['profile_user_link'] ) ) {
+		update_post_meta( $post_id, 'user', absint( $_POST['profile_user_link'] ) );
+	} else {
+		delete_post_meta( $post_id, 'user' );
+	}
+}
+add_action( 'save_post', __NAMESPACE__ . '\set_profile_user_link', 10, 2 );
