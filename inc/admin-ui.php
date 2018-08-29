@@ -44,7 +44,7 @@ function byline_meta_box( $post ) {
  * @param \WP_Post $post Post object.
  */
 function user_link_meta_box( $post ) {
-	$stored_id = absint( get_post_meta( $post->ID, 'user', true ) );
+	$stored_id = absint( get_post_meta( $post->ID, 'user_id', true ) );
 	if ( ! empty( $stored_id ) ) {
 		$user = get_user_by( 'id', $stored_id );
 	} else {
@@ -164,11 +164,21 @@ function set_profile_user_link( $post_id, $post ) {
 		return;
 	}
 
+	$new_user_id = ! empty( $_POST['profile_user_link'] )
+		? absint( $_POST['profile_user_link'] )
+		: 0;
+
+	// First, check to see if this has changed, for reciprocal updates.
+	$old_user_id = absint( get_post_meta( $post_id, 'user_id', true ) );
+	if ( $old_user_id && $old_user_id !== $new_user_id ) {
+		delete_user_meta( $old_user_id, 'profile_id' );
+		delete_post_meta( $post_id, 'user_id' );
+	}
+
 	// Save the post meta.
-	if ( ! empty( $_POST['profile_user_link'] ) ) {
-		update_post_meta( $post_id, 'user', absint( $_POST['profile_user_link'] ) );
-	} else {
-		delete_post_meta( $post_id, 'user' );
+	if ( ! empty( $new_user_id ) ) {
+		update_post_meta( $post_id, 'user_id', $new_user_id );
+		update_user_meta( $new_user_id, 'profile_id', $post_id );
 	}
 }
 add_action( 'save_post', __NAMESPACE__ . '\set_profile_user_link', 10, 2 );
