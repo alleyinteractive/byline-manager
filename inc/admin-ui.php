@@ -45,16 +45,21 @@ function byline_meta_box( $post ) {
  */
 function user_link_meta_box( $post ) {
 	$stored_id = absint( get_post_meta( $post->ID, 'user_id', true ) );
+
 	if ( ! empty( $stored_id ) ) {
 		$user = get_user_by( 'id', $stored_id );
-	} else {
+	} elseif ( 'auto-draft' === $post->post_status ) {
+		// Default to the current user for new posts.
 		$user = wp_get_current_user();
+	} else {
+		$user = false;
 	}
+
 	if ( $user instanceof \WP_User ) {
 		$userdata = get_user_data_for_meta_box( $user );
 	} else {
 		// Use stdClass so the JSON gets written as an empty object.
-		$userdata = new stdClass();
+		$userdata = new \stdClass();
 	}
 
 	wp_nonce_field( 'set_user_link', 'profile_user_link_nonce' );
