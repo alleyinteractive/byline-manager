@@ -55,12 +55,23 @@ class UserLinkMetaBox extends Component {
           name="profile_user_link"
           value={this.state.user.id || ''}
         />
-        {this.state.user && (
-          <h3>Linked to:{' '}
+        {this.state.user.id && (
+          <p className="current-user-link">
+            {`${window.bylineData.linkedToLabel} `}
             <a href={`/wp-admin/user-edit.php?user_id=${this.state.user.id}`}>
               {this.state.user.name}
             </a>
-          </h3>
+            {' '}
+            <button
+              className="button button-link-delete button-small"
+              onClick={(e) => {
+                e.preventDefault();
+                this.setState({ user: {} });
+              }}
+            >
+              {window.bylineData.unlinkLabel}
+            </button>
+          </p>
         )}
         <Autocomplete
           inputProps={inputProps}

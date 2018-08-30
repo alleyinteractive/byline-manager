@@ -35,6 +35,8 @@ function admin_enqueue_scripts( $hook ) {
 			'removeAuthorLabel'    => __( 'Remove author from byline', 'byline-manager' ),
 			'linkUserPlaceholder'  => __( 'Search for a user account by name', 'byline-manager' ),
 			'userAlreadyLinked'    => __( 'This user is linked to another profile', 'byline-manager' ),
+			'linkedToLabel'        => __( 'Linked to:', 'byline-manager' ),
+			'unlinkLabel'          => __( 'Unlink', 'byline-manager' ),
 			'profilesApiUrl'       => home_url( '/wp-json/byline-manager/v1/authors' ),
 			'usersApiUrl'          => home_url( '/wp-json/byline-manager/v1/users' ),
 			'postId'               => get_the_ID(),

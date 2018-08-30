@@ -31,6 +31,15 @@
     width: rem(400px);
   }
 
+  .current-user-link {
+    font-weight: 700;
+
+    button {
+      font-weight: 500;
+      margin-left: rem(10px);
+    }
+  }
+
   .menu {
     background: #fff;
     border: 1px solid #cccccc;
