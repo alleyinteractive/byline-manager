@@ -68,7 +68,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 	/**
 	 * This is a bit of a hack used to buffer feed content.
 	 */
-	function do_rss2() {
+	public function do_rss2() {
 		ob_start();
 		global $post;
 		try {
@@ -84,7 +84,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 	/**
 	 * Test that the rss feed automatically gets the byline profiles added.
 	 */
-	function test_item_elements() {
+	public function test_rss_elements() {
 		global $post;
 		Utils::set_post_byline( $post->ID, wp_list_pluck( [ $this->b2, $this->b1 ], 'term_id' ) );
 
@@ -104,5 +104,19 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		$this->assertCount( 2, $creator );
 		$this->assertEquals( 'Byline 2', $creator[0]['content'] );
 		$this->assertEquals( 'Byline 1', $creator[1]['content'] );
+	}
+
+	public function test_author_link() {
+		global $post;
+
+		// Before a user is linked to a profile, it should have no posts url.
+		$this->assertSame( '', get_author_posts_url( $post->post_author ) );
+
+		// Link the profile and user, then recheck the url.
+		$this->b1->update_user_link( $post->post_author );
+		$this->assertSame(
+			get_permalink( $this->b1->post_id ),
+			get_author_posts_url( $post->post_author )
+		);
 	}
 }
