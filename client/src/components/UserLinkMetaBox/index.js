@@ -42,6 +42,7 @@ class UserLinkMetaBox extends Component {
     const inputProps = {
       placeholder: window.bylineData.linkUserPlaceholder,
       onKeyDown: (e) => {
+        // If the user hits 'enter', stop the parent form from submitting.
         if (13 === e.keyCode) {
           e.preventDefault();
         }
