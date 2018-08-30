@@ -25,17 +25,19 @@
 
 */
 
-.byline-list {
-  min-height: rem(100px);
-
-  ol,
-  ul {
-    list-style: none;
-    margin-left: 0;
-  }
+.byline-manager-meta-box {
 
   input {
     width: rem(400px);
+  }
+
+  .current-user-link {
+    font-weight: 700;
+
+    button {
+      font-weight: 500;
+      margin-left: rem(10px);
+    }
   }
 
   .menu {
@@ -46,6 +48,7 @@
     min-width: rem(400px);
     padding: 0;
     position: absolute;
+    z-index: 100;
   }
 
   .item {
@@ -58,11 +61,32 @@
     color: white;
   }
 
+  .item-disabled {
+    color: #aaa;
+    cursor: not-allowed;
+
+    em {
+      float: right;
+      margin-left: rem(10px);
+    }
+  }
+
   .item-header {
     background-color: #eeeeee;
     color: #454545;
     font-weight: 700;
   }
+}
+
+.byline-list {
+  min-height: rem(100px);
+
+  ol,
+  ul {
+    list-style: none;
+    margin-left: 0;
+  }
+
 }
 
 .byline-list-item {

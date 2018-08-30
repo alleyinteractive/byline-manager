@@ -59,3 +59,20 @@ function rss_add_additional_authors() {
 	}
 }
 add_action( 'rss2_item', __NAMESPACE__ . '\rss_add_additional_authors' );
+
+/**
+ * Filter the URL to the author's posts page.
+ *
+ * @param string $link      The URL to the author's page.
+ * @param int    $author_id The author's id.
+ * @return string Author's posts URL.
+ */
+function override_author_link( $link, $author_id ) {
+	$profile_id = absint( get_user_meta( $author_id, 'profile_id', true ) );
+	if ( $profile_id ) {
+		return get_permalink( $profile_id );
+	} else {
+		return '';
+	}
+}
+add_filter( 'author_link', __NAMESPACE__ . '\override_author_link', 10, 2 );

@@ -1,10 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import BylineMetaBox from 'components/BylineMetaBox';
+// Entry point for all shared JS.
+import initBylineMetaBox from './initBylineMetaBox';
+import initUserLinkMetaBox from './initUserLinkMetaBox';
 
 import './styles/styles.scss';
 
-ReactDOM.render(
-  <BylineMetaBox />,
-  document.getElementById('byline-manager-metabox-root')
-);
+if (document.getElementById('byline-manager-metabox-root')) {
+  initBylineMetaBox();
+} else if (document.getElementById('byline-manager-user-link-root')) {
+  initUserLinkMetaBox();
+}

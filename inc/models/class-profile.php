@@ -208,4 +208,35 @@ class Profile {
 
 		return $this->post;
 	}
+
+	/**
+	 * Update the user link for a profile, and reciprocal link in the user.
+	 *
+	 * @param int $new_user_id User ID to link. Set to 0 to unlink.
+	 */
+	public function update_user_link( $new_user_id ) {
+		$post_id = $this->get_post()->ID;
+
+		// First, check to see if this profile is linked, for reciprocal updates.
+		$old_user_id = absint( get_post_meta( $post_id, 'user_id', true ) );
+		if ( $old_user_id && $old_user_id !== $new_user_id ) {
+			delete_user_meta( $old_user_id, 'profile_id' );
+			delete_post_meta( $post_id, 'user_id' );
+		}
+
+		// Save the post meta.
+		if ( ! empty( $new_user_id ) ) {
+			update_post_meta( $post_id, 'user_id', $new_user_id );
+			update_user_meta( $new_user_id, 'profile_id', $post_id );
+		}
+	}
+
+	/**
+	 * Get the linked user ID for the current profile.
+	 *
+	 * @return int User ID or 0 if this profile is not linked.
+	 */
+	public function get_linked_user_id() {
+		return absint( get_post_meta( $this->get_post()->ID, 'user_id', true ) );
+	}
 }

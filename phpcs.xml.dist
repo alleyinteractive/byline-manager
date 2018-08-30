@@ -37,6 +37,17 @@
 		<type>error</type>
 	</rule>
 
+	<!-- Downgrade user meta sniffs to warnings -->
+	<rule ref="WordPress.VIP.RestrictedFunctions.user_meta_delete_user_meta">
+		<type>warning</type>
+	</rule>
+	<rule ref="WordPress.VIP.RestrictedFunctions.user_meta_update_user_meta">
+		<type>warning</type>
+	</rule>
+	<rule ref="WordPress.VIP.RestrictedFunctions.user_meta_get_user_meta">
+		<type>warning</type>
+	</rule>
+
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<!--
