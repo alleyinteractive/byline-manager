@@ -34,8 +34,10 @@ function admin_enqueue_scripts( $hook ) {
 			'addAuthorPlaceholder' => __( 'Search for an author to add to the byline', 'byline-manager' ),
 			'removeAuthorLabel'    => __( 'Remove author from byline', 'byline-manager' ),
 			'linkUserPlaceholder'  => __( 'Search for a user account by name', 'byline-manager' ),
+			'userAlreadyLinked'    => __( 'This user is linked to another profile', 'byline-manager' ),
 			'profilesApiUrl'       => home_url( '/wp-json/byline-manager/v1/authors' ),
 			'usersApiUrl'          => home_url( '/wp-json/byline-manager/v1/users' ),
+			'postId'               => get_the_ID(),
 			'profiles'             => array_map(
 				__NAMESPACE__ . '\get_profile_data_for_meta_box',
 				Utils::get_profiles_for_post()

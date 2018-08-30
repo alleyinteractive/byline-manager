@@ -7,6 +7,7 @@ class UserLinkMetaBox extends Component {
     user: PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string,
+      linked: PropTypes.bool,
     }),
   };
 
@@ -19,18 +20,17 @@ class UserLinkMetaBox extends Component {
   constructor(props) {
     super(props);
 
-    const search = props.user && props.user.name ? props.user.name : '';
-
     this.state = {
       user: props.user,
-      search,
+      search: '',
       searchResults: [],
     };
   }
 
   doUserSearch(fragment) {
+    const { usersApiUrl, postId } = window.bylineData;
     fetch(
-      `${window.bylineData.usersApiUrl}?s=${fragment}`
+      `${usersApiUrl}?s=${fragment}&post=${postId}`
     )
       .then((res) => res.json())
       .then((searchResults) => {
@@ -55,6 +55,13 @@ class UserLinkMetaBox extends Component {
           name="profile_user_link"
           value={this.state.user.id || ''}
         />
+        {this.state.user && (
+          <h3>Linked to:{' '}
+            <a href={`/wp-admin/user-edit.php?user_id=${this.state.user.id}`}>
+              {this.state.user.name}
+            </a>
+          </h3>
+        )}
         <Autocomplete
           inputProps={inputProps}
           items={this.state.searchResults}
@@ -63,7 +70,7 @@ class UserLinkMetaBox extends Component {
           onSelect={(value, user) => {
             this.setState({
               user,
-              search: user.name,
+              search: '',
               searchResults: [],
             });
           }}
@@ -77,6 +84,7 @@ class UserLinkMetaBox extends Component {
               this.doUserSearch(value);
             }, 500);
           }}
+          isItemSelectable={(item) => ! item.linked}
           renderMenu={(children) => (
             <div className="menu">
               {children}
@@ -84,10 +92,16 @@ class UserLinkMetaBox extends Component {
           )}
           renderItem={(item, isHighlighted) => (
             <div
-              className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
+              className={[
+                'item',
+                isHighlighted ? 'item-highlighted' : '',
+                item.linked ? 'item-disabled' : '',
+              ].join(' ')}
               key={item.id}
             >
               {item.name}
+              {item.linked &&
+                <em>{window.bylineData.userAlreadyLinked}</em>}
             </div>
           )}
         />

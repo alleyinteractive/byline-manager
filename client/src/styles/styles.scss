@@ -52,6 +52,16 @@
     color: white;
   }
 
+  .item-disabled {
+    color: #aaa;
+    cursor: not-allowed;
+
+    em {
+      float: right;
+      margin-left: rem(10px);
+    }
+  }
+
   .item-header {
     background-color: #eeeeee;
     color: #454545;

@@ -94,7 +94,8 @@ function get_profile_data_for_meta_box( Profile $profile ) {
 /**
  * Given a user object, build the data needed by the user link meta box.
  *
- * @param \WP_User $user User object.
+ * @param \WP_User      $user            User object.
+ * @param \WP_Post|null $current_post_id Current post ID, if applicable.
  * @return array {
  *     Necessary data to build the meta box.
  *
@@ -102,10 +103,12 @@ function get_profile_data_for_meta_box( Profile $profile ) {
  *     @type string $name  Display Name.
  * }
  */
-function get_user_data_for_meta_box( \WP_User $user ) {
+function get_user_data_for_meta_box( \WP_User $user, $current_post_id = null ) {
+	$linked_id = absint( get_user_meta( $user->ID, 'profile_id', true ) );
 	return [
-		'id'   => $user->ID,
-		'name' => $user->display_name,
+		'id'     => $user->ID,
+		'name'   => $user->display_name,
+		'linked' => boolval( $linked_id ) && $linked_id !== $current_post_id,
 	];
 }
 

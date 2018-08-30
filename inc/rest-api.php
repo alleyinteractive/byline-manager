@@ -68,7 +68,11 @@ function rest_user_search( \WP_REST_Request $request ) {
 	] );
 
 	// Build the REST response data.
-	$data = array_map( __NAMESPACE__ . '\get_user_data_for_meta_box', $users );
+	$data = array_map(
+		__NAMESPACE__ . '\get_user_data_for_meta_box',
+		$users,
+		array_fill( 0, count( $users ), absint( $request->get_param( 'post' ) ) )
+	);
 
 	// Send the response.
 	return rest_ensure_response( $data );
