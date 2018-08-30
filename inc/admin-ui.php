@@ -176,17 +176,7 @@ function set_profile_user_link( $post_id, $post ) {
 		? absint( $_POST['profile_user_link'] )
 		: 0;
 
-	// First, check to see if this has changed, for reciprocal updates.
-	$old_user_id = absint( get_post_meta( $post_id, 'user_id', true ) );
-	if ( $old_user_id && $old_user_id !== $new_user_id ) {
-		delete_user_meta( $old_user_id, 'profile_id' );
-		delete_post_meta( $post_id, 'user_id' );
-	}
-
-	// Save the post meta.
-	if ( ! empty( $new_user_id ) ) {
-		update_post_meta( $post_id, 'user_id', $new_user_id );
-		update_user_meta( $new_user_id, 'profile_id', $post_id );
-	}
+	$profile = Profile::get_by_post( $post );
+	$profile->update_user_link( $new_user_id );
 }
 add_action( 'save_post', __NAMESPACE__ . '\set_profile_user_link', 10, 2 );
