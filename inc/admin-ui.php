@@ -13,12 +13,17 @@ use Byline_Manager\Models\Profile;
  * Register meta boxes used by the plugin.
  */
 function register_meta_boxes() {
-	add_meta_box(
-		'byline-manager-byline-meta-box',
-		__( 'Byline', 'byline-manager' ),
-		__NAMESPACE__ . '\byline_meta_box',
-		Utils::get_supported_post_types()
-	);
+	$supported_post_types = Utils::get_supported_post_types();
+
+	if ( $supported_post_types ) {
+		add_meta_box(
+			'byline-manager-byline-meta-box',
+			__( 'Byline', 'byline-manager' ),
+			__NAMESPACE__ . '\byline_meta_box',
+			$supported_post_types
+		);
+	}
+
 	add_meta_box(
 		'byline-manager-user-link-meta-box',
 		__( 'User Account', 'byline-manager' ),
