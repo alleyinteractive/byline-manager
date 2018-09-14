@@ -27,7 +27,7 @@
 
 .byline-manager-meta-box {
 
-  input {
+  input[type=text] {
     width: rem(400px);
   }
 
@@ -38,6 +38,15 @@
       font-weight: 500;
       margin-left: rem(10px);
     }
+  }
+
+  .byline-override-option {
+    float: right;
+    margin: rem(5px) 0 rem(15px) rem(15px);
+  }
+
+  label span {
+    display: block;
   }
 
   .menu {

@@ -46,28 +46,60 @@ class Utils {
 	}
 
 	/**
-	 * Given a post, get the profile objects that build up its byline.
+	 * Get the byline post meta for a post.
 	 *
-	 * @param \WP_Post|int $post Optional. Post object or ID. Defaults to current
-	 *                           global post.
+	 * @param \WP_Post|int $post Optional. Post object or ID. Defaults to
+	 *                           current global post.
+	 * @return array {
+	 *     Metadata about the byline for the post.
+	 *
+	 *     @type string $source   One of 'profiles' or 'override'.
+	 *     @type string $override Byline override text.
+	 *     @type array  $profiles Array of profile post IDs and byline term IDs
+	 *                            for each profile.
+	 * }
+	 */
+	public static function get_byline_meta_for_post( $post = null ) {
+		$defaults = [
+			'source'   => 'profiles',
+			'profiles' => [],
+			'override' => '',
+		];
+
+		$post = get_post( $post );
+		if ( $post ) {
+			return wp_parse_args(
+				get_post_meta( $post->ID, 'byline', true ),
+				$defaults
+			);
+		}
+
+		return $defaults;
+	}
+
+	/**
+	 * Given a post, get the profile objects that build up its byline, if
+	 * applicable.
+	 *
+	 * @param \WP_Post|int $post Optional. Post object or ID. Defaults to
+	 *                           current global post.
 	 * @return array Profile objects.
 	 */
 	public static function get_profiles_for_post( $post = null ) {
-		$post = get_post( $post );
-		if ( ! $post ) {
+		$byline = self::get_byline_meta_for_post( $post );
+		if (
+			'profiles' !== $byline['source']
+			|| empty( $byline['profiles'] )
+			|| ! is_array( $byline['profiles'] )
+		) {
 			return [];
 		}
 
-		$byline = get_post_meta( $post->ID, 'byline', true );
-		if ( ! is_array( $byline ) ) {
-			return [];
-		}
-
-		return array_filter( array_map( function( $meta ) {
-			return ! empty( $meta['post_id'] )
-				? Profile::get_by_post( $meta['post_id'] )
+		return array_filter( array_map( function( $profile ) {
+			return ! empty( $profile['post_id'] )
+				? Profile::get_by_post( $profile['post_id'] )
 				: false;
-		}, $byline ) );
+		}, $byline['profiles'] ) );
 	}
 
 	/**
@@ -87,19 +119,42 @@ class Utils {
 	}
 
 	/**
-	 * Set the byline for a post given a set of byline ids (term ids).
+	 * Set the byline for a post given raw meta information.
 	 *
-	 * @param int   $post_id    ID for the post to modify.
-	 * @param array $byline_ids Term IDs for bylines to connect to the post.
+	 * @param int   $post_id     ID for the post to modify.
+	 * @param array $byline_meta {
+	 *     Metadata about the byline to store.
+	 *
+	 *     @type string $source     Optional. One of 'profiles' or 'override'.
+	 *                              defaults to 'profiles'.
+	 *     @type string $override   Optional. Byline override text. Defaults to
+	 *                              empty string.
+	 *     @type array  $byline_ids Optional. Byline term ids. Defaults to empty
+	 *                              array.
+	 * }
 	 */
-	public static function set_post_byline( int $post_id, array $byline_ids ) {
-		wp_set_object_terms( $post_id, $byline_ids, BYLINE_TAXONOMY, false );
+	public static function set_post_byline( int $post_id, array $byline_meta ) {
+		$default_args = [
+			'source'   => 'profiles',
+			'override' => '',
+			'byline_ids' => [],
+		];
+		$byline_meta = wp_parse_args( $byline_meta, $default_args );
+
+		// Set the terms.
+		wp_set_object_terms( $post_id, $byline_meta['byline_ids'], BYLINE_TAXONOMY, false );
 
 		// Set the byline meta on the post.
-		$byline = array_map( function( $term_id ) {
+		$profiles = array_map( function( $term_id ) {
 			$post_id = Utils::get_profile_id_by_byline_id( $term_id );
 			return $post_id ? compact( 'term_id', 'post_id' ) : null;
-		}, $byline_ids );
+		}, $byline_meta['byline_ids'] );
+
+		$byline = [
+			'source'   => $byline_meta['source'],
+			'override' => $byline_meta['override'],
+			'profiles' => $profiles,
+		];
 
 		/**
 		 * Filter the meta associated with a byline, allowing plugins to store

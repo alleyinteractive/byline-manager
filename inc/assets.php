@@ -30,6 +30,15 @@ function admin_enqueue_scripts( $hook ) {
 			wp_enqueue_style( 'byline-manager-css', get_asset_uri( 'main.css' ), [], '0.1.0' );
 		}
 
+		// Build the byline metabox data.
+		$byline_metabox_data = Utils::get_byline_meta_for_post();
+		if ( ! empty( $byline_metabox_data['profiles'] ) ) {
+			$byline_metabox_data['profiles'] = array_map(
+				__NAMESPACE__ . '\get_profile_data_for_meta_box',
+				Utils::get_profiles_for_post()
+			);
+		}
+
 		wp_localize_script( 'byline-manager-js', 'bylineData', [
 			'addAuthorPlaceholder' => __( 'Search for an author to add to the byline', 'byline-manager' ),
 			'removeAuthorLabel'    => __( 'Remove author from byline', 'byline-manager' ),
@@ -40,10 +49,7 @@ function admin_enqueue_scripts( $hook ) {
 			'profilesApiUrl'       => home_url( '/wp-json/byline-manager/v1/authors' ),
 			'usersApiUrl'          => home_url( '/wp-json/byline-manager/v1/users' ),
 			'postId'               => get_the_ID(),
-			'profiles'             => array_map(
-				__NAMESPACE__ . '\get_profile_data_for_meta_box',
-				Utils::get_profiles_for_post()
-			),
+			'bylineMetaBox'        => $byline_metabox_data,
 		] );
 	}
 }

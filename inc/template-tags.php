@@ -10,7 +10,8 @@ namespace Byline_Manager;
 use Models\Profile;
 
 /**
- * Renders the bylines display names, without links to their posts.
+ * Renders the bylines display names, without links to their posts, or the
+ * byline override if present.
  *
  * Equivalent to the_author() template tag.
  */
@@ -19,11 +20,17 @@ function the_byline() {
 }
 
 /**
- * Gets the bylines display names, without links to their posts.
+ * Gets the bylines display names, without links to their posts, or the byline
+ * override if present.
  *
  * Equivalent to get_the_author() template tag.
  */
 function get_the_byline() {
+	$byline = Utils::get_byline_meta_for_post();
+	if ( 'override' === $byline['source'] ) {
+		return $byline['override'];
+	}
+
 	return byline_render(
 		Utils::get_profiles_for_post(), function( $profile ) {
 			return $profile->display_name;
@@ -32,7 +39,8 @@ function get_the_byline() {
 }
 
 /**
- * Renders the profiles display names, with links to their posts.
+ * Renders the profiles display names, with links to their posts, or the byline
+ * override if present.
  *
  * Equivalent to the_author_posts_link() template tag.
  */
@@ -41,9 +49,15 @@ function the_byline_posts_links() {
 }
 
 /**
- * Renders the profiles display names, with links to their posts.
+ * Renders the profiles display names, with links to their posts, or the byline
+ * override if present.
  */
 function get_the_byline_posts_links() {
+	$byline = Utils::get_byline_meta_for_post();
+	if ( 'override' === $byline['source'] ) {
+		return $byline['override'];
+	}
+
 	return byline_render(
 		Utils::get_profiles_for_post(), function( $profile ) {
 			$args = [
@@ -78,7 +92,8 @@ function get_the_byline_posts_links() {
 }
 
 /**
- * Renders the profiles display names, with their website link if it exists.
+ * Renders the profiles display names, with their website link if it exists, or
+ * the byline override if present.
  *
  * Equivalent to the_author_link() template tag.
  */
@@ -87,9 +102,15 @@ function the_byline_links() {
 }
 
 /**
- * Renders the profiles display names, with their website link if it exists.
+ * Renders the profiles display names, with their website link if it exists, or
+ * the byline override if present.
  */
 function get_the_byline_links() {
+	$byline = Utils::get_byline_meta_for_post();
+	if ( 'override' === $byline['source'] ) {
+		return $byline['override'];
+	}
+
 	return byline_render(
 		Utils::get_profiles_for_post(), function( $profile ) {
 			if ( $profile->user_url ) {

@@ -27,13 +27,13 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 			'post_title' => 'Byline 2',
 		] );
 		$post_id = $this->factory->post->create();
-		Utils::set_post_byline( $post_id, wp_list_pluck( [ $b1, $b2 ], 'term_id' ) );
+		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b1, $b2 ], 'term_id' ) ] );
 		$byline = Utils::get_profiles_for_post( $post_id );
 		$this->assertCount( 2, $byline );
 		$this->assertEquals( [ $b1->post_id, $b2->post_id ], wp_list_pluck( $byline, 'post_id' ) );
 
 		// Ensure the order persists.
-		Utils::set_post_byline( $post_id, wp_list_pluck( [ $b2, $b1 ], 'term_id' ) );
+		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b1 ], 'term_id' ) ] );
 		$byline = Utils::get_profiles_for_post( $post_id );
 		$this->assertCount( 2, $byline );
 		$this->assertEquals( [ $b2->post_id, $b1->post_id ], wp_list_pluck( $byline, 'post_id' ) );
@@ -57,7 +57,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 			'post_name'  => 'b1',
 			'post_title' => 'Byline 1',
 		] );
-		Utils::set_post_byline( $post_id, wp_list_pluck( [ $b1 ], 'term_id' ) );
+		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b1 ], 'term_id' ) ] );
 		$byline = Utils::get_profiles_for_post( $post_id );
 		$this->assertCount( 1, $byline );
 		$this->assertEquals( [ 'b1' ], wp_list_pluck( $byline, 'post_name' ) );
@@ -74,7 +74,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, wp_list_pluck( [ $b1 ], 'term_id' ) );
+		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b1 ], 'term_id' ) ] );
 		$this->expectOutputString( 'Byline 1' );
 		the_byline();
 	}
@@ -94,7 +94,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, wp_list_pluck( [ $b2, $b1 ], 'term_id' ) );
+		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b1 ], 'term_id' ) ] );
 		$this->expectOutputString( 'Byline 2 and Byline 1' );
 		the_byline();
 	}
@@ -118,7 +118,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, wp_list_pluck( [ $b2, $b3, $b1 ], 'term_id' ) );
+		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b3, $b1 ], 'term_id' ) ] );
 		$this->expectOutputString( 'Byline 2, Byline 3, and Byline 1' );
 		the_byline();
 	}
@@ -146,7 +146,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, wp_list_pluck( [ $b2, $b4, $b3, $b1 ], 'term_id' ) );
+		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b4, $b3, $b1 ], 'term_id' ) ] );
 		$this->expectOutputString( 'Byline 2, Byline 4, Byline 3, and Byline 1' );
 		the_byline();
 	}
@@ -166,7 +166,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, wp_list_pluck( [ $b2, $b1 ], 'term_id' ) );
+		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b1 ], 'term_id' ) ] );
 		$this->expectOutputString( '<a href="' . $b2->link . '" title="Posts by Byline 2" class="author url fn" rel="author">Byline 2</a> and <a href="' . $b1->link . '" title="Posts by Byline 1" class="author url fn" rel="author">Byline 1</a>' );
 		the_byline_posts_links();
 	}
@@ -206,9 +206,57 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		update_post_meta( $b2->post_id, 'user_url', 'https://apple.com' );
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, wp_list_pluck( [ $b2, $b1 ], 'term_id' ) );
+		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b1 ], 'term_id' ) ] );
 		$this->expectOutputString( '<a href="https://apple.com" title="Visit Byline 2&#8217;s website" rel="external">Byline 2</a> and Byline 1' );
 		the_byline_links();
 	}
 
+	/**
+	 * Render byline override.
+	 */
+	public function test_get_override_for_post() {
+		global $post;
+		$post = $this->factory->post->create_and_get();
+		Utils::set_post_byline(
+			$post->ID,
+			[
+				'source' => 'override',
+				'override' => 'Test Override 1',
+			]
+		);
+		$this->assertSame( 'Test Override 1', get_echo( '\Byline_Manager\the_byline' ) );
+	}
+
+	/**
+	 * Render byline override via `the_byline_posts_links()`.
+	 */
+	public function test_template_tag_the_byline_posts_links_with_override() {
+		global $post;
+		$post = $this->factory->post->create_and_get();
+		Utils::set_post_byline(
+			$post->ID,
+			[
+				'source' => 'override',
+				'override' => 'Test Override 2',
+			]
+		);
+		$this->assertSame( 'Test Override 2', get_echo( '\Byline_Manager\the_byline_posts_links' ) );
+	}
+
+
+	/**
+	 * Render byline override via `the_byline_links()`.
+	 */
+	public function test_template_tag_the_byline_links_with_override() {
+		global $post;
+		$post = $this->factory->post->create_and_get();
+		Utils::set_post_byline(
+			$post->ID,
+			[
+				'source' => 'override',
+				'override' => 'Test Override 3',
+			]
+		);
+		$this->assertSame( 'Test Override 3', get_echo( '\Byline_Manager\the_byline_links' ) );
+	}
 }

@@ -19,6 +19,7 @@ function auto_integrate_byline( $author_name ) {
 	}
 
 	if ( is_feed() ) {
+		// If the post uses an override, this will be empty.
 		$profiles = Utils::get_profiles_for_post();
 		if ( ! empty( $profiles[0] ) ) {
 			return $profiles[0]->display_name;
