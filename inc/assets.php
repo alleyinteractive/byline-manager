@@ -39,18 +39,22 @@ function admin_enqueue_scripts( $hook ) {
 			);
 		}
 
-		wp_localize_script( 'byline-manager-js', 'bylineData', [
-			'addAuthorPlaceholder' => __( 'Search for an author to add to the byline', 'byline-manager' ),
-			'removeAuthorLabel'    => __( 'Remove author from byline', 'byline-manager' ),
-			'linkUserPlaceholder'  => __( 'Search for a user account by name', 'byline-manager' ),
-			'userAlreadyLinked'    => __( 'This user is linked to another profile', 'byline-manager' ),
-			'linkedToLabel'        => __( 'Linked to:', 'byline-manager' ),
-			'unlinkLabel'          => __( 'Unlink', 'byline-manager' ),
-			'profilesApiUrl'       => home_url( '/wp-json/byline-manager/v1/authors' ),
-			'usersApiUrl'          => home_url( '/wp-json/byline-manager/v1/users' ),
-			'postId'               => get_the_ID(),
-			'bylineMetaBox'        => $byline_metabox_data,
-		] );
+		wp_localize_script(
+			'byline-manager-js',
+			'bylineData',
+			[
+				'addAuthorPlaceholder' => __( 'Search for an author to add to the byline', 'byline-manager' ),
+				'removeAuthorLabel'    => __( 'Remove author from byline', 'byline-manager' ),
+				'linkUserPlaceholder'  => __( 'Search for a user account by name', 'byline-manager' ),
+				'userAlreadyLinked'    => __( 'This user is linked to another profile', 'byline-manager' ),
+				'linkedToLabel'        => __( 'Linked to:', 'byline-manager' ),
+				'unlinkLabel'          => __( 'Unlink', 'byline-manager' ),
+				'profilesApiUrl'       => home_url( '/wp-json/byline-manager/v1/authors' ),
+				'usersApiUrl'          => home_url( '/wp-json/byline-manager/v1/users' ),
+				'postId'               => get_the_ID(),
+				'bylineMetaBox'        => $byline_metabox_data,
+			]
+		);
 	}
 }
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\admin_enqueue_scripts' );

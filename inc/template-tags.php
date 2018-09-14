@@ -32,7 +32,8 @@ function get_the_byline() {
 	}
 
 	return byline_render(
-		Utils::get_profiles_for_post(), function( $profile ) {
+		Utils::get_profiles_for_post(),
+		function( $profile ) {
 			return $profile->display_name;
 		}
 	);
@@ -59,7 +60,8 @@ function get_the_byline_posts_links() {
 	}
 
 	return byline_render(
-		Utils::get_profiles_for_post(), function( $profile ) {
+		Utils::get_profiles_for_post(),
+		function( $profile ) {
 			$args = [
 				'before_html' => '',
 				'href' => $profile->link,
@@ -112,7 +114,8 @@ function get_the_byline_links() {
 	}
 
 	return byline_render(
-		Utils::get_profiles_for_post(), function( $profile ) {
+		Utils::get_profiles_for_post(),
+		function( $profile ) {
 			if ( $profile->user_url ) {
 				return sprintf(
 					'<a href="%s" title="%s" rel="external">%s</a>',

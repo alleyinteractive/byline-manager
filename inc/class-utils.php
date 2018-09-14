@@ -95,11 +95,16 @@ class Utils {
 			return [];
 		}
 
-		return array_filter( array_map( function( $profile ) {
-			return ! empty( $profile['post_id'] )
-				? Profile::get_by_post( $profile['post_id'] )
-				: false;
-		}, $byline['profiles'] ) );
+		return array_filter(
+			array_map(
+				function( $profile ) {
+					return ! empty( $profile['post_id'] )
+						? Profile::get_by_post( $profile['post_id'] )
+						: false;
+				},
+				$byline['profiles']
+			)
+		);
 	}
 
 	/**
@@ -145,10 +150,13 @@ class Utils {
 		wp_set_object_terms( $post_id, $byline_meta['byline_ids'], BYLINE_TAXONOMY, false );
 
 		// Set the byline meta on the post.
-		$profiles = array_map( function( $term_id ) {
-			$post_id = Utils::get_profile_id_by_byline_id( $term_id );
-			return $post_id ? compact( 'term_id', 'post_id' ) : null;
-		}, $byline_meta['byline_ids'] );
+		$profiles = array_map(
+			function( $term_id ) {
+					$post_id = Utils::get_profile_id_by_byline_id( $term_id );
+					return $post_id ? compact( 'term_id', 'post_id' ) : null;
+			},
+			$byline_meta['byline_ids']
+		);
 
 		$byline = [
 			'source'   => $byline_meta['source'],
