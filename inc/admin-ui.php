@@ -152,7 +152,7 @@ function set_byline( $post_id, $post ) {
 	}
 
 	if ( 'override' === $meta['source'] && ! empty( $_POST['byline_override'] ) ) {
-		$meta['override'] = sanitize_text_field( wp_unslash( $_POST['byline_override'] ) );
+		$meta['override'] = wp_kses_post( wp_unslash( $_POST['byline_override'] ) );
 	}
 
 	// Set the byline.
