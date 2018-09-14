@@ -228,6 +228,22 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Render byline override that has an HTML link without the link.
+	 */
+	public function test_get_override_with_link_for_post() {
+		global $post;
+		$post = $this->factory->post->create_and_get();
+		Utils::set_post_byline(
+			$post->ID,
+			[
+				'source' => 'override',
+				'override' => '<a href="https://website.test/">Test Override 1</a>',
+			]
+		);
+		$this->assertSame( 'Test Override 1', get_echo( '\Byline_Manager\the_byline' ) );
+	}
+
+	/**
 	 * Render byline override via `the_byline_posts_links()`.
 	 */
 	public function test_template_tag_the_byline_posts_links_with_override() {
@@ -243,6 +259,21 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		$this->assertSame( 'Test Override 2', get_echo( '\Byline_Manager\the_byline_posts_links' ) );
 	}
 
+	/**
+	 * Render byline override with a link via `the_byline_posts_links()`.
+	 */
+	public function test_template_tag_the_byline_posts_links_with_override_with_link() {
+		global $post;
+		$post = $this->factory->post->create_and_get();
+		Utils::set_post_byline(
+			$post->ID,
+			[
+				'source' => 'override',
+				'override' => '<a href="https://website.test/">Test Override 2</a>',
+			]
+		);
+		$this->assertSame( '<a href="https://website.test/">Test Override 2</a>', get_echo( '\Byline_Manager\the_byline_posts_links' ) );
+	}
 
 	/**
 	 * Render byline override via `the_byline_links()`.
@@ -258,5 +289,21 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 			]
 		);
 		$this->assertSame( 'Test Override 3', get_echo( '\Byline_Manager\the_byline_links' ) );
+	}
+
+	/**
+	 * Render byline override with a link via `the_byline_links()`.
+	 */
+	public function test_template_tag_the_byline_links_with_override_with_link() {
+		global $post;
+		$post = $this->factory->post->create_and_get();
+		Utils::set_post_byline(
+			$post->ID,
+			[
+				'source' => 'override',
+				'override' => '<a href="https://website.test/">Test Override 3</a>',
+			]
+		);
+		$this->assertSame( '<a href="https://website.test/">Test Override 3</a>', get_echo( '\Byline_Manager\the_byline_links' ) );
 	}
 }

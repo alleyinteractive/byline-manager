@@ -28,7 +28,7 @@ function the_byline() {
 function get_the_byline() {
 	$byline = Utils::get_byline_meta_for_post();
 	if ( 'override' === $byline['source'] ) {
-		return $byline['override'];
+		return strip_tags( $byline['override'] );
 	}
 
 	return byline_render(
@@ -55,7 +55,7 @@ function the_byline_posts_links() {
 function get_the_byline_posts_links() {
 	$byline = Utils::get_byline_meta_for_post();
 	if ( 'override' === $byline['source'] ) {
-		return $byline['override'];
+		return wp_kses_post( $byline['override'] );
 	}
 
 	return byline_render(
@@ -108,7 +108,7 @@ function the_byline_links() {
 function get_the_byline_links() {
 	$byline = Utils::get_byline_meta_for_post();
 	if ( 'override' === $byline['source'] ) {
-		return $byline['override'];
+		return wp_kses_post( $byline['override'] );
 	}
 
 	return byline_render(
