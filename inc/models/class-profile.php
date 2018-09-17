@@ -40,10 +40,13 @@ class Profile {
 		}
 
 		// Set profile defaults.
-		$args = wp_parse_args( $args, [
-			'post_type'   => PROFILE_POST_TYPE,
-			'post_status' => 'publish',
-		] );
+		$args = wp_parse_args(
+			$args,
+			[
+				'post_type'   => PROFILE_POST_TYPE,
+				'post_status' => 'publish',
+			]
+		);
 
 		$post_id = wp_insert_post( $args, true );
 		if ( is_wp_error( $post_id ) ) {
@@ -69,11 +72,13 @@ class Profile {
 		if ( $existing ) {
 			return new \WP_Error( 'existing-profile', __( 'User already has a profile.', 'byline-manager' ) );
 		}
-		$profile = self::create( [
-			'post_title'   => $user->display_name,
-			'post_name'    => $user->user_nicename,
-			'post_content' => $user->description,
-		] );
+		$profile = self::create(
+			[
+				'post_title'   => $user->display_name,
+				'post_name'    => $user->user_nicename,
+				'post_content' => $user->description,
+			]
+		);
 		if ( is_wp_error( $profile ) ) {
 			return $profile;
 		}

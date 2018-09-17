@@ -30,21 +30,31 @@ function admin_enqueue_scripts( $hook ) {
 			wp_enqueue_style( 'byline-manager-css', get_asset_uri( 'main.css' ), [], '0.1.0' );
 		}
 
-		wp_localize_script( 'byline-manager-js', 'bylineData', [
-			'addAuthorPlaceholder' => __( 'Search for an author to add to the byline', 'byline-manager' ),
-			'removeAuthorLabel'    => __( 'Remove author from byline', 'byline-manager' ),
-			'linkUserPlaceholder'  => __( 'Search for a user account by name', 'byline-manager' ),
-			'userAlreadyLinked'    => __( 'This user is linked to another profile', 'byline-manager' ),
-			'linkedToLabel'        => __( 'Linked to:', 'byline-manager' ),
-			'unlinkLabel'          => __( 'Unlink', 'byline-manager' ),
-			'profilesApiUrl'       => home_url( '/wp-json/byline-manager/v1/authors' ),
-			'usersApiUrl'          => home_url( '/wp-json/byline-manager/v1/users' ),
-			'postId'               => get_the_ID(),
-			'profiles'             => array_map(
+		// Build the byline metabox data.
+		$byline_metabox_data = Utils::get_byline_meta_for_post();
+		if ( ! empty( $byline_metabox_data['profiles'] ) ) {
+			$byline_metabox_data['profiles'] = array_map(
 				__NAMESPACE__ . '\get_profile_data_for_meta_box',
 				Utils::get_profiles_for_post()
-			),
-		] );
+			);
+		}
+
+		wp_localize_script(
+			'byline-manager-js',
+			'bylineData',
+			[
+				'addAuthorPlaceholder' => __( 'Search for an author to add to the byline', 'byline-manager' ),
+				'removeAuthorLabel'    => __( 'Remove author from byline', 'byline-manager' ),
+				'linkUserPlaceholder'  => __( 'Search for a user account by name', 'byline-manager' ),
+				'userAlreadyLinked'    => __( 'This user is linked to another profile', 'byline-manager' ),
+				'linkedToLabel'        => __( 'Linked to:', 'byline-manager' ),
+				'unlinkLabel'          => __( 'Unlink', 'byline-manager' ),
+				'profilesApiUrl'       => home_url( '/wp-json/byline-manager/v1/authors' ),
+				'usersApiUrl'          => home_url( '/wp-json/byline-manager/v1/users' ),
+				'postId'               => get_the_ID(),
+				'bylineMetaBox'        => $byline_metabox_data,
+			]
+		);
 	}
 }
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\admin_enqueue_scripts' );

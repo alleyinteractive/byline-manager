@@ -45,11 +45,11 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		$this->assertEquals( '', get_echo( 'the_author' ) );
 
 		// Set the byline and confirm that `the_author()` outputs it.
-		Utils::set_post_byline( $post->ID, wp_list_pluck( [ $this->b1, $this->b2 ], 'term_id' ) );
+		Utils::set_post_byline( $post->ID, [ 'byline_ids' => wp_list_pluck( [ $this->b1, $this->b2 ], 'term_id' ) ] );
 		$this->assertEquals( 'Byline 1 and Byline 2', get_echo( 'the_author' ) );
 
 		// Ensure order changes propogate.
-		Utils::set_post_byline( $post->ID, wp_list_pluck( [ $this->b2, $this->b1 ], 'term_id' ) );
+		Utils::set_post_byline( $post->ID, [ 'byline_ids' => wp_list_pluck( [ $this->b2, $this->b1 ], 'term_id' ) ] );
 		$this->assertEquals( 'Byline 2 and Byline 1', get_echo( 'the_author' ) );
 	}
 
@@ -59,10 +59,47 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 	public function test_template_tag_the_byline_posts_links_two_byline() {
 		global $post;
 
-		Utils::set_post_byline( $post->ID, wp_list_pluck( [ $this->b2, $this->b1 ], 'term_id' ) );
+		Utils::set_post_byline( $post->ID, [ 'byline_ids' => wp_list_pluck( [ $this->b2, $this->b1 ], 'term_id' ) ] );
 
 		$this->expectOutputString( '<a href="' . $this->b2->link . '" title="Posts by Byline 2" class="author url fn" rel="author">Byline 2</a> and <a href="' . $this->b1->link . '" title="Posts by Byline 1" class="author url fn" rel="author">Byline 1</a>' );
 		the_author_posts_link();
+	}
+
+	/**
+	 * Check that `the_author()` will output the byline override automatically.
+	 */
+	public function test_the_author_filter_byline_override() {
+		global $post;
+
+		// Before the byline gets set, `the_author()` should output nothing.
+		$this->assertEquals( '', get_echo( 'the_author' ) );
+
+		// Set the byline and confirm that `the_author()` outputs it.
+		Utils::set_post_byline(
+			$post->ID,
+			[
+				'source' => 'override',
+				'override' => 'Test Core Override 1',
+			]
+		);
+		$this->assertEquals( 'Test Core Override 1', get_echo( 'the_author' ) );
+	}
+
+	/**
+	 * Render the byline override without links.
+	 */
+	public function test_template_tag_the_byline_posts_links_override() {
+		global $post;
+
+		Utils::set_post_byline(
+			$post->ID,
+			[
+				'source' => 'override',
+				'override' => 'Test Core Override 2',
+			]
+		);
+
+		$this->assertEquals( 'Test Core Override 2', get_echo( 'the_author_posts_link' ) );
 	}
 
 	/**
@@ -86,7 +123,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 	 */
 	public function test_rss_elements() {
 		global $post;
-		Utils::set_post_byline( $post->ID, wp_list_pluck( [ $this->b2, $this->b1 ], 'term_id' ) );
+		Utils::set_post_byline( $post->ID, [ 'byline_ids' => wp_list_pluck( [ $this->b2, $this->b1 ], 'term_id' ) ] );
 
 		$this->go_to( '/?feed=rss2' );
 		$feed = $this->do_rss2();
@@ -104,6 +141,36 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		$this->assertCount( 2, $creator );
 		$this->assertEquals( 'Byline 2', $creator[0]['content'] );
 		$this->assertEquals( 'Byline 1', $creator[1]['content'] );
+	}
+
+	/**
+	 * Test that the rss feed automatically gets the byline override added.
+	 */
+	public function test_rss_elements_byline_override() {
+		global $post;
+		Utils::set_post_byline(
+			$post->ID,
+			[
+				'source' => 'override',
+				'override' => 'Test RSS Override 1',
+			]
+		);
+
+		$this->go_to( '/?feed=rss2' );
+		$feed = $this->do_rss2();
+		$xml  = xml_to_array( $feed );
+
+		// Get all the <item> child elements of the <channel> element
+		$items = xml_find( $xml, 'rss', 'channel', 'item' );
+
+		// Verify we only have one post.
+		$this->assertCount( 1, $items );
+		$item = reset( $items );
+
+		// Check all dc:creator nodes.
+		$creator = xml_find( $item['child'], 'dc:creator' );
+		$this->assertCount( 1, $creator );
+		$this->assertEquals( 'Test RSS Override 1', $creator[0]['content'] );
 	}
 
 	public function test_author_link() {

@@ -53,9 +53,6 @@ function user_link_meta_box( $post ) {
 
 	if ( ! empty( $stored_id ) ) {
 		$user = get_user_by( 'id', $stored_id );
-	} elseif ( 'auto-draft' === $post->post_status ) {
-		// Default to the current user for new posts.
-		$user = wp_get_current_user();
 	} else {
 		$user = false;
 	}
@@ -142,13 +139,24 @@ function set_byline( $post_id, $post ) {
 		return;
 	}
 
-	// Attach the byline terms to the post.
-	$byline_ids = ! empty( $_POST['byline_profiles'] )
-		? array_map( 'absint', $_POST['byline_profiles'] )
-		: [];
+	$meta = [
+		'source' => 'profiles',
+	];
+
+	if ( ! empty( $_POST['byline_source'] ) && 'override' === $_POST['byline_source'] ) {
+		$meta['source'] = 'override';
+	}
+
+	if ( 'profiles' === $meta['source'] && ! empty( $_POST['byline_ids'] ) ) {
+		$meta['byline_ids'] = array_map( 'absint', $_POST['byline_ids'] );
+	}
+
+	if ( 'override' === $meta['source'] && ! empty( $_POST['byline_override'] ) ) {
+		$meta['override'] = wp_kses_post( wp_unslash( $_POST['byline_override'] ) );
+	}
 
 	// Set the byline.
-	Utils::set_post_byline( $post_id, $byline_ids );
+	Utils::set_post_byline( $post_id, $meta );
 }
 add_action( 'save_post', __NAMESPACE__ . '\set_byline', 10, 2 );
 
