@@ -19,7 +19,7 @@ const SortableItem = SortableElement(({
 }) => (
   <li className="byline-list-item">
     <input type="hidden" name="byline_ids[]" value={bylineId} />
-    <img src={image} alt={name} />
+    { image && <img src={image} alt={name} /> }
     <span>{name}</span>
     <button
       aria-label={window.bylineData.removeAuthorLabel}
@@ -39,7 +39,7 @@ const BylineList = SortableContainer(({ profiles, removeItem }) => (
       <SortableItem
         key={`item-${profile.id}`}
         index={index}
-        bylineId={profile.byline_id}
+        bylineId={profile.byline_id ? profile.byline_id : profile.id}
         name={profile.name}
         image={profile.image}
         removeItem={() => removeItem(profile.id)}
@@ -64,6 +64,8 @@ class BylineProfiles extends Component {
       profiles: props.profiles,
       search: '',
       searchResults: [],
+      value: '',
+      freeformID: 0,
     };
   }
 
@@ -155,6 +157,41 @@ class BylineProfiles extends Component {
             </div>
           )}
         />
+        <div>
+          <label htmlFor="byline_freeform">
+            Enter Byline:
+            <input
+              type="text"
+              placeholder={window.bylineData.addFreeformPlaceholder}
+              name="byline_freeform"
+              id="byline_freeform"
+              value={this.state.value}
+              onChange={(event) => {
+                this.setState({ value: event.target.value });
+              }}
+            />
+          </label>
+          <button
+            aria-label="Insert Item"
+            onClick={(e) => {
+              e.preventDefault();
+              const newItem = {
+                id: `frfm-${this.state.freeformID}`,
+                name: this.state.value,
+              };
+              this.setState({
+                profiles: [
+                  ...this.state.profiles,
+                  newItem,
+                ],
+                value: '',
+                freeformID: this.state.freeformID += 1,
+              });
+            }}
+          >
+            Insert
+          </button>
+        </div>
         <BylineList
           profiles={this.state.profiles}
           onSortEnd={this.onSortEnd}
