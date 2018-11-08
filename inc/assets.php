@@ -46,6 +46,7 @@ function admin_enqueue_scripts( $hook ) {
 				'addAuthorPlaceholder'   => __( 'Search for an author to add to the byline', 'byline-manager' ),
 				'removeAuthorLabel'      => __( 'Remove author from byline', 'byline-manager' ),
 				'addFreeformPlaceholder' => __( 'Enter text to add to the byline', 'byline-manager' ),
+				'addFreeformButtonLabel' => __( 'Insert', 'byline-manager' ),
 				'linkUserPlaceholder'    => __( 'Search for a user account by name', 'byline-manager' ),
 				'userAlreadyLinked'      => __( 'This user is linked to another profile', 'byline-manager' ),
 				'linkedToLabel'          => __( 'Linked to:', 'byline-manager' ),

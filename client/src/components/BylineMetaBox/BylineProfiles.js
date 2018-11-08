@@ -18,7 +18,10 @@ const SortableItem = SortableElement(({
   removeItem,
 }) => (
   <li className="byline-list-item">
-    <input type="hidden" name="byline_ids[]" value={bylineId} />
+    { bylineId &&
+      <input type="hidden" name="byline_ids[]" value={bylineId} /> }
+    { ! bylineId &&
+      <input type="hidden" name="freeforms[]" value={name} /> }
     { image && <img src={image} alt={name} /> }
     <span>{name}</span>
     <button
@@ -39,7 +42,7 @@ const BylineList = SortableContainer(({ profiles, removeItem }) => (
       <SortableItem
         key={`item-${profile.id}`}
         index={index}
-        bylineId={profile.byline_id ? profile.byline_id : profile.id}
+        bylineId={profile.byline_id}
         name={profile.name}
         image={profile.image}
         removeItem={() => removeItem(profile.id)}
@@ -118,79 +121,78 @@ class BylineProfiles extends Component {
 
     return (
       <div>
-        <Autocomplete
-          inputProps={inputProps}
-          items={this.state.searchResults}
-          value={this.state.search}
-          getItemValue={(item) => item.name}
-          onSelect={(value, item) => {
-            this.setState({
-              search: '',
-              searchResults: [],
-              profiles: [
-                ...this.state.profiles,
-                item,
-              ],
-            });
-          }}
-          onChange={(event, value) => {
-            clearTimeout(this.delay);
-            this.setState({
-              search: value,
-            });
+        <div className="byline-list-controls">
+          <Autocomplete
+            inputProps={inputProps}
+            items={this.state.searchResults}
+            value={this.state.search}
+            getItemValue={(item) => item.name}
+            onSelect={(value, item) => {
+              this.setState({
+                search: '',
+                searchResults: [],
+                profiles: [
+                  ...this.state.profiles,
+                  item,
+                ],
+              });
+            }}
+            onChange={(event, value) => {
+              clearTimeout(this.delay);
+              this.setState({
+                search: value,
+              });
 
-            this.delay = setTimeout(() => {
-              this.doProfileSearch(value);
-            }, 500);
-          }}
-          renderMenu={(children) => (
-            <div className="menu">
-              {children}
-            </div>
-          )}
-          renderItem={(item, isHighlighted) => (
-            <div
-              className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
-              key={item.id}
-            >
-              {item.name}
-            </div>
-          )}
-        />
-        <div>
-          <label htmlFor="byline_freeform">
-            Enter Byline:
+              this.delay = setTimeout(() => {
+                this.doProfileSearch(value);
+              }, 500);
+            }}
+            renderMenu={(children) => (
+              <div className="menu">
+                {children}
+              </div>
+            )}
+            renderItem={(item, isHighlighted) => (
+              <div
+                className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
+                key={item.id}
+              >
+                {item.name}
+              </div>
+            )}
+          />
+          <div className="freeformControls">
             <input
               type="text"
               placeholder={window.bylineData.addFreeformPlaceholder}
               name="byline_freeform"
               id="byline_freeform"
               value={this.state.value}
-              onChange={(event) => {
-                this.setState({ value: event.target.value });
-              }}
+              onChange={(e) => { this.setState({ value: e.target.value }); }}
             />
-          </label>
-          <button
-            aria-label="Insert Item"
-            onClick={(e) => {
-              e.preventDefault();
-              const newItem = {
-                id: `frfm-${this.state.freeformID}`,
-                name: this.state.value,
-              };
-              this.setState({
-                profiles: [
-                  ...this.state.profiles,
-                  newItem,
-                ],
-                value: '',
-                freeformID: this.state.freeformID += 1,
-              });
-            }}
-          >
-            Insert
-          </button>
+            <button
+              aria-label="{window.bylineData.addFreeformButtonLabel}"
+              className="button"
+              disabled={! this.state.value}
+              onClick={(e) => {
+                e.preventDefault();
+                const newItem = {
+                  id: `frfm-${this.state.freeformID}`,
+                  name: this.state.value,
+                };
+                this.setState({
+                  profiles: [
+                    ...this.state.profiles,
+                    newItem,
+                  ],
+                  value: '',
+                  freeformID: this.state.freeformID += 1,
+                });
+              }}
+            >
+              {window.bylineData.addFreeformButtonLabel}
+            </button>
+          </div>
         </div>
         <BylineList
           profiles={this.state.profiles}

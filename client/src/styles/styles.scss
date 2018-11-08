@@ -28,7 +28,37 @@
 .byline-manager-meta-box {
 
   input[type=text] {
-    width: rem(400px);
+    display: block;
+    margin: 0;
+    min-width: rem(320px);
+    width: 100%;
+  }
+
+  .byline-list-controls {
+    background: #fafafa;
+    border-bottom: 1px solid var(--grayLight);
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.5rem;
+    > div {
+      flex: 1;
+      position: relative;
+      margin: 0.5rem;
+    }
+  }
+
+  .freeformControls {
+    display: flex;
+    input {
+      border-right: 0;
+      margin: 0;
+    }
+    button {
+      border-bottom-left-radius: 0;
+      border-top-left-radius: 0;
+      box-shadow: none;
+      margin: 0;
+    }
   }
 
   .current-user-link {
@@ -53,10 +83,9 @@
     background: #fff;
     border: 1px solid #cccccc;
     box-sizing: border-box;
-    max-width: 100%;
-    min-width: rem(400px);
     padding: 0;
     position: absolute;
+    width: 100%;
     z-index: 100;
   }
 
