@@ -12,16 +12,23 @@ import Autocomplete from 'react-autocomplete';
 import PropTypes from 'prop-types';
 
 const SortableItem = SortableElement(({
+  count,
   bylineId,
   name,
   image,
   removeItem,
 }) => (
   <li className="byline-list-item">
-    { bylineId &&
-      <input type="hidden" name="byline_ids[]" value={bylineId} /> }
-    { ! bylineId &&
-      <input type="hidden" name="freeforms[]" value={name} /> }
+    <input
+      type="hidden"
+      name={`byline_entry[${count}][type]`}
+      value={bylineId ? 'byline_id' : 'text'}
+    />
+    <input
+      type="hidden"
+      name={`byline_entry[${count}][value]`}
+      value={bylineId || name}
+    />
     { image && <img src={image} alt={name} /> }
     <span>{name}</span>
     <button
@@ -42,6 +49,7 @@ const BylineList = SortableContainer(({ profiles, removeItem }) => (
       <SortableItem
         key={`item-${profile.id}`}
         index={index}
+        count={index}
         bylineId={profile.byline_id}
         name={profile.name}
         image={profile.image}
@@ -171,7 +179,7 @@ class BylineProfiles extends Component {
               onChange={(e) => { this.setState({ value: e.target.value }); }}
             />
             <button
-              aria-label="{window.bylineData.addFreeformButtonLabel}"
+              aria-label={window.bylineData.addFreeformButtonLabel}
               className="button"
               disabled={! this.state.value}
               onClick={(e) => {
