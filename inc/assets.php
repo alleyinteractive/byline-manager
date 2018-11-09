@@ -43,9 +43,11 @@ function admin_enqueue_scripts( $hook ) {
 			'byline-manager-js',
 			'bylineData',
 			[
-				'addAuthorPlaceholder'   => __( 'Search for an author to add to the byline', 'byline-manager' ),
+				'addAuthorLabel'         => __( 'Search for an author to add to the byline', 'byline-manager' ),
+				'addAuthorPlaceholder'   => __( 'Enter name', 'byline-manager' ),
 				'removeAuthorLabel'      => __( 'Remove author from byline', 'byline-manager' ),
-				'addFreeformPlaceholder' => __( 'Enter text to add to the byline', 'byline-manager' ),
+				'addFreeformlabel'       => __( 'Enter text to add to the byline', 'byline-manager' ),
+				'addFreeformPlaceholder' => __( 'Enter text', 'byline-manager' ),
 				'addFreeformButtonLabel' => __( 'Insert', 'byline-manager' ),
 				'linkUserPlaceholder'    => __( 'Search for a user account by name', 'byline-manager' ),
 				'userAlreadyLinked'      => __( 'This user is linked to another profile', 'byline-manager' ),
