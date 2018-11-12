@@ -142,26 +142,55 @@ class Utils {
 		$default_args = [
 			'source'   => 'profiles',
 			'override' => '',
-			'byline_ids' => [],
+			'byline_entries' => [],
 		];
 		$byline_meta = wp_parse_args( $byline_meta, $default_args );
 
-		// Set the terms.
-		wp_set_object_terms( $post_id, $byline_meta['byline_ids'], BYLINE_TAXONOMY, false );
-
-		// Set the byline meta on the post.
-		$profiles = array_map(
-			function( $term_id ) {
-					$post_id = Utils::get_profile_id_by_byline_id( $term_id );
-					return $post_id ? compact( 'term_id', 'post_id' ) : null;
+		// Extract the term IDs from the byline meta.
+		$byline_terms = array_map(
+			function( $entry ) {
+				if ( empty( $entry['type'] ) || 'byline_id' !== $entry['type'] || empty( $entry['atts']['byline_id'] ) ) {
+					return null;
+				} else {
+					return $entry['atts']['byline_id'];
+				}
 			},
-			$byline_meta['byline_ids']
+			$byline_meta['byline_entries']
+		);
+
+		// Set the terms.
+		wp_set_object_terms( $post_id, array_filter( $byline_terms ), BYLINE_TAXONOMY, false );
+
+		// Set the byline meta on the post, handling both byline IDs and text items.
+		$profiles = array_map(
+			function( $entry ) {
+				if ( empty( $entry['type'] ) || empty( $entry['atts'] ) ) {
+					// We don't have enough info to process this entry.
+					return null;
+				} elseif ( 'text' === $entry['type'] ) {
+					// Return text entries as is.
+					return $entry;
+				} elseif ( 'byline_id' === $entry['type'] && ! empty( $entry['atts']['byline_id'] ) ) {
+					$post_id = Utils::get_profile_id_by_byline_id( $entry['atts']['byline_id'] );
+					if ( ! empty( $post_id ) ) {
+						return [
+							'type' => 'byline_id',
+							'atts' => [
+								'term_id' => $entry['atts']['byline_id'],
+								'post_id' => $post_id,
+							],
+						];
+					}
+				}
+				// None of the above matched!
+				return null;
+			},
+			$byline_meta['byline_entries']
 		);
 
 		$byline = [
-			'source'   => $byline_meta['source'],
-			'override' => $byline_meta['override'],
-			'profiles' => $profiles,
+			'source'   => 'profiles',
+			'profiles' => array_filter( $profiles ),
 		];
 
 		/**

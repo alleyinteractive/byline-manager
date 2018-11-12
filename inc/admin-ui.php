@@ -143,16 +143,33 @@ function set_byline( $post_id, $post ) {
 		'source' => 'profiles',
 	];
 
-	if ( ! empty( $_POST['byline_source'] ) && 'override' === $_POST['byline_source'] ) {
-		$meta['source'] = 'override';
-	}
+	if ( ! empty( $_POST['byline_entry'] ) && is_array( $_POST['byline_entry'] ) ) {
 
-	if ( 'profiles' === $meta['source'] && ! empty( $_POST['byline_ids'] ) ) {
-		$meta['byline_ids'] = array_map( 'absint', $_POST['byline_ids'] );
-	}
+		$meta['byline_entries'] = [];
 
-	if ( 'override' === $meta['source'] && ! empty( $_POST['byline_override'] ) ) {
-		$meta['override'] = wp_kses_post( wp_unslash( $_POST['byline_override'] ) );
+		foreach ( $_POST['byline_entry'] as $entry ) {
+			// Don't save empty items.
+			if ( empty( $entry['type'] ) || empty( $entry['value'] ) ) {
+				continue;
+			}
+
+			if ( 'text' === $entry['type'] ) {
+				$meta['byline_entries'][] = [
+					'type' => 'text',
+					'atts' => [
+						'text' => wp_kses_post( wp_unslash( $entry['value'] ) ),
+					],
+				];
+			} elseif ( 'byline_id' === $entry['type'] ) {
+				$meta['byline_entries'][] = [
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => absint( $entry['value'] ),
+					],
+				];
+			}
+
+		}
 	}
 
 	// Set the byline.
