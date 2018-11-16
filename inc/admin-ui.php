@@ -206,7 +206,9 @@ function set_profile_user_link( $post_id, $post ) {
 		? absint( $_POST['profile_user_link'] )
 		: 0;
 
-	$profile = Profile::get_by_post( $post );
-	$profile->update_user_link( $new_user_id );
+	if ( ! wp_is_post_revision( $post ) ) {
+		$profile = Profile::get_by_post( $post );
+		$profile->update_user_link( $new_user_id );
+	}
 }
 add_action( 'save_post', __NAMESPACE__ . '\set_profile_user_link', 10, 2 );
