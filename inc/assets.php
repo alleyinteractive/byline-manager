@@ -7,6 +7,8 @@
 
 namespace Byline_Manager;
 
+use Byline_Manager\Models\Profile;
+
 const BUILD_URL  = URL . 'client/build/';
 const BUILD_PATH = PATH . 'client/build/';
 
@@ -33,10 +35,26 @@ function admin_enqueue_scripts( $hook ) {
 		// Build the byline metabox data.
 		$byline_metabox_data = Utils::get_byline_meta_for_post();
 		if ( ! empty( $byline_metabox_data['profiles'] ) ) {
-			$byline_metabox_data['profiles'] = array_map(
-				__NAMESPACE__ . '\get_profile_data_for_meta_box',
-				Utils::get_profiles_for_post()
-			);
+			$profiles = [];
+			foreach ( $byline_metabox_data['profiles'] as $entry ) {
+				if (
+					! empty( $entry['type'] )
+					&& 'byline_id' === $entry['type']
+					&& ! empty( $entry['atts']['post_id'] )
+				) {
+					// Handle byline profile ID entries.
+					$profile = Profile::get_by_post( $entry['atts']['post_id'] );
+					if ( $profile instanceof Profile ) {
+						$profiles[] = get_profile_data_for_meta_box( $profile );
+					}
+				} elseif ( ! empty( $entry['atts']['text'] ) ) {
+					// Handle text-only bylines.
+					$profiles[] = [
+						'name'      => $entry['atts']['text'],
+					];
+				}
+			}
+			$byline_metabox_data['profiles'] = $profiles;
 		}
 
 		wp_localize_script(

@@ -63,7 +63,6 @@ class Utils {
 		$defaults = [
 			'source'   => 'profiles',
 			'profiles' => [],
-			'override' => '',
 		];
 
 		$post = get_post( $post );
@@ -88,8 +87,7 @@ class Utils {
 	public static function get_profiles_for_post( $post = null ) {
 		$byline = self::get_byline_meta_for_post( $post );
 		if (
-			'profiles' !== $byline['source']
-			|| empty( $byline['profiles'] )
+			empty( $byline['profiles'] )
 			|| ! is_array( $byline['profiles'] )
 		) {
 			return [];
@@ -98,8 +96,8 @@ class Utils {
 		return array_filter(
 			array_map(
 				function( $profile ) {
-					return ! empty( $profile['post_id'] )
-						? Profile::get_by_post( $profile['post_id'] )
+					return ! empty( $profile['atts']['post_id'] )
+						? Profile::get_by_post( $profile['atts']['post_id'] )
 						: false;
 				},
 				$byline['profiles']
