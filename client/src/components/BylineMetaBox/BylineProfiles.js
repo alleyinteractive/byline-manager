@@ -17,8 +17,10 @@ const SortableItem = SortableElement(({
   name,
   image,
   removeItem,
+  test,
 }) => (
   <li className="byline-list-item">
+    {test}
     <input
       type="hidden"
       name={`byline_entry[${count}][type]`}
@@ -76,7 +78,6 @@ class BylineProfiles extends Component {
       search: '',
       searchResults: [],
       value: '',
-      freeformID: 0,
     };
   }
 
@@ -114,6 +115,8 @@ class BylineProfiles extends Component {
         this.setState({ searchResults });
       });
   };
+
+  generateKey = (pre) => `${pre}-${new Date().getTime()}`;
 
   render() {
     const inputProps = {
@@ -200,7 +203,7 @@ class BylineProfiles extends Component {
                 onClick={(e) => {
                   e.preventDefault();
                   const newItem = {
-                    id: `frfm-${this.state.freeformID}`,
+                    id: this.generateKey('text'),
                     name: this.state.value,
                   };
                   this.setState({
@@ -209,7 +212,6 @@ class BylineProfiles extends Component {
                       newItem,
                     ],
                     value: '',
-                    freeformID: this.state.freeformID += 1,
                   });
                 }}
               >
