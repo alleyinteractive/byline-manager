@@ -29,7 +29,7 @@ function get_the_byline() {
 	return byline_render(
 		Utils::get_byline_entries_for_post(),
 		function( $entry ) {
-			return strip_tags( $entry->display_name );
+			return wp_strip_all_tags( $entry->display_name );
 		}
 	);
 }

@@ -7,22 +7,28 @@
 
 namespace Byline_Manager\Models;
 
+/**
+ * Representation of an individual text-only profile.
+ */
 class TextProfile {
 	/**
 	 * An ID used by the Javascript to target the sortable item.
 	 * Uses a millisecond timestamp prepended with 'text-'.
+	 *
 	 * @var string
 	 */
 	public $id;
 
 	/**
 	 * Not currently implemented, but useful to have defined.
+	 *
 	 * @var string
 	 */
 	public $display_name;
 
 	/**
 	 * Not currently implemented, but useful to have defined.
+	 *
 	 * @var string
 	 */
 	public $link = '';

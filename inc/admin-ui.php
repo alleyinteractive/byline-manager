@@ -142,9 +142,11 @@ function set_byline( $post_id, $post ) {
 	$meta = [
 		'byline_entries' => [],
 	];
+	// The data from this array is sanitized as it's used.
+	$byline_entries = isset( $_POST['byline_entry'] ) ? wp_unslash( $_POST['byline_entry'] ) : []; // WPCS: sanitization ok.
 
-	if ( ! empty( $_POST['byline_entry'] ) && is_array( $_POST['byline_entry'] ) ) {
-		foreach ( $_POST['byline_entry'] as $entry ) {
+	if ( ! empty( $byline_entries ) && is_array( $byline_entries ) ) {
+		foreach ( $byline_entries as $entry ) {
 			// Don't save empty items.
 			if ( empty( $entry['type'] ) || empty( $entry['value'] ) ) {
 				continue;
