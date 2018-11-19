@@ -32,7 +32,6 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 			'post_title' => 'Byline 2',
 		] );
 		$this->byline_meta = [
-			'source' => 'profiles',
 			'byline_entries' => [
 				[
 					'type' => 'byline_id',

@@ -23,7 +23,7 @@ class TextProfile {
 	 */
 	private function __construct( array $atts ) {
 		$this->atts = $atts;
-		$this->display_name = $atts['text'] ?? false;
+		$this->display_name = strip_tags( $atts['text'] ) ?? false;
 	}
 
 	/**

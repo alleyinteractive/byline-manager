@@ -62,7 +62,6 @@ class Utils {
 	 */
 	public static function get_byline_meta_for_post( $post = null ) {
 		$defaults = [
-			'source'   => 'profiles',
 			'profiles' => [],
 		];
 
@@ -142,7 +141,6 @@ class Utils {
 	 */
 	public static function set_post_byline( int $post_id, array $byline_meta ) {
 		$default_args = [
-			'source'   => 'profiles',
 			'byline_entries' => [],
 		];
 		$byline_meta = wp_parse_args( $byline_meta, $default_args );
@@ -190,7 +188,6 @@ class Utils {
 		);
 
 		$byline = [
-			'source'   => 'profiles',
 			'profiles' => array_filter( $profiles ),
 		];
 

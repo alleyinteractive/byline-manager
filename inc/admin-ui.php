@@ -140,13 +140,10 @@ function set_byline( $post_id, $post ) {
 	}
 
 	$meta = [
-		'source' => 'profiles',
+		'byline_entries' => [],
 	];
 
 	if ( ! empty( $_POST['byline_entry'] ) && is_array( $_POST['byline_entry'] ) ) {
-
-		$meta['byline_entries'] = [];
-
 		foreach ( $_POST['byline_entry'] as $entry ) {
 			// Don't save empty items.
 			if ( empty( $entry['type'] ) || empty( $entry['value'] ) ) {
@@ -168,7 +165,6 @@ function set_byline( $post_id, $post ) {
 					],
 				];
 			}
-
 		}
 	}
 

@@ -49,11 +49,6 @@ function the_byline_posts_links() {
  * override if present.
  */
 function get_the_byline_posts_links() {
-	$byline = Utils::get_byline_meta_for_post();
-	if ( 'override' === $byline['source'] ) {
-		return wp_kses_post( $byline['override'] );
-	}
-
 	return byline_render(
 		Utils::get_byline_entries_for_post(),
 		function( $entry ) {
@@ -103,11 +98,6 @@ function the_byline_links() {
  * the byline override if present.
  */
 function get_the_byline_links() {
-	$byline = Utils::get_byline_meta_for_post();
-	if ( 'override' === $byline['source'] ) {
-		return wp_kses_post( $byline['override'] );
-	}
-
 	return byline_render(
 		Utils::get_byline_entries_for_post(),
 		function( $entry ) {

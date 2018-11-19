@@ -28,7 +28,6 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 		$post_id = $this->factory->post->create();
 		$byline_meta = [
-			'source' => 'profiles',
 			'byline_entries' => [
 				[
 					'type' => 'byline_id',
@@ -94,7 +93,6 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
 		$byline_meta = [
-			'source' => 'profiles',
 			'byline_entries' => [
 				[
 					'type' => 'byline_id',
@@ -124,7 +122,6 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 
 		$byline_meta = [
-			'source' => 'profiles',
 			'byline_entries' => [
 				[
 					'type' => 'byline_id',
@@ -166,7 +163,6 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 
 		$byline_meta = [
-			'source' => 'profiles',
 			'byline_entries' => [
 				[
 					'type' => 'byline_id',
@@ -219,7 +215,6 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 
 		$byline_meta = [
-			'source' => 'profiles',
 			'byline_entries' => [
 				[
 					'type' => 'byline_id',
@@ -270,7 +265,6 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 
 		$byline_meta = [
-			'source' => 'profiles',
 			'byline_entries' => [
 				[
 					'type' => 'byline_id',
@@ -329,7 +323,6 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		update_post_meta( $b2->post_id, 'user_url', 'https://apple.com' );
 
 		$byline_meta = [
-			'source' => 'profiles',
 			'byline_entries' => [
 				[
 					'type' => 'byline_id',
