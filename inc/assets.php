@@ -36,6 +36,7 @@ function admin_enqueue_scripts( $hook ) {
 		$byline_metabox_data = Utils::get_byline_meta_for_post();
 		if ( ! empty( $byline_metabox_data['profiles'] ) ) {
 			$profiles = [];
+			$index = 0;
 			foreach ( $byline_metabox_data['profiles'] as $entry ) {
 				if (
 					! empty( $entry['type'] )
@@ -50,9 +51,12 @@ function admin_enqueue_scripts( $hook ) {
 				} elseif ( ! empty( $entry['atts']['text'] ) ) {
 					// Handle text-only bylines.
 					$profiles[] = [
-						'name'      => $entry['atts']['text'],
+						// Generate a semi-arbitrary ID to give the script a reference point.
+						'id'   => md5( $entry['atts']['text'] . '-' . $index ),
+						'name' => $entry['atts']['text'],
 					];
 				}
+				$index++;
 			}
 			$byline_metabox_data['profiles'] = $profiles;
 		}
