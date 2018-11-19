@@ -89,7 +89,6 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 	 * Check that `the_author()` will output the byline override automatically.
 	 */
 	public function test_the_author_filter_byline_override() {
-		$this->markTestSkipped( 'TODO: Replace override tests, as the old format is no longer relevant.' );
 		global $post;
 
 		// Before the byline gets set, `the_author()` should output nothing.
@@ -99,8 +98,14 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => 'Test Core Override 1',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => 'Test Core Override 1',
+						],
+					],
+				],
 			]
 		);
 		$this->assertEquals( 'Test Core Override 1', get_echo( 'the_author' ) );
@@ -110,14 +115,19 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 	 * Render the byline override without links.
 	 */
 	public function test_template_tag_the_byline_posts_links_override() {
-		$this->markTestSkipped( 'TODO: Replace override tests, as the old format is no longer relevant.' );
 		global $post;
 
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => 'Test Core Override 2',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => 'Test Core Override 2',
+						],
+					],
+				],
 			]
 		);
 
@@ -172,13 +182,18 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 	 * Test that the rss feed automatically gets the byline override added.
 	 */
 	public function test_rss_elements_byline_override() {
-		$this->markTestSkipped( 'TODO: Replace override tests, as the old format is no longer relevant.' );
 		global $post;
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => 'Test RSS Override 1',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => 'Test RSS Override 1',
+						],
+					],
+				],
 			]
 		);
 

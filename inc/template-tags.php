@@ -29,7 +29,7 @@ function get_the_byline() {
 	return byline_render(
 		Utils::get_byline_entries_for_post(),
 		function( $entry ) {
-			return $entry->display_name;
+			return strip_tags( $entry->display_name );
 		}
 	);
 }
@@ -70,15 +70,19 @@ function get_the_byline_posts_links() {
 			 * @param Byline $entry The profile or text profile to be rendered.
 			 */
 			$args = apply_filters( 'bylines_posts_links', $args, $entry );
-			$single_link = sprintf(
-				'<a href="%1$s" title="%2$s" class="%3$s" rel="%4$s">%5$s</a>',
-				esc_url( $args['href'] ),
-				esc_attr( $args['title'] ),
-				esc_attr( $args['class'] ),
-				esc_attr( $args['rel'] ),
-				esc_html( $args['text'] )
-			);
-			return $args['before_html'] . $single_link . $args['after_html'];
+			if ( empty( $args['href'] ) ) {
+				$single_item = $args['text'];
+			} else {
+				$single_item = sprintf(
+					'<a href="%1$s" title="%2$s" class="%3$s" rel="%4$s">%5$s</a>',
+					esc_url( $args['href'] ),
+					esc_attr( $args['title'] ),
+					esc_attr( $args['class'] ),
+					esc_attr( $args['rel'] ),
+					esc_html( $args['text'] )
+				);
+			}
+			return $args['before_html'] . $single_item . $args['after_html'];
 		}
 	);
 }
@@ -101,7 +105,7 @@ function get_the_byline_links() {
 	return byline_render(
 		Utils::get_byline_entries_for_post(),
 		function( $entry ) {
-			if ( $entry->user_url ) {
+			if ( $entry instanceof Models\Profile && $entry->user_url ) {
 				return sprintf(
 					'<a href="%s" title="%s" rel="external">%s</a>',
 					esc_url( $entry->user_url ),
