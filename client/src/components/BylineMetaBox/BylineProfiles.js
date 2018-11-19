@@ -138,86 +138,87 @@ class BylineProfiles extends Component {
             {/* eslint-disable jsx-a11y/label-has-for */}
             <label htmlFor="profiles_autocomplete">
               {window.bylineData.addAuthorLabel}
+              <Autocomplete
+                inputProps={inputProps}
+                items={this.state.searchResults}
+                value={this.state.search}
+                getItemValue={(item) => item.name}
+                wrapperStyle={{ position: 'relative', display: 'block' }}
+                onSelect={(value, item) => {
+                  this.setState((state) => ({
+                    search: '',
+                    searchResults: [],
+                    profiles: [
+                      ...state.profiles,
+                      item,
+                    ],
+                  }));
+                }}
+                onChange={(event, value) => {
+                  clearTimeout(this.delay);
+                  this.setState({
+                    search: value,
+                  });
+
+                  this.delay = setTimeout(() => {
+                    this.doProfileSearch(value);
+                  }, 500);
+                }}
+                renderMenu={(children) => (
+                  <div className="menu">
+                    {children}
+                  </div>
+                )}
+                renderItem={(item, isHighlighted) => (
+                  <div
+                    className={`item ${isHighlighted ?
+                      'item-highlighted' : ''}`}
+                    key={item.id}
+                  >
+                    {item.name}
+                  </div>
+                )}
+              />
             </label>
             {/* eslint-enable jsx-a11y/label-has-for */}
-            <Autocomplete
-              inputProps={inputProps}
-              items={this.state.searchResults}
-              value={this.state.search}
-              getItemValue={(item) => item.name}
-              wrapperStyle={{ position: 'relative', display: 'block' }}
-              onSelect={(value, item) => {
-                this.setState({
-                  search: '',
-                  searchResults: [],
-                  profiles: [
-                    ...this.state.profiles,
-                    item,
-                  ],
-                });
-              }}
-              onChange={(event, value) => {
-                clearTimeout(this.delay);
-                this.setState({
-                  search: value,
-                });
-
-                this.delay = setTimeout(() => {
-                  this.doProfileSearch(value);
-                }, 500);
-              }}
-              renderMenu={(children) => (
-                <div className="menu">
-                  {children}
-                </div>
-              )}
-              renderItem={(item, isHighlighted) => (
-                <div
-                  className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
-                  key={item.id}
-                >
-                  {item.name}
-                </div>
-              )}
-            />
           </div>
           <div className="freeform-controls">
-            {/* eslint-disable jsx-a11y/label-has-for */}
             <label htmlFor="byline_freeform">
               {window.bylineData.addFreeformlabel}
+              <div className="freeformInputGrp">
+                <input
+                  type="text"
+                  placeholder={window.bylineData.addFreeformPlaceholder}
+                  name="byline_freeform"
+                  id="byline_freeform"
+                  value={this.state.value}
+                  onChange={(e) => {
+                    this.setState({ value: e.target.value });
+                  }}
+                />
+                <button
+                  aria-label={window.bylineData.addFreeformButtonLabel}
+                  className="button"
+                  disabled={! this.state.value}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const newItem = {
+                      id: this.generateKey('text'),
+                      name: this.state.value,
+                    };
+                    this.setState((state) => ({
+                      profiles: [
+                        ...state.profiles,
+                        newItem,
+                      ],
+                      value: '',
+                    }));
+                  }}
+                >
+                  {window.bylineData.addFreeformButtonLabel}
+                </button>
+              </div>
             </label>
-            {/* eslint-enable jsx-a11y/label-has-for */}
-            <div className="freeformInputGrp">
-              <input
-                type="text"
-                placeholder={window.bylineData.addFreeformPlaceholder}
-                name="byline_freeform"
-                id="byline_freeform"
-                value={this.state.value}
-                onChange={(e) => { this.setState({ value: e.target.value }); }}
-              />
-              <button
-                aria-label={window.bylineData.addFreeformButtonLabel}
-                className="button"
-                disabled={! this.state.value}
-                onClick={(e) => {
-                  e.preventDefault();
-                  const newItem = {
-                    id: this.generateKey('text'),
-                    name: this.state.value,
-                  };
-                  this.setState({
-                    profiles: [
-                      ...this.state.profiles,
-                      newItem,
-                    ],
-                    value: '',
-                  });
-                }}
-              >
-                {window.bylineData.addFreeformButtonLabel}
-              </button>
-            </div>
           </div>
         </div>
         <BylineList
