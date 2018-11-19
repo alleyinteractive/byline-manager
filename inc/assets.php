@@ -8,6 +8,7 @@
 namespace Byline_Manager;
 
 use Byline_Manager\Models\Profile;
+use Byline_Manager\Models\TextProfile;
 
 const BUILD_URL  = URL . 'client/build/';
 const BUILD_PATH = PATH . 'client/build/';
@@ -50,10 +51,11 @@ function admin_enqueue_scripts( $hook ) {
 					}
 				} elseif ( ! empty( $entry['atts']['text'] ) ) {
 					// Handle text-only bylines.
+					$text_profile = TextProfile::create( $entry['atts'] );
 					$profiles[] = [
-						// Generate a semi-arbitrary ID to give the script a reference point.
-						'id'   => md5( $entry['atts']['text'] . '-' . $index ),
-						'name' => $entry['atts']['text'],
+						// Uses a semi-arbitrary ID to give the script a reference point.
+						'id'   => $text_profile->id,
+						'name' => $text_profile->display_name,
 					];
 				}
 				$index++;
