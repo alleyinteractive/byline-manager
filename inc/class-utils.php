@@ -8,6 +8,7 @@
 namespace Byline_Manager;
 
 use Byline_Manager\Models\Profile;
+use Byline_Manager\Models\TextProfile;
 
 /**
  * Utility methods for managing profiles and posts' bylines.
@@ -77,14 +78,14 @@ class Utils {
 	}
 
 	/**
-	 * Given a post, get the profile objects that build up its byline, if
-	 * applicable.
+	 * Given a post, get the profile and text profile objects that build
+	 * up its byline, if applicable.
 	 *
 	 * @param \WP_Post|int $post Optional. Post object or ID. Defaults to
 	 *                           current global post.
-	 * @return array Profile objects.
+	 * @return array Profile and TextProfile objects.
 	 */
-	public static function get_profiles_for_post( $post = null ) {
+	public static function get_byline_entries_for_post( $post = null ) {
 		$byline = self::get_byline_meta_for_post( $post );
 		if (
 			empty( $byline['profiles'] )
@@ -95,10 +96,13 @@ class Utils {
 
 		return array_filter(
 			array_map(
-				function( $profile ) {
-					return ! empty( $profile['atts']['post_id'] )
-						? Profile::get_by_post( $profile['atts']['post_id'] )
-						: false;
+				function( $entry ) {
+					if ( ! empty( $entry['atts']['post_id'] ) ) {
+						return Profile::get_by_post( $entry['atts']['post_id'] );
+					} elseif ( ! empty( $entry['atts']['text'] ) ) {
+						return TextProfile::create( $entry['atts'] );
+					}
+					return false;
 				},
 				$byline['profiles']
 			)

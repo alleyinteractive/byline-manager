@@ -19,8 +19,7 @@ function auto_integrate_byline( $author_name ) {
 	}
 
 	if ( is_feed() ) {
-		// If the post uses an override, this will be empty.
-		$profiles = Utils::get_profiles_for_post();
+		$profiles = Utils::get_byline_entries_for_post();
 		if ( ! empty( $profiles[0] ) ) {
 			return $profiles[0]->display_name;
 		}
@@ -49,7 +48,7 @@ add_filter( 'the_author_posts_link', __NAMESPACE__ . '\auto_integrate_byline_pos
  * Add additional dc:creator nodes to RSS feeds for additional authors.
  */
 function rss_add_additional_authors() {
-	$profiles = Utils::get_profiles_for_post();
+	$profiles = Utils::get_byline_entries_for_post();
 	if ( count( $profiles ) > 1 ) {
 		// The first author was already output in auto_integrate_byline().
 		array_shift( $profiles );
