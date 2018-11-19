@@ -51,6 +51,7 @@ function admin_enqueue_scripts( $hook ) {
 				} elseif ( ! empty( $entry['atts']['text'] ) ) {
 					// Handle text-only bylines.
 					$profiles[] = [
+						// Generate a semi-arbitrary ID to give the script a reference point.
 						'id'   => md5( $entry['atts']['text'] . '-' . $index ),
 						'name' => $entry['atts']['text'],
 					];
