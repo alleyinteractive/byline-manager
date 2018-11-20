@@ -70,6 +70,6 @@ class TextProfile {
 	 */
 	private function generate_id() {
 		static $counter = 1;
-		return 'text-' . $counter++;
+		return 'text-' . ( $counter++ );
 	}
 }
