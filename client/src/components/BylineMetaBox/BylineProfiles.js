@@ -17,10 +17,8 @@ const SortableItem = SortableElement(({
   name,
   image,
   removeItem,
-  test,
 }) => (
   <li className="byline-list-item">
-    {test}
     <input
       type="hidden"
       name={`byline_entry[${count}][type]`}
