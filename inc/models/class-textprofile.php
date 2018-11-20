@@ -3,6 +3,7 @@
  * Representation of a text-only profile.
  *
  * @package Byline_Manager
+ * @since 0.2.0
  */
 
 namespace Byline_Manager\Models;
