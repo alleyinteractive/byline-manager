@@ -62,16 +62,14 @@ class TextProfile {
 	}
 
 	/**
-	 * Return a semi-arbitrary ID based on a millisecond timestamp.
+	 * Return an arbitrary unique ID based on a static counter.
 	 * The front end needs a unique ID to work with, but it doesn't
 	 * need to be preserved between page loads.
 	 *
 	 * @return string
 	 */
 	private function generate_id() {
-		// Delay for 2 milliseconds to avoid collisions.
-		usleep( 2000 );
-		$millisecond_time = round( microtime( true ) * 1000 );
-		return 'text-' . $millisecond_time;
+		static $counter = 1;
+		return 'text-' . $counter++;
 	}
 }
