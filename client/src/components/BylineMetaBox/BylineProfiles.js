@@ -12,14 +12,24 @@ import Autocomplete from 'react-autocomplete';
 import PropTypes from 'prop-types';
 
 const SortableItem = SortableElement(({
+  count,
   bylineId,
   name,
   image,
   removeItem,
 }) => (
   <li className="byline-list-item">
-    <input type="hidden" name="byline_ids[]" value={bylineId} />
-    <img src={image} alt={name} />
+    <input
+      type="hidden"
+      name={`byline_entry[${count}][type]`}
+      value={bylineId ? 'byline_id' : 'text'}
+    />
+    <input
+      type="hidden"
+      name={`byline_entry[${count}][value]`}
+      value={bylineId || name}
+    />
+    { image && <img src={image} alt={name} /> }
     <span>{name}</span>
     <button
       aria-label={window.bylineData.removeAuthorLabel}
@@ -39,6 +49,7 @@ const BylineList = SortableContainer(({ profiles, removeItem }) => (
       <SortableItem
         key={`item-${profile.id}`}
         index={index}
+        count={index}
         bylineId={profile.byline_id}
         name={profile.name}
         image={profile.image}
@@ -64,6 +75,7 @@ class BylineProfiles extends Component {
       profiles: props.profiles,
       search: '',
       searchResults: [],
+      value: '',
     };
   }
 
@@ -102,10 +114,13 @@ class BylineProfiles extends Component {
       });
   };
 
+  generateKey = (pre) => `${pre}-${new Date().getTime()}`;
+
   render() {
     const inputProps = {
       type: 'text',
       placeholder: window.bylineData.addAuthorPlaceholder,
+      id: 'profiles_autocomplete',
       onKeyDown: (e) => {
         // If the user hits 'enter', stop the parent form from submitting.
         if (13 === e.keyCode) {
@@ -116,45 +131,94 @@ class BylineProfiles extends Component {
 
     return (
       <div>
-        <Autocomplete
-          inputProps={inputProps}
-          items={this.state.searchResults}
-          value={this.state.search}
-          getItemValue={(item) => item.name}
-          onSelect={(value, item) => {
-            this.setState({
-              search: '',
-              searchResults: [],
-              profiles: [
-                ...this.state.profiles,
-                item,
-              ],
-            });
-          }}
-          onChange={(event, value) => {
-            clearTimeout(this.delay);
-            this.setState({
-              search: value,
-            });
+        <div className="byline-list-controls">
+          <div className="profile-controls">
+            {/* eslint-disable jsx-a11y/label-has-for */}
+            <label htmlFor="profiles_autocomplete">
+              {window.bylineData.addAuthorLabel}
+              <Autocomplete
+                inputProps={inputProps}
+                items={this.state.searchResults}
+                value={this.state.search}
+                getItemValue={(item) => item.name}
+                wrapperStyle={{ position: 'relative', display: 'block' }}
+                onSelect={(value, item) => {
+                  this.setState((state) => ({
+                    search: '',
+                    searchResults: [],
+                    profiles: [
+                      ...state.profiles,
+                      item,
+                    ],
+                  }));
+                }}
+                onChange={(event, value) => {
+                  clearTimeout(this.delay);
+                  this.setState({
+                    search: value,
+                  });
 
-            this.delay = setTimeout(() => {
-              this.doProfileSearch(value);
-            }, 500);
-          }}
-          renderMenu={(children) => (
-            <div className="menu">
-              {children}
-            </div>
-          )}
-          renderItem={(item, isHighlighted) => (
-            <div
-              className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
-              key={item.id}
-            >
-              {item.name}
-            </div>
-          )}
-        />
+                  this.delay = setTimeout(() => {
+                    this.doProfileSearch(value);
+                  }, 500);
+                }}
+                renderMenu={(children) => (
+                  <div className="menu">
+                    {children}
+                  </div>
+                )}
+                renderItem={(item, isHighlighted) => (
+                  <div
+                    className={`item ${isHighlighted ?
+                      'item-highlighted' : ''}`}
+                    key={item.id}
+                  >
+                    {item.name}
+                  </div>
+                )}
+              />
+            </label>
+            {/* eslint-enable jsx-a11y/label-has-for */}
+          </div>
+          <div className="freeform-controls">
+            <label htmlFor="byline_freeform">
+              {window.bylineData.addFreeformlabel}
+              <div className="freeformInputGrp">
+                <input
+                  type="text"
+                  placeholder={window.bylineData.addFreeformPlaceholder}
+                  name="byline_freeform"
+                  id="byline_freeform"
+                  value={this.state.value}
+                  onChange={(e) => {
+                    this.setState({ value: e.target.value });
+                  }}
+                />
+                <button
+                  aria-label={window.bylineData.addFreeformButtonLabel}
+                  className="button"
+                  disabled={! this.state.value}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const newItem = {
+                      id: this.generateKey('text'),
+                      name: this.state.value,
+                    };
+                    this.setState((state) => ({
+                      profiles: [
+                        ...state.profiles,
+                        newItem,
+                      ],
+                      value: '',
+                    }));
+                  }}
+                >
+                  {window.bylineData.addFreeformButtonLabel}
+                </button>
+              </div>
+            </label>
+          </div>
+        </div>
         <BylineList
           profiles={this.state.profiles}
           onSortEnd={this.onSortEnd}

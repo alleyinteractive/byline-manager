@@ -140,19 +140,34 @@ function set_byline( $post_id, $post ) {
 	}
 
 	$meta = [
-		'source' => 'profiles',
+		'byline_entries' => [],
 	];
+	// The data from this array is sanitized as it's used.
+	$byline_entries = isset( $_POST['byline_entry'] ) ? wp_unslash( $_POST['byline_entry'] ) : []; // WPCS: sanitization ok.
 
-	if ( ! empty( $_POST['byline_source'] ) && 'override' === $_POST['byline_source'] ) {
-		$meta['source'] = 'override';
-	}
+	if ( ! empty( $byline_entries ) && is_array( $byline_entries ) ) {
+		foreach ( $byline_entries as $entry ) {
+			// Don't save empty items.
+			if ( empty( $entry['type'] ) || empty( $entry['value'] ) ) {
+				continue;
+			}
 
-	if ( 'profiles' === $meta['source'] && ! empty( $_POST['byline_ids'] ) ) {
-		$meta['byline_ids'] = array_map( 'absint', $_POST['byline_ids'] );
-	}
-
-	if ( 'override' === $meta['source'] && ! empty( $_POST['byline_override'] ) ) {
-		$meta['override'] = wp_kses_post( wp_unslash( $_POST['byline_override'] ) );
+			if ( 'text' === $entry['type'] ) {
+				$meta['byline_entries'][] = [
+					'type' => 'text',
+					'atts' => [
+						'text' => wp_kses_post( wp_unslash( $entry['value'] ) ),
+					],
+				];
+			} elseif ( 'byline_id' === $entry['type'] ) {
+				$meta['byline_entries'][] = [
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => absint( $entry['value'] ),
+					],
+				];
+			}
+		}
 	}
 
 	// Set the byline.
@@ -189,7 +204,9 @@ function set_profile_user_link( $post_id, $post ) {
 		? absint( $_POST['profile_user_link'] )
 		: 0;
 
-	$profile = Profile::get_by_post( $post );
-	$profile->update_user_link( $new_user_id );
+	if ( ! wp_is_post_revision( $post ) ) {
+		$profile = Profile::get_by_post( $post );
+		$profile->update_user_link( $new_user_id );
+	}
 }
 add_action( 'save_post', __NAMESPACE__ . '\set_profile_user_link', 10, 2 );

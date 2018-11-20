@@ -17,7 +17,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 	/**
 	 * Getting bylines generically
 	 */
-	public function test_get_profiles_for_post() {
+	public function test_get_byline_entries_for_post() {
 		$b1 = Profile::create( [
 			'post_name'  => 'b1',
 			'post_title' => 'Byline 1',
@@ -27,29 +27,55 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 			'post_title' => 'Byline 2',
 		] );
 		$post_id = $this->factory->post->create();
-		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b1, $b2 ], 'term_id' ) ] );
-		$byline = Utils::get_profiles_for_post( $post_id );
+		$byline_meta = [
+			'byline_entries' => [
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b1->term_id,
+					],
+				],
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b2->term_id,
+					],
+				],
+			],
+		];
+
+		Utils::set_post_byline( $post_id, $byline_meta );
+		$byline = Utils::get_byline_entries_for_post( $post_id );
 		$this->assertCount( 2, $byline );
 		$this->assertEquals( [ $b1->post_id, $b2->post_id ], wp_list_pluck( $byline, 'post_id' ) );
 
 		// Ensure the order persists.
-		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b1 ], 'term_id' ) ] );
-		$byline = Utils::get_profiles_for_post( $post_id );
+		$byline_meta['byline_entries'] = array_reverse( $byline_meta['byline_entries'] );
+		Utils::set_post_byline( $post_id, $byline_meta );
+		$byline = Utils::get_byline_entries_for_post( $post_id );
 		$this->assertCount( 2, $byline );
 		$this->assertEquals( [ $b2->post_id, $b1->post_id ], wp_list_pluck( $byline, 'post_id' ) );
+
+		// Ensure that adding a text profile item alongside profiles works.
+		$byline_meta['byline_entries'][] = [
+			'type' => 'text',
+			'atts' => [
+				'text' => 'Text Item 1',
+			],
+		];
 	}
 
 	/**
-	 * Ensure get_profiles_for_post() returns a user object when no bylines are assigned
+	 * Ensure get_byline_entries_for_post() returns a user object when no bylines are assigned
 	 */
-	public function test_get_profiles_for_post_returns_wp_user() {
+	public function test_get_byline_entries_for_post_returns_wp_user() {
 		$this->markTestSkipped( 'TODO: how to handle posts without byline' );
 
 		$user_id = $this->factory->user->create();
 		$post_id = $this->factory->post->create( [
 			'post_author' => $user_id,
 		] );
-		$byline = Utils::get_profiles_for_post( $post_id );
+		$byline = Utils::get_byline_entries_for_post( $post_id );
 		$this->assertCount( 1, $byline );
 		$this->assertEquals( [ $user_id ], wp_list_pluck( $byline, 'ID' ) );
 		// Adding a byline means the user id should no longer be returned.
@@ -58,7 +84,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 			'post_title' => 'Byline 1',
 		] );
 		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b1 ], 'term_id' ) ] );
-		$byline = Utils::get_profiles_for_post( $post_id );
+		$byline = Utils::get_byline_entries_for_post( $post_id );
 		$this->assertCount( 1, $byline );
 		$this->assertEquals( [ 'b1' ], wp_list_pluck( $byline, 'post_name' ) );
 	}
@@ -74,7 +100,17 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b1 ], 'term_id' ) ] );
+		$byline_meta = [
+			'byline_entries' => [
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b1->term_id,
+					],
+				],
+			],
+		];
+		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( 'Byline 1' );
 		the_byline();
 	}
@@ -92,9 +128,26 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 			'post_name'  => 'b2',
 			'post_title' => 'Byline 2',
 		] );
+
+		$byline_meta = [
+			'byline_entries' => [
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b2->term_id,
+					],
+				],
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b1->term_id,
+					],
+				],
+			],
+		];
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b1 ], 'term_id' ) ] );
+		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( 'Byline 2 and Byline 1' );
 		the_byline();
 	}
@@ -116,9 +169,33 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 			'post_name'  => 'b3',
 			'post_title' => 'Byline 3',
 		] );
+
+		$byline_meta = [
+			'byline_entries' => [
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b2->term_id,
+					],
+				],
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b3->term_id,
+					],
+				],
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b1->term_id,
+					],
+				],
+			],
+		];
+
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b3, $b1 ], 'term_id' ) ] );
+		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( 'Byline 2, Byline 3, and Byline 1' );
 		the_byline();
 	}
@@ -144,10 +221,84 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 			'post_name'  => 'b4',
 			'post_title' => 'Byline 4',
 		] );
+
+		$byline_meta = [
+			'byline_entries' => [
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b2->term_id,
+					],
+				],
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b4->term_id,
+					],
+				],
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b3->term_id,
+					],
+				],
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b1->term_id,
+					],
+				],
+			],
+		];
+
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b4, $b3, $b1 ], 'term_id' ) ] );
+		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( 'Byline 2, Byline 4, Byline 3, and Byline 1' );
+		the_byline();
+	}
+
+	/**
+	 * Render three bylines, without the link to its post, one as a text item
+	 */
+	public function test_template_tag_the_byline_mixed_byline() {
+		global $post;
+		$b1 = Profile::create( [
+			'post_name'  => 'b1',
+			'post_title' => 'Byline 1',
+		] );
+		$b2 = Profile::create( [
+			'post_name'  => 'b2',
+			'post_title' => 'Byline 2',
+		] );
+
+		$byline_meta = [
+			'byline_entries' => [
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b1->term_id,
+					],
+				],
+				[
+					'type' => 'text',
+					'atts' => [
+						'text' => 'Text Item 1',
+					],
+				],
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b2->term_id,
+					],
+				],
+			],
+		];
+
+		$post_id = $this->factory->post->create();
+		$post = get_post( $post_id );
+		Utils::set_post_byline( $post_id, $byline_meta );
+		$this->expectOutputString( 'Byline 1, Text Item 1, and Byline 2' );
 		the_byline();
 	}
 
@@ -164,10 +315,62 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 			'post_name'  => 'b2',
 			'post_title' => 'Byline 2',
 		] );
+
+		$byline_meta = [
+			'byline_entries' => [
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b2->term_id,
+					],
+				],
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b1->term_id,
+					],
+				],
+			],
+		];
+
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b1 ], 'term_id' ) ] );
+		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( '<a href="' . $b2->link . '" title="Posts by Byline 2" class="author url fn" rel="author">Byline 2</a> and <a href="' . $b1->link . '" title="Posts by Byline 1" class="author url fn" rel="author">Byline 1</a>' );
+		the_byline_posts_links();
+	}
+
+	/**
+	 * Render two bylines, with the link to its post
+	 */
+	public function test_template_tag_the_byline_posts_links_mixed_byline() {
+		global $post;
+		$b1 = Profile::create( [
+			'post_name'  => 'b1',
+			'post_title' => 'Byline 1',
+		] );
+
+		$byline_meta = [
+			'byline_entries' => [
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b1->term_id,
+					],
+				],
+				[
+					'type' => 'text',
+					'atts' => [
+						'text' => 'Text Item 1',
+					],
+				],
+			],
+		];
+
+		$post_id = $this->factory->post->create();
+		$post = get_post( $post_id );
+		Utils::set_post_byline( $post_id, $byline_meta );
+		$this->expectOutputString( '<a href="' . $b1->link . '" title="Posts by Byline 1" class="author url fn" rel="author">Byline 1</a> and Text Item 1' );
 		the_byline_posts_links();
 	}
 
@@ -204,9 +407,27 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 			'post_title' => 'Byline 2',
 		] );
 		update_post_meta( $b2->post_id, 'user_url', 'https://apple.com' );
+
+		$byline_meta = [
+			'byline_entries' => [
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b2->term_id,
+					],
+				],
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $b1->term_id,
+					],
+				],
+			],
+		];
+
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
-		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b2, $b1 ], 'term_id' ) ] );
+		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( '<a href="https://apple.com" title="Visit Byline 2&#8217;s website" rel="external">Byline 2</a> and Byline 1' );
 		the_byline_links();
 	}
@@ -220,8 +441,14 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => 'Test Override 1',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => 'Test Override 1',
+						],
+					],
+				],
 			]
 		);
 		$this->assertSame( 'Test Override 1', get_echo( '\Byline_Manager\the_byline' ) );
@@ -236,8 +463,14 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => '<a href="https://website.test/">Test Override 1</a>',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => '<a href="https://website.test/">Test Override 1</a>',
+						],
+					],
+				],
 			]
 		);
 		$this->assertSame( 'Test Override 1', get_echo( '\Byline_Manager\the_byline' ) );
@@ -252,8 +485,14 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => 'Test Override 2',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => 'Test Override 2',
+						],
+					],
+				],
 			]
 		);
 		$this->assertSame( 'Test Override 2', get_echo( '\Byline_Manager\the_byline_posts_links' ) );
@@ -268,8 +507,14 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => '<a href="https://website.test/">Test Override 2</a>',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => '<a href="https://website.test/">Test Override 2</a>',
+						],
+					],
+				],
 			]
 		);
 		$this->assertSame( '<a href="https://website.test/">Test Override 2</a>', get_echo( '\Byline_Manager\the_byline_posts_links' ) );
@@ -284,8 +529,14 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => 'Test Override 3',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => 'Test Override 3',
+						],
+					],
+				],
 			]
 		);
 		$this->assertSame( 'Test Override 3', get_echo( '\Byline_Manager\the_byline_links' ) );
@@ -300,8 +551,14 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => '<a href="https://website.test/">Test Override 3</a>',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => '<a href="https://website.test/">Test Override 3</a>',
+						],
+					],
+				],
 			]
 		);
 		$this->assertSame( '<a href="https://website.test/">Test Override 3</a>', get_echo( '\Byline_Manager\the_byline_links' ) );

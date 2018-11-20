@@ -7,6 +7,9 @@
 
 namespace Byline_Manager;
 
+use Byline_Manager\Models\Profile;
+use Byline_Manager\Models\TextProfile;
+
 const BUILD_URL  = URL . 'client/build/';
 const BUILD_PATH = PATH . 'client/build/';
 
@@ -33,26 +36,51 @@ function admin_enqueue_scripts( $hook ) {
 		// Build the byline metabox data.
 		$byline_metabox_data = Utils::get_byline_meta_for_post();
 		if ( ! empty( $byline_metabox_data['profiles'] ) ) {
-			$byline_metabox_data['profiles'] = array_map(
-				__NAMESPACE__ . '\get_profile_data_for_meta_box',
-				Utils::get_profiles_for_post()
-			);
+			$profiles = [];
+			$index = 0;
+			foreach ( $byline_metabox_data['profiles'] as $entry ) {
+				if (
+					! empty( $entry['type'] )
+					&& 'byline_id' === $entry['type']
+					&& ! empty( $entry['atts']['post_id'] )
+				) {
+					// Handle byline profile ID entries.
+					$profile = Profile::get_by_post( $entry['atts']['post_id'] );
+					if ( $profile instanceof Profile ) {
+						$profiles[] = get_profile_data_for_meta_box( $profile );
+					}
+				} elseif ( ! empty( $entry['atts']['text'] ) ) {
+					// Handle text-only bylines.
+					$text_profile = TextProfile::create( $entry['atts'] );
+					$profiles[] = [
+						// Uses a semi-arbitrary ID to give the script a reference point.
+						'id'   => $text_profile->id,
+						'name' => $text_profile->display_name,
+					];
+				}
+				$index++;
+			}
+			$byline_metabox_data['profiles'] = $profiles;
 		}
 
 		wp_localize_script(
 			'byline-manager-js',
 			'bylineData',
 			[
-				'addAuthorPlaceholder' => __( 'Search for an author to add to the byline', 'byline-manager' ),
-				'removeAuthorLabel'    => __( 'Remove author from byline', 'byline-manager' ),
-				'linkUserPlaceholder'  => __( 'Search for a user account by name', 'byline-manager' ),
-				'userAlreadyLinked'    => __( 'This user is linked to another profile', 'byline-manager' ),
-				'linkedToLabel'        => __( 'Linked to:', 'byline-manager' ),
-				'unlinkLabel'          => __( 'Unlink', 'byline-manager' ),
-				'profilesApiUrl'       => home_url( '/wp-json/byline-manager/v1/authors' ),
-				'usersApiUrl'          => home_url( '/wp-json/byline-manager/v1/users' ),
-				'postId'               => get_the_ID(),
-				'bylineMetaBox'        => $byline_metabox_data,
+				'addAuthorLabel'         => __( 'Search for an author to add to the byline', 'byline-manager' ),
+				'addAuthorPlaceholder'   => __( 'Enter name', 'byline-manager' ),
+				'removeAuthorLabel'      => __( 'Remove author from byline', 'byline-manager' ),
+				'addFreeformlabel'       => __( 'Enter text to add to the byline', 'byline-manager' ),
+				'addFreeformPlaceholder' => __( 'Enter text', 'byline-manager' ),
+				'addFreeformButtonLabel' => __( 'Insert', 'byline-manager' ),
+				'linkUserPlaceholder'    => __( 'Search for a user account by name', 'byline-manager' ),
+				'userAlreadyLinked'      => __( 'This user is linked to another profile', 'byline-manager' ),
+				'linkedToLabel'          => __( 'Linked to:', 'byline-manager' ),
+				'unlinkLabel'            => __( 'Unlink', 'byline-manager' ),
+				'profilesApiUrl'         => home_url( '/wp-json/byline-manager/v1/authors' ),
+				'usersApiUrl'            => home_url( '/wp-json/byline-manager/v1/users' ),
+				'postId'                 => get_the_ID(),
+				'bylineMetaBox'          => $byline_metabox_data,
 			]
 		);
 	}

@@ -10,6 +10,6 @@
 1. `npm install`
 
 ## Development
-After running `npm run dev`, add the webpack dev server query flag to your URL: [devserver_base_url] + `/wp-admin/admin.php?page=byline-manager&fe-dev=1`
+After running `npm run dev`, add the webpack dev server query flag to your URL: [devserver_base_url] + `/wp-admin/admin.php?page=byline-manager&bm-dev=1`
 
 This will load files from the webpack server and automatically reload in the admin.

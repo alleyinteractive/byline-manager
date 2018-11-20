@@ -31,6 +31,22 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 			'post_name'  => 'b2',
 			'post_title' => 'Byline 2',
 		] );
+		$this->byline_meta = [
+			'byline_entries' => [
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $this->b1->term_id,
+					],
+				],
+				[
+					'type' => 'byline_id',
+					'atts' => [
+						'byline_id' => $this->b2->term_id,
+					],
+				],
+			],
+		];
 		$post = $this->factory->post->create_and_get( [ 'post_author' => $user_id ] );
 		setup_postdata( $post );
 	}
@@ -40,16 +56,18 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 	 */
 	public function test_the_author_filter() {
 		global $post;
+		$byline_meta = $this->byline_meta;
 
 		// Before the byline gets set, `the_author()` should output nothing.
 		$this->assertEquals( '', get_echo( 'the_author' ) );
 
 		// Set the byline and confirm that `the_author()` outputs it.
-		Utils::set_post_byline( $post->ID, [ 'byline_ids' => wp_list_pluck( [ $this->b1, $this->b2 ], 'term_id' ) ] );
+		Utils::set_post_byline( $post->ID, $byline_meta );
 		$this->assertEquals( 'Byline 1 and Byline 2', get_echo( 'the_author' ) );
 
 		// Ensure order changes propogate.
-		Utils::set_post_byline( $post->ID, [ 'byline_ids' => wp_list_pluck( [ $this->b2, $this->b1 ], 'term_id' ) ] );
+		$byline_meta['byline_entries'] = array_reverse( $byline_meta['byline_entries'] );
+		Utils::set_post_byline( $post->ID, $byline_meta );
 		$this->assertEquals( 'Byline 2 and Byline 1', get_echo( 'the_author' ) );
 	}
 
@@ -58,8 +76,10 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 	 */
 	public function test_template_tag_the_byline_posts_links_two_byline() {
 		global $post;
-
-		Utils::set_post_byline( $post->ID, [ 'byline_ids' => wp_list_pluck( [ $this->b2, $this->b1 ], 'term_id' ) ] );
+		$byline_meta = $this->byline_meta;
+		// Flip the order of the bylines.
+		$byline_meta['byline_entries'] = array_reverse( $byline_meta['byline_entries'] );
+		Utils::set_post_byline( $post->ID, $byline_meta );
 
 		$this->expectOutputString( '<a href="' . $this->b2->link . '" title="Posts by Byline 2" class="author url fn" rel="author">Byline 2</a> and <a href="' . $this->b1->link . '" title="Posts by Byline 1" class="author url fn" rel="author">Byline 1</a>' );
 		the_author_posts_link();
@@ -78,8 +98,14 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => 'Test Core Override 1',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => 'Test Core Override 1',
+						],
+					],
+				],
 			]
 		);
 		$this->assertEquals( 'Test Core Override 1', get_echo( 'the_author' ) );
@@ -94,8 +120,14 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => 'Test Core Override 2',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => 'Test Core Override 2',
+						],
+					],
+				],
 			]
 		);
 
@@ -123,7 +155,10 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 	 */
 	public function test_rss_elements() {
 		global $post;
-		Utils::set_post_byline( $post->ID, [ 'byline_ids' => wp_list_pluck( [ $this->b2, $this->b1 ], 'term_id' ) ] );
+		$byline_meta = $this->byline_meta;
+		// Flip the order of the bylines.
+		$byline_meta['byline_entries'] = array_reverse( $byline_meta['byline_entries'] );
+		Utils::set_post_byline( $post->ID, $byline_meta );
 
 		$this->go_to( '/?feed=rss2' );
 		$feed = $this->do_rss2();
@@ -151,8 +186,14 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'source' => 'override',
-				'override' => 'Test RSS Override 1',
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => 'Test RSS Override 1',
+						],
+					],
+				],
 			]
 		);
 
