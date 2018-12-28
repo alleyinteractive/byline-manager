@@ -210,3 +210,65 @@ function set_profile_user_link( $post_id, $post ) {
 	}
 }
 add_action( 'save_post', __NAMESPACE__ . '\set_profile_user_link', 10, 2 );
+
+/**
+ * Add the posts column to the profiles list.
+ *
+ * @param array $columns Columns.
+ * @return array
+ */
+function add_posts_column( $columns ) {
+	return array_merge(
+		array_slice( $columns, 0, 2, true ),
+		[
+			'posts' => __( 'Posts', 'byline-manager' ),
+		],
+		array_slice( $columns, 2, null, true )
+	);
+}
+add_filter( 'manage_profile_posts_columns', __NAMESPACE__ . '\add_posts_column' );
+
+/**
+ * Render the content for the posts column.
+ *
+ * @param string $column  Column slug.
+ * @param int    $post_id Post ID.
+ */
+function render_posts_column( $column, $post_id ) {
+	if ( 'posts' === $column ) {
+		$posts = get_posts(
+			[
+				'numberposts' => -1,
+				'tax_query'   => [
+					[
+						'taxonomy' => BYLINE_TAXONOMY,
+						'field'    => 'slug',
+						'terms'    => 'profile-' . $post_id,
+					],
+				],
+			]
+		);
+
+		$numposts = count( $posts );
+
+		if ( $numposts > 0 ) {
+			if ( 1 === $numposts ) {
+				// translators: %s: Number of posts.
+				$post_count_str = sprintf( __( '%s post by this author', 'byline-manager' ), intval( $numposts ) );
+			} else {
+				// translators: %s: Number of posts.
+				$post_count_str = sprintf( __( '%s posts by this author', 'byline-manager' ), intval( $numposts ) );
+			}
+			echo sprintf(
+				'<a href="edit.php?byline=profile-%1$s" class="edit"><span aria-hidden="true">%2$s</span><span class="screen-reader-text">%3$s</span></a>',
+				intval( $post_id ),
+				intval( $numposts ),
+				esc_html( $post_count_str )
+			);
+		} else {
+			echo '0';
+		}
+	}
+}
+add_action( 'manage_profile_posts_custom_column', __NAMESPACE__ . '\render_posts_column', 10, 2 );
+
