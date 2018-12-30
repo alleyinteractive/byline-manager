@@ -219,11 +219,10 @@ add_action( 'save_post', __NAMESPACE__ . '\set_profile_user_link', 10, 2 );
  */
 function add_posts_column( $columns ) {
 	return array_merge(
-		array_slice( $columns, 0, 2, true ),
+		$columns,
 		[
 			'posts' => __( 'Posts', 'byline-manager' ),
-		],
-		array_slice( $columns, 2, null, true )
+		]
 	);
 }
 add_filter( 'manage_profile_posts_columns', __NAMESPACE__ . '\add_posts_column' );
@@ -236,37 +235,23 @@ add_filter( 'manage_profile_posts_columns', __NAMESPACE__ . '\add_posts_column' 
  */
 function render_posts_column( $column, $post_id ) {
 	if ( 'posts' === $column ) {
-		$posts = get_posts(
-			[
-				'numberposts' => -1,
-				'tax_query'   => [
-					[
-						'taxonomy' => BYLINE_TAXONOMY,
-						'field'    => 'slug',
-						'terms'    => 'profile-' . $post_id,
-					],
-				],
-			]
-		);
-
-		$numposts = count( $posts );
-
+		$term = get_term_by( 'slug', 'profile-' . $post_id, BYLINE_TAXONOMY );
+		$numposts = $term->count;
 		if ( $numposts > 0 ) {
 			if ( 1 === $numposts ) {
-				// translators: %s: Number of posts.
-				$post_count_str = sprintf( __( '%s post by this author', 'byline-manager' ), intval( $numposts ) );
+				$post_count_str = __( 'One post by this author', 'byline-manager' );
 			} else {
 				// translators: %s: Number of posts.
-				$post_count_str = sprintf( __( '%s posts by this author', 'byline-manager' ), intval( $numposts ) );
+				$post_count_str = _n( '%s post by this author', '%s posts by this author', (int) $numposts, 'byline-manager' );
 			}
-			echo sprintf(
+			printf(
 				'<a href="edit.php?byline=profile-%1$s" class="edit"><span aria-hidden="true">%2$s</span><span class="screen-reader-text">%3$s</span></a>',
-				intval( $post_id ),
-				intval( $numposts ),
+				(int) $post_id,
+				(int) $numposts,
 				esc_html( $post_count_str )
 			);
 		} else {
-			echo '0';
+			echo esc_html( __( '0', 'byline-manager' ) );
 		}
 	}
 }
