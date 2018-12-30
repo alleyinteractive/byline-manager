@@ -237,13 +237,13 @@ function render_posts_column( $column, $post_id ) {
 	if ( 'posts' === $column ) {
 		$term = get_term_by( 'slug', 'profile-' . $post_id, BYLINE_TAXONOMY );
 		$numposts = $term->count;
+		if ( 1 === $numposts ) {
+			$post_count_str = __( 'One post by this author', 'byline-manager' );
+		} else {
+			// translators: %s: Number of posts.
+			$post_count_str = _n( '%s post by this author', '%s posts by this author', (int) $numposts, 'byline-manager' );
+		}
 		if ( $numposts > 0 ) {
-			if ( 1 === $numposts ) {
-				$post_count_str = __( 'One post by this author', 'byline-manager' );
-			} else {
-				// translators: %s: Number of posts.
-				$post_count_str = _n( '%s post by this author', '%s posts by this author', (int) $numposts, 'byline-manager' );
-			}
 			printf(
 				'<a href="edit.php?byline=profile-%1$s" class="edit"><span aria-hidden="true">%2$s</span><span class="screen-reader-text">%3$s</span></a>',
 				(int) $post_id,
@@ -251,7 +251,11 @@ function render_posts_column( $column, $post_id ) {
 				esc_html( $post_count_str )
 			);
 		} else {
-			echo esc_html( __( '0', 'byline-manager' ) );
+			printf(
+				'<span aria-hidden="true">%1$s</span><span class="screen-reader-text">%2$s</span>',
+				(int) $numposts,
+				esc_html( $post_count_str )
+			);
 		}
 	}
 }
