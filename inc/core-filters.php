@@ -76,3 +76,8 @@ function override_author_link( $link, $author_id ) {
 	}
 }
 add_filter( 'author_link', __NAMESPACE__ . '\override_author_link', 10, 2 );
+
+/**
+ * Disable the core author rewrite rules
+ */
+add_filter( 'author_rewrite_rules', '__return_empty_array' );
