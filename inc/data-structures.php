@@ -17,6 +17,7 @@ const BYLINE_TAXONOMY = 'byline';
  * Create the profile post type.
  */
 function register_profile() {
+	global $wp_rewrite;
 	register_post_type(
 		PROFILE_POST_TYPE,
 		[
@@ -38,7 +39,7 @@ function register_profile() {
 			'taxonomies'          => [ 'byline' ],
 			'exclude_from_search' => true,
 			'has_archive'         => false,
-			'rewrite'             => true,
+			'rewrite'             => [ 'slug' => $wp_rewrite->author_base ],
 			'capability_type'     => 'post',
 			'map_meta_cap'        => null,
 			'menu_icon'           => 'dashicons-id',
