@@ -241,7 +241,7 @@ function render_posts_column( $column, $post_id ) {
 			$post_count_str = __( 'One post by this author', 'byline-manager' );
 		} else {
 			// translators: %s: Number of posts.
-			$post_count_str = _n( '%s post by this author', '%s posts by this author', (int) $numposts, 'byline-manager' );
+			$post_count_str = sprintf( _n( '%s post by this author', '%s posts by this author', (int) $numposts, 'byline-manager' ), $numposts );
 		}
 		if ( $numposts > 0 ) {
 			printf(
