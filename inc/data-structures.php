@@ -39,7 +39,10 @@ function register_profile() {
 			'taxonomies'          => [ 'byline' ],
 			'exclude_from_search' => true,
 			'has_archive'         => false,
-			'rewrite'             => [ 'slug' => $wp_rewrite->author_base ],
+			'rewrite'             => [
+				'slug'    => $wp_rewrite->author_base,
+				'ep_mask' => EP_AUTHORS,
+			],
 			'capability_type'     => 'post',
 			'map_meta_cap'        => null,
 			'menu_icon'           => 'dashicons-id',
