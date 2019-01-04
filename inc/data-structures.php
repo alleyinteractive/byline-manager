@@ -38,11 +38,11 @@ function register_profile() {
 			'public'              => true,
 			'taxonomies'          => [ 'byline' ],
 			'exclude_from_search' => true,
-			'has_archive'         => false,
+			'has_archive'         => true,
 			'rewrite'             => [
 				'slug'    => apply_filters( 'byline_manager_rewrite_slug', $wp_rewrite->author_base ),
-				'pages'   => true,
 				'feeds'   => true,
+				'pages'   => true,
 				'ep_mask' => EP_AUTHORS,
 			],
 			'capability_type'     => 'post',

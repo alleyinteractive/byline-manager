@@ -81,3 +81,23 @@ add_filter( 'author_link', __NAMESPACE__ . '\override_author_link', 10, 2 );
  * Disable the core author rewrite rules
  */
 add_filter( 'author_rewrite_rules', '__return_empty_array' );
+
+/**
+ * Unset trackback and attachment rewrites on PROFILE_POST_TYPE
+ *
+ * @param array $rules Existing rewrite rules to be filtered.
+ * @return array $rules New rewrite rules.
+ */
+function unset_rewrites( $rules ) {
+	foreach ( $rules as $rule => $rewrite ) {
+		if ( strpos( $rewrite, PROFILE_POST_TYPE ) !== false ) {
+			$post_type_data = get_post_type_object( PROFILE_POST_TYPE );
+			$post_type_slug = $post_type_data->rewrite['slug'];
+			if ( preg_match( '/^' . $post_type_slug . '.*(trackback)/', $rule ) || preg_match( '/^' . $post_type_slug . '.*(attachment)/', $rule ) ) {
+				unset( $rules[ $rule ] );
+			}
+		}
+	}
+	return $rules;
+}
+add_filter( 'rewrite_rules_array', __NAMESPACE__ . '\unset_rewrites' );
