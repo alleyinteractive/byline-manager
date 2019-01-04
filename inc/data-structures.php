@@ -40,7 +40,9 @@ function register_profile() {
 			'exclude_from_search' => true,
 			'has_archive'         => false,
 			'rewrite'             => [
-				'slug'    => $wp_rewrite->author_base,
+				'slug'    => apply_filters( 'byline_manager_rewrite_slug', $wp_rewrite->author_base ),
+				'pages'   => true,
+				'feeds'   => true,
 				'ep_mask' => EP_AUTHORS,
 			],
 			'capability_type'     => 'post',
