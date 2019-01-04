@@ -76,3 +76,26 @@ function override_author_link( $link, $author_id ) {
 	}
 }
 add_filter( 'author_link', __NAMESPACE__ . '\override_author_link', 10, 2 );
+
+/**
+ * Disable the core author rewrite rules
+ */
+add_filter( 'author_rewrite_rules', '__return_empty_array' );
+
+/**
+ * Unset trackback, attachment, and comment rewrites on PROFILE_POST_TYPE
+ *
+ * @param array $rules Existing rewrite rules to be filtered.
+ * @return array $rules New rewrite rules.
+ */
+function unset_rewrites( $rules ) {
+	$profile_post_type_data = get_post_type_object( PROFILE_POST_TYPE );
+	$profile_post_type_slug = $profile_post_type_data->rewrite['slug'];
+	foreach ( $rules as $rule => $rewrite ) {
+		if ( preg_match( '/^' . $profile_post_type_slug . '.*(trackback)/', $rule ) || preg_match( '/^' . $profile_post_type_slug . '.*(attachment)/', $rule ) || preg_match( '/^' . $profile_post_type_slug . '.*(comment)/', $rule ) ) {
+			unset( $rules[ $rule ] );
+		}
+	}
+	return $rules;
+}
+add_filter( 'rewrite_rules_array', __NAMESPACE__ . '\unset_rewrites' );
