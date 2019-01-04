@@ -83,7 +83,7 @@ add_filter( 'author_link', __NAMESPACE__ . '\override_author_link', 10, 2 );
 add_filter( 'author_rewrite_rules', '__return_empty_array' );
 
 /**
- * Unset trackback and attachment rewrites on PROFILE_POST_TYPE
+ * Unset trackback, attachment, and comment rewrites on PROFILE_POST_TYPE
  *
  * @param array $rules Existing rewrite rules to be filtered.
  * @return array $rules New rewrite rules.
