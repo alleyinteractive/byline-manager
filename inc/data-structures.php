@@ -58,6 +58,12 @@ function register_profile() {
 			'exclude_from_search' => true,
 			'has_archive'         => true,
 			'rewrite'             => [
+				/**
+				 * Filters the rewrite slug of the profile post type.
+				 *
+				 * @param string $slug The rewrite slug. Default is the default
+				 *                     base for the author permalink structure.
+				 */
 				'slug'    => apply_filters( 'byline_manager_rewrite_slug', $wp_rewrite->author_base ),
 				'feeds'   => true,
 				'pages'   => true,
