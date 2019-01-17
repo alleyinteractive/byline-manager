@@ -167,7 +167,7 @@ function set_post_demo_byline_meta( $post_object) {
 	Which would convert to this markup:
 	*/
 
-	$byline_demo = 'By <span data-profile-id="456">Jane Doe</span> and <span data-profile-id="">John Smith</span> in England.';
+	$byline_demo = 'By <span class="byline-author" data-profile-id="456">Jane Doe</span> and <span  class="byline-author" data-profile-id="">John Smith</span> in England.';
 
 	// Let's set this as the default value for testing.
 	update_post_meta( $post_object->ID, 'byline_demo', $byline_demo );
