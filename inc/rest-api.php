@@ -91,3 +91,86 @@ function rest_user_search( \WP_REST_Request $request ) {
 	// Send the response.
 	return rest_ensure_response( $data );
 }
+
+/**
+ * Defines custom REST API fields.
+ * This will be expose with the posts REST, i.e. /wp-json/wp/v2/posts/[post_id]
+ * @todo switch this from the demo post meta field to the real one.
+ *
+ */
+function register_rest_fields() {
+	register_rest_field(
+		[ 'post' ],
+		'byline',
+		[
+			'schema'       => [
+				'description' => __( 'The byline of an article.', 'byline-manager' ),
+				'type'        => 'string',
+				'context'     => [ 'view', 'edit' ],
+				'readonly'    => false,
+			],
+			'get_callback' => function ( $object, $field_name, $request, $object_type ) {
+				// @todo - process byline value to string.
+				return get_post_meta( $object['id'], 'byline_demo', true );
+			},
+			'update_callback' => function ( $value, $object, $field_name) {
+				// @todo - process byline value from string.
+				return update_post_meta( $object['id'], 'byline_demo', $value );
+			}
+		]
+	);
+}
+
+add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_fields' );
+
+/**
+ * Set up some demo data for testing purposes.
+ * This is testing data only!
+ * @todo - Remove this, once we have real byline data wired up.
+ *
+ * @package Summary
+ */
+function set_post_demo_byline_meta( $post_object) {
+	// We will need to display the data in a Gutenberg markup, but store it in an easier to manipulate structure, like:
+	/*
+	[
+		'source' => 'manual',
+		'items' => [
+			[
+				'type' => 'byline_id',
+				'atts' => [
+					'term_id' => 123,
+					'post_id' => 456,
+				],
+			],
+			[
+				'type' => 'separator',
+				'atts' => [
+					'text' => ' and ',
+				],
+			],
+			[
+				'type' => 'text',
+				'atts' => [
+					'text' => 'John Smith',
+				],
+			],
+			[
+				'type' => 'separator',
+				'atts' => [
+					'text' => ' in England',
+				],
+			],
+		],
+	]
+
+	Which would convert to this markup:
+	*/
+
+	$byline_demo = 'By <span data-profile-id="456">Jane Doe</span> and <span data-profile-id="">John Smith</span> in England.';
+
+	// Let's set this as the default value for testing.
+	update_post_meta( $post_object->ID, 'byline_demo', $byline_demo );
+}
+
+add_action( 'the_post',  __NAMESPACE__ . '\set_post_demo_byline_meta' );
