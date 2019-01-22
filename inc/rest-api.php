@@ -95,6 +95,7 @@ function rest_user_search( \WP_REST_Request $request ) {
 /**
  * Defines custom REST API fields.
  * This will be expose with the posts REST, i.e. /wp-json/wp/v2/posts/[post_id]
+ * byline_rendered is the rich text html markup for the content of the block.
  * @todo add a byline_raw field for the structured byline.
  *
  */

@@ -19,8 +19,6 @@ const {
     compose,
   },
   editor: {
-    AlignmentToolbar,
-    BlockControls,
     InspectorControls,
     RichText,
   },
@@ -38,26 +36,10 @@ const {
 
 const BylineEdit = (props) => {
   const {
-    attributes: {
-      align,
-    },
-    byline,
+    bylineRendered,
     onChange,
     isSelected,
-    setAttributes,
   } = props;
-
-  // @memberof BylineEdit
-  const blockControls = (
-    <BlockControls>
-      <AlignmentToolbar
-        value={align}
-        onChange={(nextAlign) => {
-          setAttributes({ align: nextAlign });
-        }}
-      />
-    </BlockControls>
-  );
 
   // @memberof BylineEdit
   const inspectorControls = (
@@ -70,19 +52,15 @@ const BylineEdit = (props) => {
   return (
     <Fragment key="itemFragment">
       {isSelected && inspectorControls}
-      {blockControls}
       <RichText
         identifier="byline"
         formattingControls={['bold', 'italic', 'strikethrough']}
         tagName="p"
-        value={byline}
+        value={bylineRendered}
         onChange={onChange}
-        style={{
-          textAlign: align,
-        }}
         aria-label={__('Byline block', 'byline-manager')}
         placeholder={
-          byline ?
+          bylineRendered ?
             '' :
             __(
               'Start writing, or select an author from the toolbar.',
@@ -95,16 +73,15 @@ const BylineEdit = (props) => {
 };
 
 BylineEdit.propTypes = {
-  attributes: PropTypes.object.isRequired,
-  setAttributes: PropTypes.func.isRequired,
-  byline: PropTypes.string.isRequired,
+  bylineRendered: PropTypes.string.isRequired,
   isSelected: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
 };
 
 export default compose(
   withSelect((select) => ({
-    byline: select('core/editor').getEditedPostAttribute('byline_rendered'),
+    bylineRendered:
+      select('core/editor').getEditedPostAttribute('byline_rendered'),
   })),
   withDispatch((dispatch) => ({
     onChange: (nextByline) => {

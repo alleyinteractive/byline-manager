@@ -11,7 +11,6 @@
  */
 
 import edit from './edit';
-import editFormat from './editFormat';
 
 // Import CSS.
 import './style.scss';
@@ -21,11 +20,15 @@ import './style.scss';
  */
 const {
   blocks: {
+    createBlock,
     getPhrasingContentSchema,
     registerBlockType,
   },
   editor: {
     RichText,
+  },
+  data: {
+    select,
   },
   i18n: {
     __,
@@ -55,29 +58,23 @@ setLocaleData({ '': {} }, 'byline');
 registerBlockType('dj/byline', {
   // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
   title: __('Byline Editor', 'byline'), // Block title.
-  icon: 'id', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
+  icon: 'groups', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
   category: 'widgets', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [
     __('byline', 'byline'),
   ],
-  attributes: {
-    align: {
-      type: 'string',
-    },
-  },
   supports: {
     className: false,
+    multiple: false,
   },
   transforms: {
     from: [
       {
-        type: 'raw',
-        priority: 20,
-        selector: 'p',
-        schema: {
-          p: {
-            children: getPhrasingContentSchema(),
-          },
+        type: 'block',
+        blocks: ['core/paragraph'],
+        transform: (content) => {
+
+          return createBlock('dj/byline', { bylineRendered: content });
         },
       },
     ],
@@ -85,11 +82,12 @@ registerBlockType('dj/byline', {
       {
         type: 'block',
         blocks: ['core/paragraph'],
-        transform: ({ content }) => createBlock(
-          'core/paragraph', {
-            content,
-          }
-        ),
+        transform: () => {
+          const content = select('core/editor')
+            .getEditedPostAttribute('byline_rendered');
+          
+          return createBlock('core/paragraph',{ content });
+        },
       },
     ],
   },
