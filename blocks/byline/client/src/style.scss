@@ -1,0 +1,101 @@
+/**
+ * Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+.wp-block-dj-byline {
+  border: rem(1px) solid var(--grayLight);
+
+  .spinner-wrapper {
+    display: block;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .components-spinner {
+    background-position: center;
+    display: inline-block;
+    float: none;
+    margin: 0 auto;
+  }
+}
+
+.byline-toolbar {
+  margin-top: -20px;
+
+  .components-base-control__field {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    height: 36px;
+    margin: 10px;
+  }
+
+  .components-base-control__label {
+    margin: 0 0.5em 0 0;
+  }
+
+  .components-select-control__input {
+    width: auto;
+  }
+
+  .components-range-control .components-base-control__label { /* stylelint-disable-line selector-max-specificity */
+    width: auto;
+  }
+
+  .components-range-control__slider {
+    display: none;
+  }
+}
+
+.wp-block-dj-byline__post-list-item {
+ 
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--grayLight);
+  box-shadow: 0 0 0.5rem var(--grayLight);
+  cursor: grab;
+  list-style: none;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+
+  .remove-button {
+    display: none;
+  }
+
+  /* styles within post list (not being dragged) */
+  .wp-block-dj-byline__post-list & {
+    border-color: transparent;
+    box-shadow: none;
+
+    &:hover { /* stylelint-disable-line selector-max-specificity */
+      border-color: var(--grayLight);
+      border-style: dashed;
+    }
+
+    .remove-button { /* stylelint-disable-line selector-max-specificity */
+      display: flex;
+      float: right;
+    }
+  }
+}
+
+.autocomplete-menu {
+  box-shadow: 0 0 1rem var(--gray);
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  z-index: 100;
+}
+
+.autocomplete-item {
+  background-color: white;
+  border-bottom: 1px solid var(--grayLight);
+  cursor: pointer;
+  padding: 0.5rem;
+
+  &.item-highlighted {
+    background-color: var(--grayLight);
+  }
+}

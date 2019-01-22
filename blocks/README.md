@@ -1,0 +1,1 @@
+# Put all Gutenberg blocks in this directory. Refer to the src/README.me for scripts to build blocks.

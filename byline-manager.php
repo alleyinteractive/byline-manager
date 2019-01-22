@@ -41,3 +41,6 @@ require_once PATH . 'inc/rest-api.php';
 
 // Hook into core filters to output byline.
 require_once PATH . 'inc/core-filters.php';
+
+// Block Initializer.
+require_once PATH . 'blocks/byline/byline.php';
