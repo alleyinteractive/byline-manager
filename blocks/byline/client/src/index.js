@@ -1,5 +1,7 @@
 /* global wp */
 
+/* eslint-disable */
+
 /* eslint-disable react/prop-types */
 
 /**
@@ -9,6 +11,7 @@
  */
 
 import edit from './edit';
+import editFormat from './editFormat';
 
 // Import CSS.
 import './style.scss';
@@ -27,6 +30,9 @@ const {
   i18n: {
     __,
     setLocaleData,
+  },
+  richText: {
+    registerFormatType,
   },
 } = wp;
 
@@ -83,3 +89,26 @@ registerBlockType('dj/byline', {
   edit,
   save: () => null,
 });
+
+/**
+ * Registers author format type.
+ *
+ * @param {string} name     Format name.
+ * @param {Object} settings Format settings.
+ *
+ * @return {?WPFormat} The format, if it has been successfully registered;
+ *                     otherwise `undefined`.
+ */
+
+registerFormatType(
+  'dj/byline-author', {
+    title: __('Author', 'byline-manager'),
+    tagName: 'span',
+    attributes: {
+      profileId: 'data-profile-id',
+      termId: 'data-term-id',
+    },
+    className: 'byline-author',
+    edit: editFormat,
+  }
+);
