@@ -79,10 +79,11 @@ BylineEdit.propTypes = {
 };
 
 export default compose(
-  withSelect((select) => ({
-    bylineRendered:
-      select('core/editor').getEditedPostAttribute('byline').rendered,
-  })),
+  withSelect((select) => {
+    const byline = select('core/editor').getEditedPostAttribute('byline');
+    const bylineRendered = byline ? byline.rendered : '';
+    return ({ bylineRendered });
+  }),
   withDispatch((dispatch) => ({
     onChange: (nextByline) => {
       dispatch('core/editor').editPost({

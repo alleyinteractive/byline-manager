@@ -100,8 +100,9 @@ function rest_user_search( \WP_REST_Request $request ) {
  *  - "raw" is the structured object stored in the post meta.
  *
  * ['rendered'] =>
- *  'By <span data-profile-id="456" class="byline-author">Jane Doe</span> and
- *  <span data-profile-id="" class="byline-author">John Smith</span> in England'
+ *  'By <span data-term-id="123" data-profile-id="456" class="byline-author">Jane Doe</span>
+ *  and <span data-term-id="" data-profile-id="" class="byline-author">John Smith</span>
+ *  in England'
  *
  * ['raw'] =>
  *  [
@@ -148,12 +149,8 @@ function register_rest_fields() {
 				'context'     => [ 'view', 'edit' ],
 				'readonly'    => false,
 			],
-			'get_callback'    => function ( $object, $field_name, $request, $object_type ) {
-				return get_post_meta( $object['id'], 'byline', true );
-			},
-			'update_callback' => function ( $value, $object, $field_name ) {
-				return update_post_meta( $object->ID, 'byline', $value );
-			},
+			'get_callback'    => __NAMESPACE__ . '\get_byline_field',
+			'update_callback' => __NAMESPACE__ . '\update_byline_field',
 		]
 	);
 }
@@ -169,10 +166,10 @@ function register_rest_fields() {
  * @return array    The byline values ['raw' => '...', 'rendered' => '...']
  */
 function get_byline_field( $object, $key, $request, $object_type ) {
-	$content_rendered = get_post_meta( $object['id'], 'byline_rendered', true );
+	$byline_rendered = get_post_meta( $object['id'], 'byline_rendered', true );
 
-	$$byline_content = [
-		[ 'rendered' ] => $content_rendered,
+	$byline_content = [
+		'rendered' => $byline_rendered,
 	];
 
 	return $byline_content;
@@ -190,14 +187,13 @@ function get_byline_field( $object, $key, $request, $object_type ) {
  * @return mixed    Result of the update post meta, will also accept \WP_Error.
  */
 function update_byline_field( $value, $object, $key, $request, $object_type ) {
-	$content_rendered = '';
+	$byline_rendered = '';
 
 	if ( ! empty( $value['rendered'] ) ) {
-		$content_rendered = $value['rendered'];
+		$byline_rendered = $value['rendered'];
 	}
-	$content['rendered'] = $content_rendered;
 
-	return update_post_meta( $object->ID, 'byline_rendered', $value );
+	return update_post_meta( $object->ID, 'byline_rendered', $byline_rendered );
 }
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_fields' );

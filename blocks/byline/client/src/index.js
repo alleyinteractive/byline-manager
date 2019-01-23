@@ -1,7 +1,5 @@
 /* global wp */
 
-/* eslint-disable */
-
 /* eslint-disable react/prop-types */
 
 /**
@@ -21,11 +19,7 @@ import './style.scss';
 const {
   blocks: {
     createBlock,
-    getPhrasingContentSchema,
     registerBlockType,
-  },
-  editor: {
-    RichText,
   },
   data: {
     select,
@@ -33,9 +27,6 @@ const {
   i18n: {
     __,
     setLocaleData,
-  },
-  richText: {
-    registerFormatType,
   },
 } = wp;
 
@@ -72,10 +63,8 @@ registerBlockType('dj/byline', {
       {
         type: 'block',
         blocks: ['core/paragraph'],
-        transform: (content) => {
-
-          return createBlock('dj/byline', { bylineRendered: content });
-        },
+        transform: (content) =>
+          createBlock('dj/byline', { bylineRendered: content }),
       },
     ],
     to: [
@@ -85,8 +74,8 @@ registerBlockType('dj/byline', {
         transform: () => {
           const content = select('core/editor')
             .getEditedPostAttribute('byline_rendered');
-          
-          return createBlock('core/paragraph',{ content });
+
+          return createBlock('core/paragraph', { content });
         },
       },
     ],
@@ -94,5 +83,3 @@ registerBlockType('dj/byline', {
   edit,
   save: () => null,
 });
-
-// @todo Add an author format button.
