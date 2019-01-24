@@ -63,7 +63,7 @@ const BylineEdit = (props) => {
           bylineRendered ?
             '' :
             __(
-              'Start writing, or select an author from the toolbar.',
+              'Start writing, or insert an author from the toolbar.',
               'byline-manager'
             )
         }

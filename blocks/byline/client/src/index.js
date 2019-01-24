@@ -11,7 +11,7 @@
  */
 
 import edit from './edit';
-import editFormat from './editFormat';
+import editFormat from './EditAuthorFormat';
 
 // Import CSS.
 import './style.scss';
@@ -25,6 +25,7 @@ const {
     registerBlockType,
   },
   data: {
+    dispatch,
     select,
   },
   i18n: {
@@ -39,6 +40,9 @@ const {
 // Register the textdomain.
 setLocaleData({ '': {} }, 'byline');
 
+const blockName  = 'byline-manager/byline';
+const formatName = 'byline-manager/author';
+
 /**
  * Register: a Gutenberg Block.
  *
@@ -52,7 +56,7 @@ setLocaleData({ '': {} }, 'byline');
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType('dj/byline', {
+registerBlockType(blockName, {
   // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
   title: __('Byline Editor', 'byline'), // Block title.
   icon: 'groups', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
@@ -60,6 +64,7 @@ registerBlockType('dj/byline', {
   keywords: [
     __('byline', 'byline'),
   ],
+  attributes: {},
   supports: {
     className: false,
     multiple: false,
@@ -69,8 +74,12 @@ registerBlockType('dj/byline', {
       {
         type: 'block',
         blocks: ['core/paragraph'],
-        transform: (content) =>
-          createBlock('dj/byline', { bylineRendered: content }),
+        transform: ({ content }) => {
+          dispatch('core/editor').editPost({
+            byline: { rendered: content },
+          });
+          return createBlock(blockName);
+        },
       },
     ],
     to: [
@@ -78,10 +87,11 @@ registerBlockType('dj/byline', {
         type: 'block',
         blocks: ['core/paragraph'],
         transform: () => {
-          const content = select('core/editor')
-            .getEditedPostAttribute('byline_rendered');
+          const byline = select('core/editor')
+            .getEditedPostAttribute('byline');
+          const bylineRendered = byline.rendered || '';
 
-          return createBlock('core/paragraph', { content });
+          return createBlock('core/paragraph', { content: bylineRendered });
         },
       },
     ],
@@ -101,7 +111,7 @@ registerBlockType('dj/byline', {
  */
 
 registerFormatType(
-  'dj/byline-author', {
+  formatName, {
     title: __('Author', 'byline-manager'),
     tagName: 'span',
     attributes: {
