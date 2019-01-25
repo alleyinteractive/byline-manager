@@ -5,6 +5,29 @@
  * which makes it higher in priority.
  */
 
+/* Format Styles */
+.byline-author {
+  color: #2FAFCD;
+}
+
+/* Block Styles */
+.editor-author-popover__author-container-content {
+  display: flex;
+}
+
+.editor-author-popover__search-authors-toggle {
+  .components-base-control__field {
+    display: flex;
+    align-items: center;
+    padding: 1em;
+  }
+  .components-base-control__label {
+    white-space: no-wrap;
+  }
+}
+
+/* Misc Styles */
+
 .wp-block-dj-byline {
   border: rem(1px) solid var(--grayLight);
 

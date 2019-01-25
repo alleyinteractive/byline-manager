@@ -11,6 +11,7 @@
  */
 
 import edit from './edit';
+import editFormat from './components/authorFormatType/EditAuthorFormat';
 
 // Import CSS.
 import './style.scss';
@@ -21,13 +22,10 @@ import './style.scss';
 const {
   blocks: {
     createBlock,
-    getPhrasingContentSchema,
     registerBlockType,
   },
-  editor: {
-    RichText,
-  },
   data: {
+    dispatch,
     select,
   },
   i18n: {
@@ -42,6 +40,9 @@ const {
 // Register the textdomain.
 setLocaleData({ '': {} }, 'byline');
 
+const blockName  = 'byline-manager/byline';
+const formatName = 'byline-manager/author';
+
 /**
  * Register: a Gutenberg Block.
  *
@@ -55,14 +56,15 @@ setLocaleData({ '': {} }, 'byline');
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType('dj/byline', {
+registerBlockType(blockName, {
   // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
   title: __('Byline Editor', 'byline'), // Block title.
-  icon: 'groups', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
+  icon: 'id-alt', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
   category: 'widgets', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [
     __('byline', 'byline'),
   ],
+  attributes: {},
   supports: {
     className: false,
     multiple: false,
@@ -72,9 +74,11 @@ registerBlockType('dj/byline', {
       {
         type: 'block',
         blocks: ['core/paragraph'],
-        transform: (content) => {
-
-          return createBlock('dj/byline', { bylineRendered: content });
+        transform: ({ content }) => {
+          dispatch('core/editor').editPost({
+            byline: { rendered: content },
+          });
+          return createBlock(blockName);
         },
       },
     ],
@@ -83,10 +87,11 @@ registerBlockType('dj/byline', {
         type: 'block',
         blocks: ['core/paragraph'],
         transform: () => {
-          const content = select('core/editor')
-            .getEditedPostAttribute('byline_rendered');
-          
-          return createBlock('core/paragraph',{ content });
+          const byline = select('core/editor')
+            .getEditedPostAttribute('byline');
+          const bylineRendered = byline.rendered || '';
+
+          return createBlock('core/paragraph', { content: bylineRendered });
         },
       },
     ],
@@ -95,4 +100,25 @@ registerBlockType('dj/byline', {
   save: () => null,
 });
 
-// @todo Add an author format button.
+/**
+ * Registers author format type.
+ *
+ * @param {string} name     Format name.
+ * @param {Object} settings Format settings.
+ *
+ * @return {?WPFormat} The format, if it has been successfully registered;
+ *                     otherwise `undefined`.
+ */
+
+registerFormatType(
+  formatName, {
+    title: __('Author', 'byline-manager'),
+    tagName: 'span',
+    attributes: {
+      profileId: 'data-profile-id',
+      termId: 'data-term-id',
+    },
+    className: 'byline-author',
+    edit: editFormat,
+  }
+);
