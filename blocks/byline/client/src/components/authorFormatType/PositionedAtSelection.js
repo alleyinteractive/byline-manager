@@ -1,5 +1,5 @@
 /**
- * This is an exact recreation of the wp.formatLibrary link helper.
+ * This is a recreation of the wp.formatLibrary link popover positioning helper.
  */
 
 /* global wp */

@@ -1,3 +1,10 @@
+/**
+ * These are the Formatting Controls for adding and removing Authors,
+ * and triggering the Author popover UI.
+ *
+ * It holds state relating to the selection.
+ */
+
 /* global wp */
 
 /**
@@ -49,7 +56,7 @@ class AuthorFormatEdit extends Component {
 
   state = {
     isAddingAuthor: false,
-    authorName: '',
+    selectedText: '',
   };
 
   onRemoveFormat() {
@@ -79,7 +86,7 @@ class AuthorFormatEdit extends Component {
         )
       );
 
-      this.setState({ authorName: selectedText });
+      this.setState({ selectedText });
     }
 
     // And set state to activate the author editor.
@@ -95,11 +102,11 @@ class AuthorFormatEdit extends Component {
     } = this.props;
 
     const {
-      authorName,
+      selectedText,
       isAddingAuthor,
     } = this.state;
 
-    const authorUIKey = `author:${authorName}`;
+    const authorUIKey = `author:${selectedText}`;
 
     return (
       <Fragment>
@@ -124,7 +131,7 @@ class AuthorFormatEdit extends Component {
           key={authorUIKey}
           isAddingAuthor={isAddingAuthor}
           stopAddingAuthor={this.stopAddingAuthor}
-          authorName={authorName}
+          authorName={selectedText}
           activeAttributes={activeAttributes}
           value={value}
           onChange={onChange}

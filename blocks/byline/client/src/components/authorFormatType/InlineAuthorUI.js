@@ -1,3 +1,10 @@
+/**
+ * InlineAuthorUI follows the same basic structure as the core InlineLinkUI.
+ * It provides the Popover container and positioning.
+ *
+ * It holds the Author state, and temporary input state.
+ */
+
 /* global wp */
 
 /**
@@ -97,8 +104,8 @@ class InlineAuthorUI extends Component {
     this.resetState();
   }
 
-  onChangeAuthorName(event) {
-    this.setState({ authorNameInput: event.target.value });
+  onChangeAuthorName(inputValue) {
+    this.setState({ authorNameInput: inputValue });
   }
 
   onSubmitAuthor(event) {
@@ -170,7 +177,7 @@ class InlineAuthorUI extends Component {
             `${value.start || 0}${value.end || 0}`
             /* Used to force rerender on selection change */
           }
-          className="editor-author-popover"
+          className="editor-byline-manager-popover"
           focusOnMount="firstElement"
           position="bottom center"
           onClose={this.resetState}
@@ -181,7 +188,7 @@ class InlineAuthorUI extends Component {
             authorNameInput={authorNameInput}
             profileId={profileId}
             profileIdSelected={profileIdSelected}
-            onChangeAuthorName={this.onChangeAuthorName}
+            onChange={this.onChangeAuthorName}
             onSubmit={this.onSubmitAuthor}
           />
         </Popover>
