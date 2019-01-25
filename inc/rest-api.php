@@ -146,6 +146,14 @@ function register_rest_fields() {
 			'schema'          => [
 				'description' => __( 'The byline of an article.', 'byline-manager' ),
 				'type'        => 'object',
+				'properties'  => [
+					'rendered' => [
+						'description' => __( 'The rendered byline content for the block.', 'byline-manager' ),
+						'type'        => 'string',
+						'context'     => [ 'view', 'edit' ],
+						'readonly'    => false,
+					],
+				],
 				'context'     => [ 'view', 'edit' ],
 				'readonly'    => false,
 			],

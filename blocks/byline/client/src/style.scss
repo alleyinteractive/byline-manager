@@ -7,12 +7,24 @@
 
 /* Format Styles */
 .byline-author {
-  /* TODO remove me! Demo Dev Style only. */
-  border: 1px solid red;
+  color: #2FAFCD;
 }
 
 /* Block Styles */
-/* Add some block styles... */
+.editor-author-popover__author-container-content {
+  display: flex;
+}
+
+.editor-author-popover__search-authors-toggle {
+  .components-base-control__field {
+    display: flex;
+    align-items: center;
+    padding: 1em;
+  }
+  .components-base-control__label {
+    white-space: no-wrap;
+  }
+}
 
 /* Misc Styles */
 

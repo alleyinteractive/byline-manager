@@ -23,35 +23,13 @@ const {
   },
   richText: {
     applyFormat,
-    removeFormat,
     getTextContent,
+    removeFormat,
     slice,
   },
 } = wp;
 
 const formatName = 'byline-manager/author';
-
-/**
- * Generates the format object that will be applied to the author text.
- *
- * @param {object}  authorName  The Author's name.
- * @param {string}  profileId  Profile Id for the Author (null if not linked)
- * @param {string}  termId     Term Id for the Author (null if not linked)
- *
- * @return {Object} The final format object.
- */
-function createAuthorFormat({ authorName, profileId, termId }) {
-  const format = {
-    type: 'byline-manager/author',
-    attributes: {
-      profileId,
-      termId,
-    },
-    text: authorName,
-  };
-
-  return format;
-}
 
 class AuthorFormatEdit extends Component {
   static propTypes = {
@@ -70,7 +48,8 @@ class AuthorFormatEdit extends Component {
   }
 
   state = {
-    addingAuthor: false,
+    isAddingAuthor: false,
+    authorName: '',
   };
 
   onRemoveFormat() {
@@ -79,7 +58,7 @@ class AuthorFormatEdit extends Component {
   }
 
   stopAddingAuthor() {
-    this.setState({ addingAuthor: false });
+    this.setState({ isAddingAuthor: false });
   }
 
   addAuthor() {
@@ -87,38 +66,46 @@ class AuthorFormatEdit extends Component {
     const selectedText = getTextContent(slice(value));
 
     if (selectedText) {
+      // Immediately set the text as a freeform author with no connected Profile.
       onChange(
         applyFormat(
           value,
-          createAuthorFormat({
-            authorName: selectedText,
-            profileId: '456',
-            termId: '123',
-          }),
+          {
+            type: formatName,
+            attributes: {
+              profileId: '',
+            },
+          }
         )
       );
-    } else {
-      this.setState({ addingAuthor: true });
+
+      this.setState({ authorName: selectedText });
     }
+
+    // And set state to activate the author editor.
+    this.setState({ isAddingAuthor: true });
   }
 
   render() {
     const {
-      isActive,
-      value,
-      onChange,
       activeAttributes,
+      isActive,
+      onChange,
+      value,
     } = this.props;
 
     const {
-      addingAuthor,
+      authorName,
+      isAddingAuthor,
     } = this.state;
+
+    const authorUIKey = `author:${authorName}`;
 
     return (
       <Fragment>
         { isActive &&
           <RichTextToolbarButton
-            icon="admin-users"
+            icon="id"
             title={__('Remove Byline Author', 'byline-manager')}
             onClick={this.onRemoveFormat}
             isActive={isActive}
@@ -126,16 +113,18 @@ class AuthorFormatEdit extends Component {
         }
         { ! isActive &&
           <RichTextToolbarButton
-            icon="admin-users"
+            icon="id"
             title={__('Add Byline Author', 'byline-manager')}
             onClick={this.addAuthor}
             isActive={isActive}
           />
         }
         <InlineAuthorUI
-          addingAuthor={addingAuthor}
-          stopAddingAuthor={this.stopAddingAuthor}
           isActive={isActive}
+          key={authorUIKey}
+          isAddingAuthor={isAddingAuthor}
+          stopAddingAuthor={this.stopAddingAuthor}
+          authorName={authorName}
           activeAttributes={activeAttributes}
           value={value}
           onChange={onChange}

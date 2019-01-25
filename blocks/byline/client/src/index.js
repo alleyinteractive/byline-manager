@@ -59,7 +59,7 @@ const formatName = 'byline-manager/author';
 registerBlockType(blockName, {
   // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
   title: __('Byline Editor', 'byline'), // Block title.
-  icon: 'groups', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
+  icon: 'id-alt', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
   category: 'widgets', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [
     __('byline', 'byline'),
