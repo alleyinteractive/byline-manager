@@ -6,23 +6,17 @@
 import PropTypes from 'prop-types';
 
 import PositionedAtSelection from './PositionedAtSelection';
+import AuthorSelector from './AuthorSelector';
 
 /**
  * WordPress dependencies
  */
 const {
   components: {
-    IconButton,
     Popover,
-  },
-  compose: {
-    withState,
   },
   element: {
     Component,
-  },
-  i18n: {
-    __,
   },
   richText: {
     applyFormat,
@@ -34,44 +28,6 @@ const {
 } = wp;
 
 const formatName = 'byline-manager/author';
-
-// @memberof InlineAuthorUI
-const AuthorEditor = withState({ profileIdSelected: '' })(({
-  authorNameInput,
-  onSubmit,
-  profileIdSelected,
-  onChangeAuthorName,
-}) => (
-  <form
-    className="editor-author-popover__author-container-content"
-    onSubmit={onSubmit}
-  >
-    <input
-      type="text"
-      aria-label={__('Author Name', 'byline-manager')}
-      required
-      value={authorNameInput}
-      onChange={onChangeAuthorName}
-      placeholder={__('Type an author name', 'byline-manager')}
-    />
-    <input
-      type="hidden"
-      value={profileIdSelected}
-    />
-    <IconButton
-      icon="editor-break"
-      label={__('Enter', 'byline-manager')}
-      type="submit"
-    />
-  </form>
-));
-
-AuthorEditor.propTypes = {
-  authorNameInput: PropTypes.object.isRequired,
-  submitAuthor: PropTypes.func.isRequired,
-  onChangeAuthorName: PropTypes.func.isRequired,
-  profileIdSelected: PropTypes.string.isRequired,
-};
 
 /**
  * Helper function to generate the format object with populated attributes,
@@ -220,7 +176,7 @@ class InlineAuthorUI extends Component {
           onClose={this.resetState}
           onClickOutside={this.onClickOutside}
         >
-          <AuthorEditor
+          <AuthorSelector
             authorName={authorName}
             authorNameInput={authorNameInput}
             profileId={profileId}
