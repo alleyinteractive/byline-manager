@@ -11,7 +11,7 @@
  */
 
 import edit from './edit';
-import editFormat from './EditAuthorFormat';
+import editFormat from './components/authorFormatType/EditAuthorFormat';
 
 // Import CSS.
 import './style.scss';
