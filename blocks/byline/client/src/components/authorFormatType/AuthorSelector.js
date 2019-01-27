@@ -54,7 +54,7 @@ class AuthorSelector extends Component {
     authorNameInput: PropTypes.object.isRequired,
     instanceId: PropTypes.string.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
+    onChangeAuthor: PropTypes.func.isRequired,
     profileIdSelected: PropTypes.string.isRequired,
   };
 
@@ -63,7 +63,7 @@ class AuthorSelector extends Component {
 
     super(props, args);
 
-    this.onChange = this.onChange.bind(this);
+    this.onChangeInput = this.onChangeInput.bind(this);
     this.autocompleteRef = autocompleteRef || createRef();
     this.inputRef = createRef();
     this.updateSuggestions = throttle(this.updateSuggestions.bind(this), 200);
@@ -104,9 +104,14 @@ class AuthorSelector extends Component {
     delete this.suggestionsRequest;
   }
 
-  onChange(event) {
+  onChangeInput(event) {
     const inputValue = event.target.value;
-    this.props.onChange(inputValue);
+
+    this.props.onChangeAuthor(
+      {
+        authorName: inputValue,
+      }
+    );
     this.updateSuggestions(inputValue);
   }
 
@@ -167,7 +172,12 @@ class AuthorSelector extends Component {
   }
 
   selectAuthor(profile) {
-    this.props.onChange(profile.name);
+    this.props.onChangeAuthor(
+      {
+        authorName: profile.name,
+        profileId: String(profile.id),
+      }
+    );
     this.setState({
       selectedSuggestion: null,
       showSuggestions: false,
@@ -176,7 +186,7 @@ class AuthorSelector extends Component {
 
   handleOnClick(post) {
     this.selectAuthor(post);
-    // Move focus to the input field when a link suggestion is clicked.
+    // Move focus to the input field when a author suggestion is clicked.
     this.inputRef.current.focus();
   }
 
@@ -209,7 +219,7 @@ class AuthorSelector extends Component {
             aria-label={__('Author Name', 'byline-manager')}
             required
             value={authorNameInput}
-            onChange={this.onChange}
+            onChange={this.onChangeInput}
             placeholder={__('Type an author name', 'byline-manager')}
             ref={this.inputRef}
           />

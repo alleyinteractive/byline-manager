@@ -91,7 +91,7 @@ class InlineAuthorUI extends Component {
 
     this.onSubmitAuthor = this.onSubmitAuthor.bind(this);
     this.onClickOutside = this.onClickOutside.bind(this);
-    this.onChangeAuthorName = this.onChangeAuthorName.bind(this);
+    this.onChangeAuthor = this.onChangeAuthor.bind(this);
     this.resetState = this.resetState.bind(this);
   }
 
@@ -104,8 +104,11 @@ class InlineAuthorUI extends Component {
     this.resetState();
   }
 
-  onChangeAuthorName(inputValue) {
-    this.setState({ authorNameInput: inputValue });
+  onChangeAuthor({ authorName, profileId }) {
+    this.setState({
+      authorNameInput: authorName,
+      profileIdSelected: profileId,
+    });
   }
 
   onSubmitAuthor(event) {
@@ -113,10 +116,14 @@ class InlineAuthorUI extends Component {
       value,
       onChange,
     } = this.props;
-    const { authorNameInput } = this.state;
-    // @todo Determine the profile values.
+
+    const {
+      authorNameInput,
+      profileIdSelected,
+    } = this.state;
+
     const format = createAuthorFormat({
-      profileId: '',
+      profileId: profileIdSelected,
     });
 
     event.preventDefault();
@@ -188,7 +195,7 @@ class InlineAuthorUI extends Component {
             authorNameInput={authorNameInput}
             profileId={profileId}
             profileIdSelected={profileIdSelected}
-            onChange={this.onChangeAuthorName}
+            onChangeAuthor={this.onChangeAuthor}
             onSubmit={this.onSubmitAuthor}
           />
         </Popover>

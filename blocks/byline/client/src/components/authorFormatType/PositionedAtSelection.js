@@ -40,6 +40,11 @@ function getCurrentCaretPositionStyle() {
 
   // Get position relative viewport.
   const rect = getRectangleFromRange(selection.getRangeAt(0));
+
+  if (! rect) {
+    return {};
+  }
+
   let top = rect.top + rect.height;
   let left = rect.left + (rect.width / 2);
 
