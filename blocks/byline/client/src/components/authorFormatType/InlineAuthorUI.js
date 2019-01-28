@@ -29,8 +29,6 @@ const {
   richText: {
     applyFormat,
     create,
-    getSelectionEnd,
-    getSelectionStart,
     insert,
   },
 } = wp;
@@ -66,6 +64,8 @@ class InlineAuthorUI extends Component {
     onChange: PropTypes.func.isRequired,
     stopAddingAuthor: PropTypes.func.isRequired,
     value: PropTypes.object.isRequired,
+    start: PropTypes.number.isRequired,
+    end: PropTypes.number.isRequired,
   };
 
   // Populate defaults if we have values from the parent.
@@ -127,6 +127,8 @@ class InlineAuthorUI extends Component {
     const {
       value,
       onChange,
+      start,
+      end,
     } = this.props;
 
     const {
@@ -148,9 +150,7 @@ class InlineAuthorUI extends Component {
     );
 
     onChange(
-      insert(
-        value, toInsert, getSelectionStart(value), getSelectionEnd(value)
-      )
+      insert(value, toInsert, start, end)
     );
 
     this.resetState();
@@ -172,7 +172,8 @@ class InlineAuthorUI extends Component {
       authorName,
       isActive,
       isAddingAuthor,
-      value,
+      start,
+      end,
     } = this.props;
 
     if (! isActive && ! isAddingAuthor) {
@@ -184,18 +185,13 @@ class InlineAuthorUI extends Component {
       profileIdSelected,
     } = this.state;
 
+    const key = `${start || 0}${end || 0}`;
+
     return (
       <PositionedAtSelection
-        key={
-          `${value.start || 0}${value.end || 0}`
-          /* Used to force rerender on selection change */
-        }
+        key={key /* Used to force rerender on selection change */}
       >
         <Popover
-          key={
-            `${value.start || 0}${value.end || 0}`
-            /* Used to force rerender on selection change */
-          }
           className="editor-byline-manager-popover"
           focusOnMount="firstElement"
           position="bottom center"
