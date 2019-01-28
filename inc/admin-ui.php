@@ -119,6 +119,7 @@ function get_user_data_for_meta_box( \WP_User $user, $current_post_id = null ) {
  *
  * @param int      $post_id Post ID being saved.
  * @param \WP_Post $post    Post object being saved.
+ * @todo Refactor this for the gutenberg byline.
  */
 function set_byline( $post_id, $post ) {
 	// Don't set bylines on autosaves.
@@ -131,13 +132,9 @@ function set_byline( $post_id, $post ) {
 		return;
 	}
 
-	// Verify that the nonce is valid.
-	if (
-		empty( $_POST['post_byline_nonce'] )
-		|| ! wp_verify_nonce( $_POST['post_byline_nonce'], 'set_byline_data' ) // WPCS: sanitization ok.
-	) {
-		return;
-	}
+	// TODO: parse byline items from HTML.
+
+	// TODO: save byline using parsed data.
 
 	$meta = [
 		'byline_entries' => [],
@@ -173,6 +170,7 @@ function set_byline( $post_id, $post ) {
 	// Set the byline.
 	Utils::set_post_byline( $post_id, $meta );
 }
+// TODO: should we move this hook to fire when byline_rendered is updated?
 add_action( 'save_post', __NAMESPACE__ . '\set_byline', 10, 2 );
 
 /**

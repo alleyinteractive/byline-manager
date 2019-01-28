@@ -99,7 +99,7 @@ class Profile {
 	}
 
 	/**
-	 * Get a profile object based on its term id.
+	 * Get a profile object based on its post id.
 	 *
 	 * @param int|\WP_Post $post Post ID or object of a profile.
 	 * @return Profile|false

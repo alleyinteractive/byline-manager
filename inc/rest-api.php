@@ -174,7 +174,28 @@ function register_rest_fields() {
  * @return array    The byline values ['raw' => '...', 'rendered' => '...']
  */
 function get_byline_field( $object, $key, $request, $object_type ) {
-	$byline_rendered = get_post_meta( $object['id'], 'byline_rendered', true );
+	$byline = get_post_meta( $object['id'], 'byline', true );
+
+	if ( empty( $byline['items'] ) || ! is_array( $byline['items'] ) ) {
+		return '';
+	}
+
+	// Render the byline parts back to block markup.
+	$byline_rendered = '';
+	foreach ( $byline['items'] as $item ) {
+		if ( 'byline_id' === $item['type'] ) {
+			$profile = Profile::get_by_post( $item['atts']['post_id'] );
+
+			// Span with data attributes and text.
+			$byline_rendered .= '<span data-profile-id="' . $item['atts']['post_id'] . '" class="byline-manager-author">' . $profile->get_display_name() . '</span>';
+		} elseif ( 'text' === $item['type'] ) {
+			// Span with text.
+			$byline_rendered .= '<span class="byline-manager-author">' . $item['atts']['text'] . '</span>';
+		} elseif ( 'separator' === $item['type'] ) {
+			// Just text.
+			$byline_rendered .= $item['atts']['text'];
+		}
+	}
 
 	$byline_content = [
 		'rendered' => $byline_rendered,
@@ -195,13 +216,12 @@ function get_byline_field( $object, $key, $request, $object_type ) {
  * @return mixed    Result of the update post meta, will also accept \WP_Error.
  */
 function update_byline_field( $value, $object, $key, $request, $object_type ) {
-	$byline_rendered = '';
-
 	if ( ! empty( $value['rendered'] ) ) {
-		$byline_rendered = $value['rendered'];
+		$byline_parsed = Utils::byline_data_from_markup( $value['rendered'] );
+		return update_post_meta( $object->ID, 'byline', $byline_parsed );
+	} else {
+		return delete_post_meta( $object->ID, 'byline' );
 	}
-
-	return update_post_meta( $object->ID, 'byline_rendered', $byline_rendered );
 }
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_fields' );
