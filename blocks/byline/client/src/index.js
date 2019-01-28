@@ -116,9 +116,8 @@ registerFormatType(
     tagName: 'span',
     attributes: {
       profileId: 'data-profile-id',
-      termId: 'data-term-id',
     },
-    className: 'byline-author',
+    className: 'byline-manager-author',
     edit: editFormat,
   }
 );

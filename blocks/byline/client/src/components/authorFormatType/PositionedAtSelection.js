@@ -1,5 +1,5 @@
 /**
- * This is an exact recreation of the wp.formatLibrary link helper.
+ * This is a recreation of the wp.formatLibrary link popover positioning helper.
  */
 
 /* global wp */
@@ -40,6 +40,11 @@ function getCurrentCaretPositionStyle() {
 
   // Get position relative viewport.
   const rect = getRectangleFromRange(selection.getRangeAt(0));
+
+  if (! rect) {
+    return {};
+  }
+
   let top = rect.top + rect.height;
   let left = rect.left + (rect.width / 2);
 

@@ -1,3 +1,10 @@
+/**
+ * InlineAuthorUI follows the same basic structure as the core InlineLinkUI.
+ * It provides the Popover container and positioning.
+ *
+ * It holds the Author state, and temporary input state.
+ */
+
 /* global wp */
 
 /**
@@ -6,72 +13,27 @@
 import PropTypes from 'prop-types';
 
 import PositionedAtSelection from './PositionedAtSelection';
+import AuthorSelector from './AuthorSelector';
 
 /**
  * WordPress dependencies
  */
 const {
   components: {
-    IconButton,
     Popover,
-  },
-  compose: {
-    withState,
   },
   element: {
     Component,
-  },
-  i18n: {
-    __,
+    createRef,
   },
   richText: {
     applyFormat,
     create,
-    getSelectionEnd,
-    getSelectionStart,
     insert,
   },
 } = wp;
 
 const formatName = 'byline-manager/author';
-
-// @memberof InlineAuthorUI
-const AuthorEditor = withState({ profileIdSelected: '' })(({
-  authorNameInput,
-  onSubmit,
-  profileIdSelected,
-  onChangeAuthorName,
-}) => (
-  <form
-    className="editor-author-popover__author-container-content"
-    onSubmit={onSubmit}
-  >
-    <input
-      type="text"
-      aria-label={__('Author Name', 'byline-manager')}
-      required
-      value={authorNameInput}
-      onChange={onChangeAuthorName}
-      placeholder={__('Type an author name', 'byline-manager')}
-    />
-    <input
-      type="hidden"
-      value={profileIdSelected}
-    />
-    <IconButton
-      icon="editor-break"
-      label={__('Enter', 'byline-manager')}
-      type="submit"
-    />
-  </form>
-));
-
-AuthorEditor.propTypes = {
-  authorNameInput: PropTypes.object.isRequired,
-  submitAuthor: PropTypes.func.isRequired,
-  onChangeAuthorName: PropTypes.func.isRequired,
-  profileIdSelected: PropTypes.string.isRequired,
-};
 
 /**
  * Helper function to generate the format object with populated attributes,
@@ -95,13 +57,13 @@ function createAuthorFormat({ profileId }) {
 
 class InlineAuthorUI extends Component {
   static propTypes = {
-    authorName: PropTypes.string.isRequired,
-    activeAttributes: PropTypes.object.isRequired,
     isActive: PropTypes.bool.isRequired,
     isAddingAuthor: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
     stopAddingAuthor: PropTypes.func.isRequired,
     value: PropTypes.object.isRequired,
+    start: PropTypes.number.isRequired,
+    end: PropTypes.number.isRequired,
   };
 
   // Populate defaults if we have values from the parent.
@@ -111,12 +73,17 @@ class InlineAuthorUI extends Component {
       authorName,
     } = props;
 
+    const {
+      authorNameInput,
+      profileIdSelected,
+    } = state;
+
     // Populate a default if we have a value from the parent.
-    if (! state.authorNameInput && authorName) {
+    if (! authorNameInput && authorName) {
       return { authorNameInput: authorName };
     }
 
-    if (! state.profileIdSelected && profileId) {
+    if (! profileIdSelected && profileId) {
       return { profileIdSelected: profileId };
     }
 
@@ -126,9 +93,11 @@ class InlineAuthorUI extends Component {
   constructor(props, ...args) {
     super(props, args);
 
+    this.autocompleteRef = createRef();
+
     this.onSubmitAuthor = this.onSubmitAuthor.bind(this);
     this.onClickOutside = this.onClickOutside.bind(this);
-    this.onChangeAuthorName = this.onChangeAuthorName.bind(this);
+    this.onChangeAuthor = this.onChangeAuthor.bind(this);
     this.resetState = this.resetState.bind(this);
   }
 
@@ -137,23 +106,41 @@ class InlineAuthorUI extends Component {
     profileIdSelected: '',
   };
 
-  onClickOutside() {
+  onClickOutside(event) {
+    // The autocomplete suggestions list renders in a separate popover (in a portal),
+    // so onClickOutside fails to detect that a click on a suggestion occurred in the
+    // AuthorContainer. Detect clicks on autocomplete suggestions using a ref here, and
+    // return to avoid the popover being closed.
+    const autocompleteElement = this.autocompleteRef.current;
+    if (autocompleteElement && autocompleteElement.contains(event.target)) {
+      return;
+    }
+
     this.resetState();
   }
 
-  onChangeAuthorName(event) {
-    this.setState({ authorNameInput: event.target.value });
+  onChangeAuthor({ authorName, profileId }) {
+    this.setState({
+      authorNameInput: authorName,
+      profileIdSelected: profileId,
+    });
   }
 
   onSubmitAuthor(event) {
     const {
       value,
       onChange,
+      start,
+      end,
     } = this.props;
-    const { authorNameInput } = this.state;
-    // @todo Determine the profile values.
+
+    const {
+      authorNameInput,
+      profileIdSelected,
+    } = this.state;
+
     const format = createAuthorFormat({
-      profileId: '',
+      profileId: profileIdSelected || '',
     });
 
     event.preventDefault();
@@ -166,9 +153,7 @@ class InlineAuthorUI extends Component {
     );
 
     onChange(
-      insert(
-        value, toInsert, getSelectionStart(value), getSelectionEnd(value)
-      )
+      insert(value, toInsert, start, end)
     );
 
     this.resetState();
@@ -184,13 +169,10 @@ class InlineAuthorUI extends Component {
 
   render() {
     const {
-      activeAttributes: {
-        profileId,
-      },
-      authorName,
       isActive,
       isAddingAuthor,
-      value,
+      start,
+      end,
     } = this.props;
 
     if (! isActive && ! isAddingAuthor) {
@@ -202,30 +184,24 @@ class InlineAuthorUI extends Component {
       profileIdSelected,
     } = this.state;
 
+    const key = `${start || 0}${end || 0}`;
+
     return (
       <PositionedAtSelection
-        key={
-          `${value.start || 0}${value.end || 0}`
-          /* Used to force rerender on selection change */
-        }
+        key={key /* Used to force rerender on selection change */}
       >
         <Popover
-          key={
-            `${value.start || 0}${value.end || 0}`
-            /* Used to force rerender on selection change */
-          }
-          className="editor-author-popover"
+          className="editor-byline-manager-popover"
           focusOnMount="firstElement"
           position="bottom center"
           onClose={this.resetState}
           onClickOutside={this.onClickOutside}
         >
-          <AuthorEditor
-            authorName={authorName}
+          <AuthorSelector
             authorNameInput={authorNameInput}
-            profileId={profileId}
+            autocompleteRef={this.autocompleteRef}
             profileIdSelected={profileIdSelected}
-            onChangeAuthorName={this.onChangeAuthorName}
+            onChangeAuthor={this.onChangeAuthor}
             onSubmit={this.onSubmitAuthor}
           />
         </Popover>
