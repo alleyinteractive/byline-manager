@@ -24,6 +24,7 @@ const {
   },
   element: {
     Component,
+    createRef,
   },
   richText: {
     applyFormat,
@@ -89,6 +90,8 @@ class InlineAuthorUI extends Component {
   constructor(props, ...args) {
     super(props, args);
 
+    this.autocompleteRef = createRef();
+
     this.onSubmitAuthor = this.onSubmitAuthor.bind(this);
     this.onClickOutside = this.onClickOutside.bind(this);
     this.onChangeAuthor = this.onChangeAuthor.bind(this);
@@ -100,7 +103,16 @@ class InlineAuthorUI extends Component {
     profileIdSelected: '',
   };
 
-  onClickOutside() {
+  onClickOutside(event) {
+    // The autocomplete suggestions list renders in a separate popover (in a portal),
+    // so onClickOutside fails to detect that a click on a suggestion occurred in the
+    // AuthorContainer. Detect clicks on autocomplete suggestions using a ref here, and
+    // return to avoid the popover being closed.
+    const autocompleteElement = this.autocompleteRef.current;
+    if (autocompleteElement && autocompleteElement.contains(event.target)) {
+      return;
+    }
+
     this.resetState();
   }
 
@@ -123,7 +135,7 @@ class InlineAuthorUI extends Component {
     } = this.state;
 
     const format = createAuthorFormat({
-      profileId: profileIdSelected,
+      profileId: profileIdSelected || '',
     });
 
     event.preventDefault();
@@ -193,6 +205,7 @@ class InlineAuthorUI extends Component {
           <AuthorSelector
             authorName={authorName}
             authorNameInput={authorNameInput}
+            autocompleteRef={this.autocompleteRef}
             profileId={profileId}
             profileIdSelected={profileIdSelected}
             onChangeAuthor={this.onChangeAuthor}
