@@ -11,6 +11,7 @@
  * External dependencies
  */
 import PropTypes from 'prop-types';
+import { find } from 'lodash';
 
 import InlineAuthorUI from './InlineAuthorUI';
 
@@ -31,8 +32,11 @@ const {
   richText: {
     applyFormat,
     getTextContent,
+    isCollapsed,
     removeFormat,
     slice,
+    getSelectionEnd,
+    getSelectionStart,
   },
 } = wp;
 
@@ -46,8 +50,46 @@ class AuthorFormatEdit extends Component {
     onChange: PropTypes.func.isRequired,
   };
 
-  constructor(...args) {
-    super(args);
+  // Populate defaults if we have values from the parent.
+  static getDerivedStateFromProps(props) {
+    const {
+      isActive,
+      value,
+    } = props;
+
+    const { formats } = value;
+    let startIndex = getSelectionStart(value);
+    let endIndex = getSelectionEnd(value);
+    const format = find(formats[startIndex], { type: formatName });
+
+    // Always expand the selection to completely include the entire active Author name.
+    if (isActive) {
+      if (isCollapsed(value)) {
+        /* eslint-disable no-plusplus*/
+        while (find(formats[startIndex], format)) {
+          startIndex --;
+        }
+
+        endIndex ++;
+
+        while (find(formats[endIndex], format)) {
+          endIndex ++;
+        }
+        /* eslint-enable no-plusplus*/
+      }
+
+      return {
+        activeText: getTextContent(slice(value, startIndex, endIndex)),
+        activeFormatStart: startIndex,
+        activeFormatEnd: endIndex,
+      };
+    }
+
+    return null;
+  }
+
+  constructor(props, ...args) {
+    super(props, args);
 
     this.addAuthor = this.addAuthor.bind(this);
     this.stopAddingAuthor = this.stopAddingAuthor.bind(this);
@@ -56,7 +98,9 @@ class AuthorFormatEdit extends Component {
 
   state = {
     isAddingAuthor: false,
-    selectedText: '',
+    activeText: '',
+    activeFormatStart: null,
+    activeFormatEnd: null,
   };
 
   onRemoveFormat() {
@@ -73,7 +117,8 @@ class AuthorFormatEdit extends Component {
     const selectedText = getTextContent(slice(value));
 
     if (selectedText) {
-      // Immediately set the text as a freeform author with no connected Profile.
+      // Initially, format the text as a freeform author with no connected Profile.
+      // User selection within the InlineAuthorUI might override this.
       onChange(
         applyFormat(
           value,
@@ -85,9 +130,10 @@ class AuthorFormatEdit extends Component {
           }
         )
       );
-
-      this.setState({ selectedText });
     }
+
+    // And set state to activate the author editor.
+    this.setState({ activeText: selectedText });
 
     // And set state to activate the author editor.
     this.setState({ isAddingAuthor: true });
@@ -102,11 +148,13 @@ class AuthorFormatEdit extends Component {
     } = this.props;
 
     const {
-      selectedText,
+      activeFormatStart,
+      activeFormatEnd,
+      activeText,
       isAddingAuthor,
     } = this.state;
 
-    const authorUIKey = `author:${selectedText}`;
+    const authorUIKey = `author: ${activeText}`;
 
     return (
       <Fragment>
@@ -131,9 +179,11 @@ class AuthorFormatEdit extends Component {
           key={authorUIKey}
           isAddingAuthor={isAddingAuthor}
           stopAddingAuthor={this.stopAddingAuthor}
-          authorName={selectedText}
+          authorName={activeText}
           activeAttributes={activeAttributes}
           value={value}
+          start={activeFormatStart}
+          end={activeFormatEnd}
           onChange={onChange}
         />
       </Fragment>
