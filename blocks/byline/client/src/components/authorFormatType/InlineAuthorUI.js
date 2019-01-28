@@ -57,8 +57,6 @@ function createAuthorFormat({ profileId }) {
 
 class InlineAuthorUI extends Component {
   static propTypes = {
-    authorName: PropTypes.string.isRequired,
-    activeAttributes: PropTypes.object.isRequired,
     isActive: PropTypes.bool.isRequired,
     isAddingAuthor: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
@@ -75,12 +73,17 @@ class InlineAuthorUI extends Component {
       authorName,
     } = props;
 
+    const {
+      authorNameInput,
+      profileIdSelected,
+    } = state;
+
     // Populate a default if we have a value from the parent.
-    if (! state.authorNameInput && authorName) {
+    if (! authorNameInput && authorName) {
       return { authorNameInput: authorName };
     }
 
-    if (! state.profileIdSelected && profileId) {
+    if (! profileIdSelected && profileId) {
       return { profileIdSelected: profileId };
     }
 
@@ -166,10 +169,6 @@ class InlineAuthorUI extends Component {
 
   render() {
     const {
-      activeAttributes: {
-        profileId,
-      },
-      authorName,
       isActive,
       isAddingAuthor,
       start,
@@ -199,10 +198,8 @@ class InlineAuthorUI extends Component {
           onClickOutside={this.onClickOutside}
         >
           <AuthorSelector
-            authorName={authorName}
             authorNameInput={authorNameInput}
             autocompleteRef={this.autocompleteRef}
-            profileId={profileId}
             profileIdSelected={profileIdSelected}
             onChangeAuthor={this.onChangeAuthor}
             onSubmit={this.onSubmitAuthor}

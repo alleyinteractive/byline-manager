@@ -220,6 +220,7 @@ class AuthorSelector extends Component {
             required
             value={authorNameInput}
             onChange={this.onChangeInput}
+            onFocus={this.onChangeInput}
             placeholder={__('Type an author name', 'byline-manager')}
             ref={this.inputRef}
           />
