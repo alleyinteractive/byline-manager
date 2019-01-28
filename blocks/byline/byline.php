@@ -38,7 +38,7 @@ function byline_init() {
 	if ( ! $dev_mode ) {
 		wp_register_style(
 			'byline-editor-css',
-			get_asset_uri( 'blocks-styles.css' ),
+			get_asset_uri( 'blocks-style.css' ),
 			[],
 			'1.0.0'
 		);

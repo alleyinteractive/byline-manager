@@ -5,6 +5,8 @@
  * which makes it higher in priority.
  */
 
+/* stylelint-disable selector-max-specificity */
+
 $input-padding: 8px;
 $input-size: auto;
 
@@ -22,11 +24,13 @@ $input-size: auto;
 }
 
 .editor-byline-manager-popover__search-authors-toggle {
+
   .components-base-control__field {
-    display: flex;
     align-items: center;
+    display: flex;
     padding: 1em;
   }
+
   .components-base-control__label {
     white-space: no-wrap;
   }
@@ -36,7 +40,7 @@ $input-size: auto;
   max-height: 200px;
   overflow-y: auto;
   padding: 4px 0;
-  transition: all .15s ease-in-out;
+  transition: all 0.15s ease-in-out;
   width: 302px;  
 }
 
@@ -44,16 +48,16 @@ $input-size: auto;
 .components-popover .editor-byline-manager-input,
 .editor-byline-manager-input {
   flex-grow: 1;
-  position: relative;
   padding: 1px;
+  position: relative;
 
   input[type="text"] {
-    width: 100%;
-    padding: $input-padding;
     border: none;
     border-radius: 0;
     margin-left: 0;
     margin-right: 0;
+    padding: $input-padding;
+    width: 100%;
 
     &::-ms-clear {
       display: none;
@@ -61,10 +65,10 @@ $input-size: auto;
   }
 
   .components-spinner {
+    margin: 0;
     position: absolute;
     right: $input-padding;
     top: $input-padding + 1;
-    margin: 0;
   }
 }
 
@@ -72,22 +76,22 @@ $input-size: auto;
 .editor-byline-manager__suggestions {
   border: 1px solid var(--grayLight);
   max-height: 200px;
-  transition: all 0.15s ease-in-out;
-  padding: 0;
-  width: $input-size;
   overflow-y: auto;
+  padding: 0;
+  transition: all 0.15s ease-in-out;
+  width: $input-size;
 }
 
 .editor-byline-manager__suggestion {
-  padding: $input-padding;
-  color: var(--black);
-  display: block;
-  cursor: pointer;
   background: var(--white);
-  width: 100%;
   border: none;
   border-bottom: 1px solid var(--grayLight);
+  color: var(--black);
+  cursor: pointer;
+  display: block;
+  padding: $input-padding;
   text-align: left;
+  width: 100%;
 
   &:hover {
     background: var(--grayLight);

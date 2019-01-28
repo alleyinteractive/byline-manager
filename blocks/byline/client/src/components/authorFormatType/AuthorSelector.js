@@ -26,7 +26,6 @@ const {
   },
   compose: {
     withInstanceId,
-    withState,
   },
   element: {
     Component,
@@ -220,7 +219,6 @@ class AuthorSelector extends Component {
             required
             value={authorNameInput}
             onChange={this.onChangeInput}
-            onFocus={this.onChangeInput}
             placeholder={__('Type an author name', 'byline-manager')}
             ref={this.inputRef}
           />
@@ -278,8 +276,4 @@ class AuthorSelector extends Component {
   }
 }
 
-export default withState(
-  {
-    profileIdSelected: '',
-  }
-)(withInstanceId(AuthorSelector));
+export default withInstanceId(AuthorSelector);
