@@ -187,7 +187,7 @@ function update_byline_field( $value, $object, $key, $request, $object_type ) {
 	}
 
 	if ( ! empty( $value['rendered'] ) ) {
-		$byline_parsed = Utils::byline_data_from_markup( $value['rendered'] );
+		$byline_parsed = Utils::byline_data_from_markup( trim( $value['rendered'] ) );
 		Utils::set_post_byline( $object->ID, $byline_parsed );
 		return update_post_meta( $object->ID, 'byline', $byline_parsed );
 	} else {
