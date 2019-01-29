@@ -13,17 +13,6 @@ use Byline_Manager\Models\Profile;
  * Register meta boxes used by the plugin.
  */
 function register_meta_boxes() {
-	$supported_post_types = Utils::get_supported_post_types();
-
-	if ( $supported_post_types ) {
-		add_meta_box(
-			'byline-manager-byline-meta-box',
-			__( 'Byline', 'byline-manager' ),
-			__NAMESPACE__ . '\byline_meta_box',
-			$supported_post_types
-		);
-	}
-
 	add_meta_box(
 		'byline-manager-user-link-meta-box',
 		__( 'User Account', 'byline-manager' ),
@@ -32,16 +21,6 @@ function register_meta_boxes() {
 	);
 }
 add_action( 'add_meta_boxes', __NAMESPACE__ . '\register_meta_boxes' );
-
-/**
- * Output the byline meta box.
- *
- * @param \WP_Post $post Post object.
- */
-function byline_meta_box( $post ) {
-	wp_nonce_field( 'set_byline_data', 'post_byline_nonce' );
-	echo '<div id="byline-manager-metabox-root"></div>';
-}
 
 /**
  * Output the user link meta box.
@@ -113,65 +92,6 @@ function get_user_data_for_meta_box( \WP_User $user, $current_post_id = null ) {
 		'linked' => boolval( $linked_id ) && $linked_id !== $current_post_id,
 	];
 }
-
-/**
- * Set the byline when a post is saved.
- *
- * @param int      $post_id Post ID being saved.
- * @param \WP_Post $post    Post object being saved.
- * @todo Refactor this for the gutenberg byline.
- */
-function set_byline( $post_id, $post ) {
-	// Don't set bylines on autosaves.
-	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-		return;
-	}
-
-	// Only proceed for permitted post types.
-	if ( ! Utils::is_post_type_supported( $post->post_type ) ) {
-		return;
-	}
-
-	// TODO: parse byline items from HTML.
-
-	// TODO: save byline using parsed data.
-
-	$meta = [
-		'byline_entries' => [],
-	];
-	// The data from this array is sanitized as it's used.
-	$byline_entries = isset( $_POST['byline_entry'] ) ? wp_unslash( $_POST['byline_entry'] ) : []; // WPCS: sanitization ok.
-
-	if ( ! empty( $byline_entries ) && is_array( $byline_entries ) ) {
-		foreach ( $byline_entries as $entry ) {
-			// Don't save empty items.
-			if ( empty( $entry['type'] ) || empty( $entry['value'] ) ) {
-				continue;
-			}
-
-			if ( 'text' === $entry['type'] ) {
-				$meta['byline_entries'][] = [
-					'type' => 'text',
-					'atts' => [
-						'text' => wp_kses_post( wp_unslash( $entry['value'] ) ),
-					],
-				];
-			} elseif ( 'byline_id' === $entry['type'] ) {
-				$meta['byline_entries'][] = [
-					'type' => 'byline_id',
-					'atts' => [
-						'byline_id' => absint( $entry['value'] ),
-					],
-				];
-			}
-		}
-	}
-
-	// Set the byline.
-	Utils::set_post_byline( $post_id, $meta );
-}
-// TODO: should we move this hook to fire when byline_rendered is updated?
-// add_action( 'save_post', __NAMESPACE__ . '\set_byline', 10, 2 );
 
 /**
  * Set the user link when a profile post is saved.

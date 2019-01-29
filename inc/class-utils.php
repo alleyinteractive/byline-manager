@@ -62,7 +62,7 @@ class Utils {
 	 */
 	public static function get_byline_meta_for_post( $post = null ) {
 		$defaults = [
-			'profiles' => [],
+			'items' => [],
 		];
 
 		$post = get_post( $post );
@@ -86,9 +86,10 @@ class Utils {
 	 */
 	public static function get_byline_entries_for_post( $post = null ) {
 		$byline = self::get_byline_meta_for_post( $post );
+
 		if (
-			empty( $byline['profiles'] )
-			|| ! is_array( $byline['profiles'] )
+			empty( $byline['items'] )
+			|| ! is_array( $byline['items'] )
 		) {
 			return [];
 		}
@@ -103,7 +104,7 @@ class Utils {
 					}
 					return false;
 				},
-				$byline['profiles']
+				$byline['items']
 			)
 		);
 	}
@@ -138,13 +139,24 @@ class Utils {
 	 *     @type array  $byline_ids Optional. Byline term ids. Defaults to empty
 	 *                              array.
 	 * }
-	 ** @todo refactor this for the gutenberg byline.
+	 *
+	 * @return bool Results of update to post meta.
 	 */
 	public static function set_post_byline( int $post_id, array $byline_meta ) {
-		$default_args = [
-			'byline_entries' => [],
-		];
-		$byline_meta = wp_parse_args( $byline_meta, $default_args );
+		foreach ( $byline_meta['items'] as $index => $item ) {
+			// Ensure byline_id items have both a byline ID and a post_id.
+			if ( ! empty( $item['atts']['post_id'] ) && empty( $item['atts']['byline_id'] ) ) {
+				$profile = Profile::get_by_post( $item['atts']['post_id'] );
+				if ( ! is_null( $profile->byline_id ) ) {
+					$byline_meta['items'][ $index ]['atts']['byline_id'] = $profile->byline_id;
+				}
+			} elseif ( ! empty( $item['atts']['byline_id'] ) && empty( $item['atts']['post_id'] ) ) {
+				$profile = Profile::get_by_term_id( $item['atts']['byline_id'] );
+				if ( ! is_null( $profile->post_id ) ) {
+					$byline_meta['items'][ $index ]['atts']['post_id'] = $profile->post_id;
+				}
+			}
+		}
 
 		// Extract the term IDs from the byline meta.
 		$byline_terms = array_map(
@@ -155,42 +167,11 @@ class Utils {
 					return $entry['atts']['byline_id'];
 				}
 			},
-			$byline_meta['byline_entries']
+			$byline_meta['items']
 		);
 
 		// Set the terms.
 		wp_set_object_terms( $post_id, array_filter( $byline_terms ), BYLINE_TAXONOMY, false );
-
-		// Set the byline meta on the post, handling both byline IDs and text items.
-		$profiles = array_map(
-			function( $entry ) {
-				if ( empty( $entry['type'] ) || empty( $entry['atts'] ) ) {
-					// We don't have enough info to process this entry.
-					return null;
-				} elseif ( 'text' === $entry['type'] ) {
-					// Return text entries as is.
-					return $entry;
-				} elseif ( 'byline_id' === $entry['type'] && ! empty( $entry['atts']['byline_id'] ) ) {
-					$post_id = Utils::get_profile_id_by_byline_id( $entry['atts']['byline_id'] );
-					if ( ! empty( $post_id ) ) {
-						return [
-							'type' => 'byline_id',
-							'atts' => [
-								'term_id' => $entry['atts']['byline_id'],
-								'post_id' => $post_id,
-							],
-						];
-					}
-				}
-				// None of the above matched!
-				return null;
-			},
-			$byline_meta['byline_entries']
-		);
-
-		$byline = [
-			'profiles' => array_filter( $profiles ),
-		];
 
 		/**
 		 * Filter the meta associated with a byline, allowing plugins to store
@@ -199,8 +180,8 @@ class Utils {
 		 * @param array    $byline  Byline metadata.
 		 * @param \WP_Post $post_id ID of post getting the byline.
 		 */
-		$byline = apply_filters( 'byline_manager_post_byline_meta', $byline, $post_id );
-		update_post_meta( $post_id, 'byline', $byline );
+		$byline = apply_filters( 'byline_manager_post_byline_meta', $byline_meta, $post_id );
+		return update_post_meta( $post_id, 'byline', $byline );
 	}
 
 	public static function byline_data_from_markup( $markup ) {
@@ -246,7 +227,7 @@ class Utils {
 					$byline_data['items'][] = [
 						'type' => 'byline_id',
 						'atts' => [
-							'term_id' => $profile->term_id,
+							'byline_id' => $profile->term_id,
 							'post_id' => $profile_id,
 						],
 					];

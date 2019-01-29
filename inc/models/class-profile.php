@@ -119,7 +119,19 @@ class Profile {
 	 * @return Profile|false Profile on success, false on failure.
 	 */
 	public static function get_by_term_id( $term_id ) {
-		return false;
+		$query = new \WP_Query( [
+			'posts_per_page' => 1,
+			'post_type' => PROFILE_POST_TYPE,
+			'fields' => 'ids',
+			'meta_query' => [
+				[
+					'key' => 'byline_id',
+					'value' => $term_id,
+				],
+			],
+		] );
+
+		return ! empty( $query->posts ) ? self::get_by_post( $query->posts[0] ) : false;
 	}
 
 	/**

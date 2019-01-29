@@ -96,49 +96,6 @@ function rest_user_search( \WP_REST_Request $request ) {
 
 /**
  * Defines custom REST API fields.
- *
- * The byline has two representations:
- *  - "rendered" is the rich text html markup for the content of the block.
- *  - "raw" is the structured object stored in the post meta.
- *
- * ['rendered'] =>
- *  'By <span data-term-id="123" data-profile-id="456" class="byline-author">Jane Doe</span>
- *  and <span data-term-id="" data-profile-id="" class="byline-author">John Smith</span>
- *  in England'
- *
- * ['raw'] =>
- *  [
- *    'source' => 'manual',
- *    'items' => [
- *      [
- *        'type' => 'byline_id',
- *        'atts' => [
- *          'term_id' => 123,
- *          'post_id' => 456,
- *        ],
- *      ],
- *      [
- *        'type' => 'separator',
- *        'atts' => [
- *          'text' => ' and ',
- *        ],
- *      ],
- *      [
- *        'type' => 'text',
- *        'atts' => [
- *          'text' => 'John Smith',
- *        ],
- *      ],
- *      [
- *        'type' => 'separator',
- *        'atts' => [
- *          'text' => ' in England',
- *        ],
- *      ],
- *    ],
- *  ]
- *
- * @todo Add the byline raw value.
  */
 function register_rest_fields() {
 	register_rest_field(
@@ -201,6 +158,7 @@ function get_byline_field( $object, $key, $request, $object_type ) {
 	}
 
 	$byline_content = [
+		// 'raw'      => $byline,
 		'rendered' => $byline_rendered,
 	];
 
@@ -231,6 +189,7 @@ function update_byline_field( $value, $object, $key, $request, $object_type ) {
 
 	if ( ! empty( $value['rendered'] ) ) {
 		$byline_parsed = Utils::byline_data_from_markup( $value['rendered'] );
+		Utils::set_post_byline( $object->ID, $byline_parsed );
 		return update_post_meta( $object->ID, 'byline', $byline_parsed );
 	} else {
 		return delete_post_meta( $object->ID, 'byline' );
