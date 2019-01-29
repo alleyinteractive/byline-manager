@@ -158,7 +158,6 @@ function get_byline_field( $object, $key, $request, $object_type ) {
 	}
 
 	$byline_content = [
-		// 'raw'      => $byline,
 		'rendered' => $byline_rendered,
 	];
 
