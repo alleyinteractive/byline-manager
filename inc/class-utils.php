@@ -204,63 +204,63 @@ class Utils {
 	}
 
 	public static function byline_data_from_markup( $markup ) {
-        $byline_data = [
-            'source' => 'manual',
-            'items' => [],
-        ];
-        $pattern = '#(<span.+</span>)#U';
+		$byline_data = [
+			'source' => 'manual',
+			'items' => [],
+		];
+		$pattern = '#(<span.+</span>)#U';
 
-        // Split the string on spans, including the spans and their content as items.
-        $fragments = preg_split( $pattern, $markup, null, PREG_SPLIT_DELIM_CAPTURE );
-        $fragments = array_filter( $fragments );
+		// Split the string on spans, including the spans and their content as items.
+		$fragments = preg_split( $pattern, $markup, null, PREG_SPLIT_DELIM_CAPTURE );
+		$fragments = array_filter( $fragments );
 
-        foreach ( $fragments as $fragment ) {
-            // Examine each fragment to construct a byline item.
-            if ( false === strpos( $fragment, '<span' ) ) {
-                // Add a separator item.
-                $byline_data['items'][] = [
-                    'type' => 'separator',
-                    'atts' => [
-                        'text' => $fragment,
-                    ],
-                ];
-            } else {
-                // Create a DOM for this item to get attributes.
-                $dom = new DOMDocument();
-                $dom->loadHTML( '<html>' .  $fragment . '</html>' );
+		foreach ( $fragments as $fragment ) {
+			// Examine each fragment to construct a byline item.
+			if ( false === strpos( $fragment, '<span' ) ) {
+				// Add a separator item.
+				$byline_data['items'][] = [
+					'type' => 'separator',
+					'atts' => [
+						'text' => $fragment,
+					],
+				];
+			} else {
+				// Create a DOM for this item to get attributes.
+				$dom = new \DOMDocument();
+				$dom->loadHTML( '<html>' .  $fragment . '</html>' );
 
-                // Find the spans and work with the first one.
-                $spans = $dom->getElementsByTagName( 'span' );
+				// Find the spans and work with the first one.
+				$spans = $dom->getElementsByTagName( 'span' );
 
-                // Something went wrong--this isn't an author.
-                if ( empty( $spans[0] ) || 'byline-author' !== $spans[0]->getAttribute( 'class' ) ) {
-                    continue;
-                }
+				// Something went wrong--this isn't an author.
+				if ( empty( $spans[0] ) || 'byline-manager-author' !== $spans[0]->getAttribute( 'class' ) ) {
+					continue;
+				}
 
-                // See if it has a profile ID (or author ID, in the future.)
-                if ( ! empty( $spans[0]->getAttribute( 'data-profile-id' ) ) ) {
-                    $profile_id = $spans[0]->getAttribute( 'data-profile-id' );
-                    $profile = Profile::get_by_post( $profile_id );
+				// See if it has a profile ID (or author ID, in the future.)
+				if ( ! empty( $spans[0]->getAttribute( 'data-profile-id' ) ) ) {
+					$profile_id = $spans[0]->getAttribute( 'data-profile-id' );
+					$profile = Profile::get_by_post( $profile_id );
 
-                    // Look up term ID.
-                    $byline_data['items'][] = [
-                        'type' => 'byline_id',
-                        'atts' => [
-                            'term_id' => $profile->get_term_id(),
-                            'post_id' => $profile_id,
-                        ],
-                    ];
-                } else {
-                    $byline_data['items'][] = [
-                        'type' => 'text',
-                        'atts' => [
-                            'text' => $spans[0]->textContent,
-                        ],
-                    ];
-                }
-            }
-        }
+					// Look up term ID.
+					$byline_data['items'][] = [
+						'type' => 'byline_id',
+						'atts' => [
+							'term_id' => $profile->term_id,
+							'post_id' => $profile_id,
+						],
+					];
+				} else {
+					$byline_data['items'][] = [
+						'type' => 'text',
+						'atts' => [
+							'text' => $spans[0]->textContent,
+						],
+					];
+				}
+			}
+		}
 
-        return $byline_data;
-    }
+		return $byline_data;
+	}
 }

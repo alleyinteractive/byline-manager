@@ -171,7 +171,7 @@ function set_byline( $post_id, $post ) {
 	Utils::set_post_byline( $post_id, $meta );
 }
 // TODO: should we move this hook to fire when byline_rendered is updated?
-add_action( 'save_post', __NAMESPACE__ . '\set_byline', 10, 2 );
+// add_action( 'save_post', __NAMESPACE__ . '\set_byline', 10, 2 );
 
 /**
  * Set the user link when a profile post is saved.

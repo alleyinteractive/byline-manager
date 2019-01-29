@@ -7,6 +7,8 @@
 
 namespace Byline_Manager;
 
+use Byline_Manager\Models\Profile;
+
 /**
  * REST API namespace.
  *
@@ -55,7 +57,7 @@ function rest_profile_search( \WP_REST_Request $request ) {
 	);
 	$profiles = array_filter(
 		array_map(
-			[ 'Byline_Manager\Models\Profile', 'get_by_post' ],
+			[ __NAMESPACE__ . '\Models\Profile', 'get_by_post' ],
 			$posts
 		)
 	);
@@ -162,6 +164,7 @@ function register_rest_fields() {
 		]
 	);
 }
+add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_fields' );
 
 /**
  * Callback to get Byline REST field values.
@@ -187,7 +190,7 @@ function get_byline_field( $object, $key, $request, $object_type ) {
 			$profile = Profile::get_by_post( $item['atts']['post_id'] );
 
 			// Span with data attributes and text.
-			$byline_rendered .= '<span data-profile-id="' . $item['atts']['post_id'] . '" class="byline-manager-author">' . $profile->get_display_name() . '</span>';
+			$byline_rendered .= '<span data-profile-id="' . $item['atts']['post_id'] . '" class="byline-manager-author">' . $profile->display_name . '</span>';
 		} elseif ( 'text' === $item['type'] ) {
 			// Span with text.
 			$byline_rendered .= '<span class="byline-manager-author">' . $item['atts']['text'] . '</span>';
@@ -216,6 +219,16 @@ function get_byline_field( $object, $key, $request, $object_type ) {
  * @return mixed    Result of the update post meta, will also accept \WP_Error.
  */
 function update_byline_field( $value, $object, $key, $request, $object_type ) {
+	// Don't set bylines on autosaves.
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	// Only proceed for permitted post types.
+	if ( ! Utils::is_post_type_supported( $object->post_type ) ) {
+		return;
+	}
+
 	if ( ! empty( $value['rendered'] ) ) {
 		$byline_parsed = Utils::byline_data_from_markup( $value['rendered'] );
 		return update_post_meta( $object->ID, 'byline', $byline_parsed );
@@ -223,5 +236,3 @@ function update_byline_field( $value, $object, $key, $request, $object_type ) {
 		return delete_post_meta( $object->ID, 'byline' );
 	}
 }
-
-add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_fields' );
