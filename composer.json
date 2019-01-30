@@ -1,0 +1,7 @@
+{
+  "name": "newscorp/byline-manager",
+  "type": "wordpress-muplugin",
+  "require": {
+    "composer/installers": "^1.6"
+  }
+}
