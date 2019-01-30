@@ -7,6 +7,8 @@
 
 namespace Byline_Manager;
 
+use Byline_Manager\Models\Profile;
+
 /**
  * REST API namespace.
  *
@@ -55,7 +57,7 @@ function rest_profile_search( \WP_REST_Request $request ) {
 	);
 	$profiles = array_filter(
 		array_map(
-			[ 'Byline_Manager\Models\Profile', 'get_by_post' ],
+			[ __NAMESPACE__ . '\Models\Profile', 'get_by_post' ],
 			$posts
 		)
 	);
@@ -94,49 +96,6 @@ function rest_user_search( \WP_REST_Request $request ) {
 
 /**
  * Defines custom REST API fields.
- *
- * The byline has two representations:
- *  - "rendered" is the rich text html markup for the content of the block.
- *  - "raw" is the structured object stored in the post meta.
- *
- * ['rendered'] =>
- *  'By <span data-term-id="123" data-profile-id="456" class="byline-author">Jane Doe</span>
- *  and <span data-term-id="" data-profile-id="" class="byline-author">John Smith</span>
- *  in England'
- *
- * ['raw'] =>
- *  [
- *    'source' => 'manual',
- *    'items' => [
- *      [
- *        'type' => 'byline_id',
- *        'atts' => [
- *          'term_id' => 123,
- *          'post_id' => 456,
- *        ],
- *      ],
- *      [
- *        'type' => 'separator',
- *        'atts' => [
- *          'text' => ' and ',
- *        ],
- *      ],
- *      [
- *        'type' => 'text',
- *        'atts' => [
- *          'text' => 'John Smith',
- *        ],
- *      ],
- *      [
- *        'type' => 'separator',
- *        'atts' => [
- *          'text' => ' in England',
- *        ],
- *      ],
- *    ],
- *  ]
- *
- * @todo Add the byline raw value.
  */
 function register_rest_fields() {
 	register_rest_field(
@@ -162,6 +121,7 @@ function register_rest_fields() {
 		]
 	);
 }
+add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_fields' );
 
 /**
  * Callback to get Byline REST field values.
@@ -174,7 +134,28 @@ function register_rest_fields() {
  * @return array    The byline values ['raw' => '...', 'rendered' => '...']
  */
 function get_byline_field( $object, $key, $request, $object_type ) {
-	$byline_rendered = get_post_meta( $object['id'], 'byline_rendered', true );
+	$byline = get_post_meta( $object['id'], 'byline', true );
+
+	if ( empty( $byline['items'] ) || ! is_array( $byline['items'] ) ) {
+		return '';
+	}
+
+	// Render the byline parts back to block markup.
+	$byline_rendered = '';
+	foreach ( $byline['items'] as $item ) {
+		if ( 'byline_id' === $item['type'] ) {
+			$profile = Profile::get_by_post( $item['atts']['post_id'] );
+
+			// Span with data attributes and text.
+			$byline_rendered .= '<span data-profile-id="' . $item['atts']['post_id'] . '" class="byline-manager-author">' . $profile->display_name . '</span>';
+		} elseif ( 'text' === $item['type'] ) {
+			// Span with text.
+			$byline_rendered .= '<span class="byline-manager-author">' . $item['atts']['text'] . '</span>';
+		} elseif ( 'separator' === $item['type'] ) {
+			// Just text.
+			$byline_rendered .= $item['atts']['text'];
+		}
+	}
 
 	$byline_content = [
 		'rendered' => $byline_rendered,
@@ -195,13 +176,21 @@ function get_byline_field( $object, $key, $request, $object_type ) {
  * @return mixed    Result of the update post meta, will also accept \WP_Error.
  */
 function update_byline_field( $value, $object, $key, $request, $object_type ) {
-	$byline_rendered = '';
-
-	if ( ! empty( $value['rendered'] ) ) {
-		$byline_rendered = $value['rendered'];
+	// Don't set bylines on autosaves.
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
 	}
 
-	return update_post_meta( $object->ID, 'byline_rendered', $byline_rendered );
-}
+	// Only proceed for permitted post types.
+	if ( ! Utils::is_post_type_supported( $object->post_type ) ) {
+		return;
+	}
 
-add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_fields' );
+	if ( ! empty( $value['rendered'] ) ) {
+		$byline_parsed = Utils::byline_data_from_markup( trim( $value['rendered'] ) );
+		Utils::set_post_byline( $object->ID, $byline_parsed );
+		return update_post_meta( $object->ID, 'byline', $byline_parsed );
+	} else {
+		return delete_post_meta( $object->ID, 'byline' );
+	}
+}

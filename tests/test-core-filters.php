@@ -32,7 +32,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 			'post_title' => 'Byline 2',
 		] );
 		$this->byline_meta = [
-			'byline_entries' => [
+			'items' => [
 				[
 					'type' => 'byline_id',
 					'atts' => [
@@ -66,7 +66,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		$this->assertEquals( 'Byline 1 and Byline 2', get_echo( 'the_author' ) );
 
 		// Ensure order changes propogate.
-		$byline_meta['byline_entries'] = array_reverse( $byline_meta['byline_entries'] );
+		$byline_meta['items'] = array_reverse( $byline_meta['items'] );
 		Utils::set_post_byline( $post->ID, $byline_meta );
 		$this->assertEquals( 'Byline 2 and Byline 1', get_echo( 'the_author' ) );
 	}
@@ -78,7 +78,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		global $post;
 		$byline_meta = $this->byline_meta;
 		// Flip the order of the bylines.
-		$byline_meta['byline_entries'] = array_reverse( $byline_meta['byline_entries'] );
+		$byline_meta['items'] = array_reverse( $byline_meta['items'] );
 		Utils::set_post_byline( $post->ID, $byline_meta );
 
 		$this->expectOutputString( '<a href="' . $this->b2->link . '" title="Posts by Byline 2" class="author url fn" rel="author">Byline 2</a> and <a href="' . $this->b1->link . '" title="Posts by Byline 1" class="author url fn" rel="author">Byline 1</a>' );
@@ -98,7 +98,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'byline_entries' => [
+				'items' => [
 					[
 						'type' => 'text',
 						'atts' => [
@@ -120,7 +120,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'byline_entries' => [
+				'items' => [
 					[
 						'type' => 'text',
 						'atts' => [
@@ -157,7 +157,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		global $post;
 		$byline_meta = $this->byline_meta;
 		// Flip the order of the bylines.
-		$byline_meta['byline_entries'] = array_reverse( $byline_meta['byline_entries'] );
+		$byline_meta['items'] = array_reverse( $byline_meta['items'] );
 		Utils::set_post_byline( $post->ID, $byline_meta );
 
 		$this->go_to( '/?feed=rss2' );
@@ -186,7 +186,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'byline_entries' => [
+				'items' => [
 					[
 						'type' => 'text',
 						'atts' => [
