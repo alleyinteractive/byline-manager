@@ -28,7 +28,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 		$post_id = $this->factory->post->create();
 		$byline_meta = [
-			'byline_entries' => [
+			'items' => [
 				[
 					'type' => 'byline_id',
 					'atts' => [
@@ -50,14 +50,14 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		$this->assertEquals( [ $b1->post_id, $b2->post_id ], wp_list_pluck( $byline, 'post_id' ) );
 
 		// Ensure the order persists.
-		$byline_meta['byline_entries'] = array_reverse( $byline_meta['byline_entries'] );
+		$byline_meta['items'] = array_reverse( $byline_meta['items'] );
 		Utils::set_post_byline( $post_id, $byline_meta );
 		$byline = Utils::get_byline_entries_for_post( $post_id );
 		$this->assertCount( 2, $byline );
 		$this->assertEquals( [ $b2->post_id, $b1->post_id ], wp_list_pluck( $byline, 'post_id' ) );
 
 		// Ensure that adding a text profile item alongside profiles works.
-		$byline_meta['byline_entries'][] = [
+		$byline_meta['items'][] = [
 			'type' => 'text',
 			'atts' => [
 				'text' => 'Text Item 1',
@@ -83,7 +83,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 			'post_name'  => 'b1',
 			'post_title' => 'Byline 1',
 		] );
-		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b1 ], 'term_id' ) ] );
+		Utils::set_post_byline( $post_id, [ 'byline_ids' => wp_list_pluck( [ $b1 ], 'byline_id' ) ] );
 		$byline = Utils::get_byline_entries_for_post( $post_id );
 		$this->assertCount( 1, $byline );
 		$this->assertEquals( [ 'b1' ], wp_list_pluck( $byline, 'post_name' ) );
@@ -101,7 +101,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		$post = get_post( $post_id );
 		$byline_meta = [
-			'byline_entries' => [
+			'items' => [
 				[
 					'type' => 'byline_id',
 					'atts' => [
@@ -130,7 +130,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 
 		$byline_meta = [
-			'byline_entries' => [
+			'items' => [
 				[
 					'type' => 'byline_id',
 					'atts' => [
@@ -171,7 +171,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 
 		$byline_meta = [
-			'byline_entries' => [
+			'items' => [
 				[
 					'type' => 'byline_id',
 					'atts' => [
@@ -223,7 +223,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 
 		$byline_meta = [
-			'byline_entries' => [
+			'items' => [
 				[
 					'type' => 'byline_id',
 					'atts' => [
@@ -273,7 +273,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 
 		$byline_meta = [
-			'byline_entries' => [
+			'items' => [
 				[
 					'type' => 'byline_id',
 					'atts' => [
@@ -317,7 +317,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 
 		$byline_meta = [
-			'byline_entries' => [
+			'items' => [
 				[
 					'type' => 'byline_id',
 					'atts' => [
@@ -351,7 +351,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		] );
 
 		$byline_meta = [
-			'byline_entries' => [
+			'items' => [
 				[
 					'type' => 'byline_id',
 					'atts' => [
@@ -409,7 +409,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		update_post_meta( $b2->post_id, 'user_url', 'https://apple.com' );
 
 		$byline_meta = [
-			'byline_entries' => [
+			'items' => [
 				[
 					'type' => 'byline_id',
 					'atts' => [
@@ -441,7 +441,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'byline_entries' => [
+				'items' => [
 					[
 						'type' => 'text',
 						'atts' => [
@@ -463,7 +463,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'byline_entries' => [
+				'items' => [
 					[
 						'type' => 'text',
 						'atts' => [
@@ -485,7 +485,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'byline_entries' => [
+				'items' => [
 					[
 						'type' => 'text',
 						'atts' => [
@@ -507,7 +507,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'byline_entries' => [
+				'items' => [
 					[
 						'type' => 'text',
 						'atts' => [
@@ -529,7 +529,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'byline_entries' => [
+				'items' => [
 					[
 						'type' => 'text',
 						'atts' => [
@@ -551,7 +551,7 @@ class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
 		Utils::set_post_byline(
 			$post->ID,
 			[
-				'byline_entries' => [
+				'items' => [
 					[
 						'type' => 'text',
 						'atts' => [

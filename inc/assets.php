@@ -26,13 +26,6 @@ function admin_enqueue_scripts( $hook ) {
 			|| PROFILE_POST_TYPE === get_post_type()
 		)
 	) {
-		if ( ! empty( $_GET['bm-dev'] ) ) {
-			wp_enqueue_script( 'byline-manager-js', '//localhost:8080/dev.bundle.js', [], '0.1.0', true );
-		} else {
-			wp_enqueue_script( 'byline-manager-js', get_asset_uri( 'main.js' ), [], '0.1.0', true );
-			wp_enqueue_style( 'byline-manager-css', get_asset_uri( 'main.css' ), [], '0.1.0' );
-		}
-
 		// Build the byline metabox data.
 		$byline_metabox_data = Utils::get_byline_meta_for_post();
 		if ( ! empty( $byline_metabox_data['profiles'] ) ) {

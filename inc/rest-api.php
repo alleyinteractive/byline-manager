@@ -7,6 +7,8 @@
 
 namespace Byline_Manager;
 
+use Byline_Manager\Models\Profile;
+
 /**
  * REST API namespace.
  *
@@ -22,7 +24,7 @@ function register_rest_routes() {
 		REST_NAMESPACE,
 		'/authors',
 		[
-			'methods' => \WP_REST_Server::READABLE,
+			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => __NAMESPACE__ . '\rest_profile_search',
 		]
 	);
@@ -30,7 +32,7 @@ function register_rest_routes() {
 		REST_NAMESPACE,
 		'/users',
 		[
-			'methods' => \WP_REST_Server::READABLE,
+			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => __NAMESPACE__ . '\rest_user_search',
 		]
 	);
@@ -55,7 +57,7 @@ function rest_profile_search( \WP_REST_Request $request ) {
 	);
 	$profiles = array_filter(
 		array_map(
-			[ 'Byline_Manager\Models\Profile', 'get_by_post' ],
+			[ __NAMESPACE__ . '\Models\Profile', 'get_by_post' ],
 			$posts
 		)
 	);
@@ -90,4 +92,105 @@ function rest_user_search( \WP_REST_Request $request ) {
 
 	// Send the response.
 	return rest_ensure_response( $data );
+}
+
+/**
+ * Defines custom REST API fields.
+ */
+function register_rest_fields() {
+	register_rest_field(
+		[ 'post' ],
+		'byline',
+		[
+			'schema'          => [
+				'description' => __( 'The byline of an article.', 'byline-manager' ),
+				'type'        => 'object',
+				'properties'  => [
+					'rendered' => [
+						'description' => __( 'The rendered byline content for the block.', 'byline-manager' ),
+						'type'        => 'string',
+						'context'     => [ 'view', 'edit' ],
+						'readonly'    => false,
+					],
+				],
+				'context'     => [ 'view', 'edit' ],
+				'readonly'    => false,
+			],
+			'get_callback'    => __NAMESPACE__ . '\get_byline_field',
+			'update_callback' => __NAMESPACE__ . '\update_byline_field',
+		]
+	);
+}
+add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_fields' );
+
+/**
+ * Callback to get Byline REST field values.
+ *
+ * @param  object           $object      The post object.
+ * @param  string           $key         The key of register_rest_field.
+ * @param  \WP_REST_Request $request     The full request.
+ * @param  string           $object_type The object type from the schema.
+ *
+ * @return array    The byline values ['raw' => '...', 'rendered' => '...']
+ */
+function get_byline_field( $object, $key, $request, $object_type ) {
+	$byline = get_post_meta( $object['id'], 'byline', true );
+
+	if ( empty( $byline['items'] ) || ! is_array( $byline['items'] ) ) {
+		return '';
+	}
+
+	// Render the byline parts back to block markup.
+	$byline_rendered = '';
+	foreach ( $byline['items'] as $item ) {
+		if ( 'byline_id' === $item['type'] ) {
+			$profile = Profile::get_by_post( $item['atts']['post_id'] );
+
+			// Span with data attributes and text.
+			$byline_rendered .= '<span data-profile-id="' . $item['atts']['post_id'] . '" class="byline-manager-author">' . $profile->display_name . '</span>';
+		} elseif ( 'text' === $item['type'] ) {
+			// Span with text.
+			$byline_rendered .= '<span class="byline-manager-author">' . $item['atts']['text'] . '</span>';
+		} elseif ( 'separator' === $item['type'] ) {
+			// Just text.
+			$byline_rendered .= $item['atts']['text'];
+		}
+	}
+
+	$byline_content = [
+		'rendered' => $byline_rendered,
+	];
+
+	return $byline_content;
+}
+
+/**
+ * Callback to update Byline REST field values.
+ *
+ * @param  array            $value      The posted value.
+ * @param  object           $object     The post object.
+ * @param  string           $key         The key of register_rest_field.
+ * @param  \WP_REST_Request $request     The full request.
+ * @param  string           $object_type The object type from the schema.
+ *
+ * @return mixed    Result of the update post meta, will also accept \WP_Error.
+ */
+function update_byline_field( $value, $object, $key, $request, $object_type ) {
+	// Don't set bylines on autosaves.
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	// Only proceed for permitted post types.
+	if ( ! Utils::is_post_type_supported( $object->post_type ) ) {
+		return;
+	}
+
+	if ( ! empty( $value['rendered'] ) ) {
+		$byline_parsed = Utils::byline_data_from_markup( trim( $value['rendered'] ) );
+		Utils::set_post_byline( $object->ID, $byline_parsed );
+		return update_post_meta( $object->ID, 'byline', $byline_parsed );
+	} else {
+		return delete_post_meta( $object->ID, 'byline' );
+	}
 }

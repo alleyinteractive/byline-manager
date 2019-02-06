@@ -1,0 +1,105 @@
+/**
+ * Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+/* stylelint-disable selector-max-specificity */
+
+$input-padding: 8px;
+$input-size: auto;
+
+/* Format Styles */
+.byline-manager-author {
+  color: var(--gray);
+}
+
+/* Block Styles
+ * .wp-block[data-type="byline-manager/byline"]
+ */
+
+.editor-byline-manager-popover__author-container-content {
+  display: flex;
+}
+
+.editor-byline-manager-popover__search-authors-toggle {
+
+  .components-base-control__field {
+    align-items: center;
+    display: flex;
+    padding: 1em;
+  }
+
+  .components-base-control__label {
+    white-space: no-wrap;
+  }
+}
+
+.editor-byline-manager__suggestions {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 4px 0;
+  transition: all 0.15s ease-in-out;
+  width: 302px;  
+}
+
+.editor-block-list__block .editor-byline-manager-input,
+.components-popover .editor-byline-manager-input,
+.editor-byline-manager-input {
+  flex-grow: 1;
+  padding: 1px;
+  position: relative;
+
+  input[type="text"] {
+    border: none;
+    border-radius: 0;
+    margin-left: 0;
+    margin-right: 0;
+    padding: $input-padding;
+    width: 100%;
+
+    &::-ms-clear {
+      display: none;
+    }
+  }
+
+  .components-spinner {
+    margin: 0;
+    position: absolute;
+    right: $input-padding;
+    top: $input-padding + 1;
+  }
+}
+
+/* Suggestions */
+.editor-byline-manager__suggestions {
+  border: 1px solid var(--grayLight);
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 0;
+  transition: all 0.15s ease-in-out;
+  width: $input-size;
+}
+
+.editor-byline-manager__suggestion {
+  background: var(--white);
+  border: none;
+  border-bottom: 1px solid var(--grayLight);
+  color: var(--black);
+  cursor: pointer;
+  display: block;
+  padding: $input-padding;
+  text-align: left;
+  width: 100%;
+
+  &:hover {
+    background: var(--grayLight);
+  }
+
+  &:focus,
+  &.is-selected {
+    color: var(--white);
+    outline: none;
+  }
+}
