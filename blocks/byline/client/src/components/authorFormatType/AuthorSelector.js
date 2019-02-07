@@ -11,7 +11,7 @@
  * External dependencies
  */
 import PropTypes from 'prop-types';
-import { throttle } from 'lodash';
+import throttle from 'lodash/throttle';
 import classnames from 'classnames';
 import scrollIntoView from 'dom-scroll-into-view';
 
