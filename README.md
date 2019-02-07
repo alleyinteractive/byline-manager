@@ -71,3 +71,10 @@ $ git checkout production
 (production-built) $ git commit -a -m "Updating build following PR #___"
 (production-built) $ git push origin production-built
 ```
+
+## Changelog
+
+### 0.3.1
+
+* Fixes imports from lodash
+* Adds build documentation
