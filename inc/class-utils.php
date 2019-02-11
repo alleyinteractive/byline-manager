@@ -189,15 +189,15 @@ class Utils {
 			'source' => 'manual',
 			'items' => [],
 		];
-		$pattern = '#(<span.+</span>)#U';
+		$pattern = '#(<a.+</a>)#U';
 
-		// Split the string on spans, including the spans and their content as items.
+		// Split the string on links, including the links and their content as items.
 		$fragments = preg_split( $pattern, $markup, null, PREG_SPLIT_DELIM_CAPTURE );
 		$fragments = array_filter( $fragments );
 
 		foreach ( $fragments as $fragment ) {
 			// Examine each fragment to construct a byline item.
-			if ( false === strpos( $fragment, '<span' ) ) {
+			if ( false === strpos( $fragment, '<a' ) ) {
 				// Add a separator item.
 				$byline_data['items'][] = [
 					'type' => 'separator',
@@ -210,17 +210,17 @@ class Utils {
 				$dom = new \DOMDocument();
 				$dom->loadHTML( '<html>' .  $fragment . '</html>' );
 
-				// Find the spans and work with the first one.
-				$spans = $dom->getElementsByTagName( 'span' );
+				// Find the links and work with the first one.
+				$links = $dom->getElementsByTagName( 'a' );
 
 				// Something went wrong--this isn't an author.
-				if ( empty( $spans[0] ) || 'byline-manager-author' !== $spans[0]->getAttribute( 'class' ) ) {
+				if ( empty( $links[0] ) || 'byline-manager-author' !== $links[0]->getAttribute( 'class' ) ) {
 					continue;
 				}
 
 				// See if it has a profile ID (or author ID, in the future.)
-				if ( ! empty( $spans[0]->getAttribute( 'data-profile-id' ) ) ) {
-					$profile_id = $spans[0]->getAttribute( 'data-profile-id' );
+				if ( ! empty( $links[0]->getAttribute( 'data-profile-id' ) ) ) {
+					$profile_id = $links[0]->getAttribute( 'data-profile-id' );
 					$profile = Profile::get_by_post( $profile_id );
 
 					// Look up term ID.
@@ -235,7 +235,7 @@ class Utils {
 					$byline_data['items'][] = [
 						'type' => 'text',
 						'atts' => [
-							'text' => $spans[0]->textContent,
+							'text' => $links[0]->textContent,
 						],
 					];
 				}

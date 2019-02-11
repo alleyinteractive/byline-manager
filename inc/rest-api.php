@@ -146,11 +146,11 @@ function get_byline_field( $object, $key, $request, $object_type ) {
 		if ( 'byline_id' === $item['type'] ) {
 			$profile = Profile::get_by_post( $item['atts']['post_id'] );
 
-			// Span with data attributes and text.
-			$byline_rendered .= '<span data-profile-id="' . $item['atts']['post_id'] . '" class="byline-manager-author">' . $profile->display_name . '</span>';
+			// link with data attributes and text.
+			$byline_rendered .= '<a href="#' . $item['atts']['post_id'] . '" data-profile-id="' . $item['atts']['post_id'] . '" class="byline-manager-author">' . $profile->display_name . '</a>';
 		} elseif ( 'text' === $item['type'] ) {
-			// Span with text.
-			$byline_rendered .= '<span class="byline-manager-author">' . $item['atts']['text'] . '</span>';
+			// link with text.
+			$byline_rendered .= '<a href="#" class="byline-manager-author">' . $item['atts']['text'] . '</a>';
 		} elseif ( 'separator' === $item['type'] ) {
 			// Just text.
 			$byline_rendered .= $item['atts']['text'];
