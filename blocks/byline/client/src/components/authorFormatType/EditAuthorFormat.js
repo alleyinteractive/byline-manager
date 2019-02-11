@@ -121,9 +121,10 @@ class AuthorFormatEdit extends Component {
     const { value, onChange } = this.props;
     const selectedText = getTextContent(slice(value));
 
+    const formatStart = getSelectionStart(value);
+    const formatEnd = getSelectionEnd(value);
+
     if (selectedText) {
-      // Initially, format the text as a freeform author with no connected Profile.
-      // User selection within the InlineAuthorUI might override this.
       onChange(
         applyFormat(
           value,
@@ -132,16 +133,21 @@ class AuthorFormatEdit extends Component {
             attributes: {
               profileId: '',
             },
-          }
+          },
+          formatStart,
+          formatEnd,
         )
       );
+
+      this.setState({ activeText: selectedText });
     }
 
-    // And set state to activate the author editor.
-    this.setState({ activeText: selectedText });
-
-    // And set state to activate the author editor.
-    this.setState({ isAddingAuthor: true });
+    // Set state to activate the author editor.
+    this.setState({
+      isAddingAuthor: true,
+      activeFormatStart: formatStart,
+      activeFormatEnd: formatEnd,
+    });
   }
 
   render() {
