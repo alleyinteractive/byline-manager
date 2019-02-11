@@ -40,7 +40,13 @@ const {
   },
 } = wp;
 
+const blockName = 'byline-manager/byline';
 const formatName = 'byline-manager/author';
+
+const allowedBlocks = [
+  blockName,
+  'core/paragraph',
+];
 
 class AuthorFormatEdit extends Component {
   static propTypes = {
@@ -154,11 +160,14 @@ class AuthorFormatEdit extends Component {
       isAddingAuthor,
     } = this.state;
 
+    const selectedBlock = wp.data.select('core/editor').getSelectedBlock();
+
     const authorUIKey = `author: ${activeText}`;
 
     return (
       <Fragment>
         { isActive &&
+          (- 1) < allowedBlocks.indexOf(selectedBlock.name) &&
           <RichTextToolbarButton
             icon="id"
             title={__('Remove Byline Author', 'byline-manager')}
@@ -167,6 +176,7 @@ class AuthorFormatEdit extends Component {
           />
         }
         { ! isActive &&
+          (- 1) < allowedBlocks.indexOf(selectedBlock.name) &&
           <RichTextToolbarButton
             icon="id"
             title={__('Add Byline Author', 'byline-manager')}
