@@ -113,8 +113,9 @@ registerBlockType(blockName, {
 registerFormatType(
   formatName, {
     title: __('Author', 'byline-manager'),
-    tagName: 'span',
+    tagName: 'a',
     attributes: {
+      url: 'href',
       profileId: 'data-profile-id',
     },
     className: 'byline-manager-author',

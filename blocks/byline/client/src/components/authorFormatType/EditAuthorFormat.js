@@ -77,7 +77,6 @@ class AuthorFormatEdit extends Component {
         }
         startIndex ++;
 
-        endIndex ++;
         while (find(formats[endIndex], format)) {
           endIndex ++;
         }
