@@ -179,3 +179,44 @@ function render_posts_column( $column, $post_id ) {
 }
 add_action( 'manage_profile_posts_custom_column', __NAMESPACE__ . '\render_posts_column', 10, 2 );
 
+/**
+ * Edit the "My Account" submenu items to rename "Edit my profile".
+ *
+ * @param \WP_Admin_Bar $wp_admin_bar Admin bar object.
+ */
+function change_edit_profile_phrasing( $wp_admin_bar ) {
+	$node = $wp_admin_bar->get_node( 'edit-profile' );
+	if ( is_object( $node ) ) {
+		$node->title = __( 'Preferences', 'byline-manager' );
+	}
+	$wp_admin_bar->add_menu( $node );
+}
+add_action( 'admin_bar_menu', __NAMESPACE__ . '\change_edit_profile_phrasing' );
+
+/**
+ * Manipulate the main admin menu to change "Profile" to "Preferences".
+ */
+function change_main_menu() {
+	global $menu, $submenu;
+
+	if ( ! empty( $menu[70][2] ) && 'profile.php' === $menu[70][2] ) {
+		$menu[70][0] = __( 'Preferences', 'byline-manager' );
+	}
+	if (
+		! empty( $submenu['profile.php'][5][2] )
+		&& 'profile.php' === $submenu['profile.php'][5][2]
+	) {
+		$submenu['profile.php'][5][0] = __( 'Preferences', 'byline-manager' );
+	}
+}
+add_action( 'admin_menu', __NAMESPACE__ . '\change_main_menu' );
+
+/**
+ * Change the title of the profile page.
+ */
+function change_profile_title() {
+	global $title;
+
+	$title = __( 'My Preferences', 'byline-manager' );
+}
+add_action( 'admin_head-profile.php', __NAMESPACE__ . '\change_profile_title' );
