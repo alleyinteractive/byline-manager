@@ -74,6 +74,11 @@ $ git checkout production
 
 ## Changelog
 
+### 0.3.2
+
+* Uses links instead of spans to contain author data in the block interface
+* Fixes UI issues with author placement
+
 ### 0.3.1
 
 * Fixes imports from lodash

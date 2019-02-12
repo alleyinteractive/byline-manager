@@ -184,6 +184,12 @@ class Utils {
 		return update_post_meta( $post_id, 'byline', $byline );
 	}
 
+	/**
+	 * Parses byline data from block markup.
+	 *
+	 * @param string $markup HTML markup created by the Gutenberg block.
+	 * @return array An array of byline data.
+	 */
 	public static function byline_data_from_markup( $markup ) {
 		$byline_data = [
 			'source' => 'manual',
@@ -208,7 +214,7 @@ class Utils {
 			} else {
 				// Create a DOM for this item to get attributes.
 				$dom = new \DOMDocument();
-				$dom->loadHTML( '<html>' .  $fragment . '</html>' );
+				$dom->loadHTML( '<html>' . $fragment . '</html>' );
 
 				// Find the links and work with the first one.
 				$links = $dom->getElementsByTagName( 'a' );
@@ -218,7 +224,7 @@ class Utils {
 					continue;
 				}
 
-				// See if it has a profile ID (or author ID, in the future.)
+				// See if it has a profile ID.
 				if ( ! empty( $links[0]->getAttribute( 'data-profile-id' ) ) ) {
 					$profile_id = $links[0]->getAttribute( 'data-profile-id' );
 					$profile = Profile::get_by_post( $profile_id );
