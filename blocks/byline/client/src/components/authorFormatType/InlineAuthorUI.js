@@ -48,6 +48,7 @@ function createAuthorFormat({ profileId }) {
   const format = {
     type: formatName,
     attributes: {
+      url: `#${profileId}`,
       profileId,
     },
   };

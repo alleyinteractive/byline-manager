@@ -29,7 +29,7 @@ function byline_init() {
 	wp_register_script(
 		'byline-editor-js',
 		$script_url,
-		[ 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor' ],
+		[ 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-format-library' ],
 		'1.0.0',
 		true
 	);

@@ -40,7 +40,13 @@ const {
   },
 } = wp;
 
+const blockName = 'byline-manager/byline';
 const formatName = 'byline-manager/author';
+
+const allowedBlocks = [
+  blockName,
+  'core/paragraph',
+];
 
 class AuthorFormatEdit extends Component {
   static propTypes = {
@@ -71,7 +77,6 @@ class AuthorFormatEdit extends Component {
         }
         startIndex ++;
 
-        endIndex ++;
         while (find(formats[endIndex], format)) {
           endIndex ++;
         }
@@ -116,9 +121,10 @@ class AuthorFormatEdit extends Component {
     const { value, onChange } = this.props;
     const selectedText = getTextContent(slice(value));
 
+    const formatStart = getSelectionStart(value);
+    const formatEnd = getSelectionEnd(value);
+
     if (selectedText) {
-      // Initially, format the text as a freeform author with no connected Profile.
-      // User selection within the InlineAuthorUI might override this.
       onChange(
         applyFormat(
           value,
@@ -127,16 +133,21 @@ class AuthorFormatEdit extends Component {
             attributes: {
               profileId: '',
             },
-          }
+          },
+          formatStart,
+          formatEnd,
         )
       );
+
+      this.setState({ activeText: selectedText });
     }
 
-    // And set state to activate the author editor.
-    this.setState({ activeText: selectedText });
-
-    // And set state to activate the author editor.
-    this.setState({ isAddingAuthor: true });
+    // Set state to activate the author editor.
+    this.setState({
+      isAddingAuthor: true,
+      activeFormatStart: formatStart,
+      activeFormatEnd: formatEnd,
+    });
   }
 
   render() {
@@ -154,11 +165,14 @@ class AuthorFormatEdit extends Component {
       isAddingAuthor,
     } = this.state;
 
+    const selectedBlock = wp.data.select('core/editor').getSelectedBlock();
+
     const authorUIKey = `author: ${activeText}`;
 
     return (
       <Fragment>
         { isActive &&
+          (- 1) < allowedBlocks.indexOf(selectedBlock.name) &&
           <RichTextToolbarButton
             icon="id"
             title={__('Remove Byline Author', 'byline-manager')}
@@ -167,6 +181,7 @@ class AuthorFormatEdit extends Component {
           />
         }
         { ! isActive &&
+          (- 1) < allowedBlocks.indexOf(selectedBlock.name) &&
           <RichTextToolbarButton
             icon="id"
             title={__('Add Byline Author', 'byline-manager')}
