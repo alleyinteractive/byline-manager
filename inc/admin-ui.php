@@ -199,7 +199,6 @@ add_action( 'admin_bar_menu', __NAMESPACE__ . '\change_edit_profile_phrasing' );
 function change_main_menu() {
 	global $menu, $submenu;
 
-	// $menu[70] = array( __('Profile'), 'read', 'profile.php', '', 'menu-top menu-icon-users', 'menu-users', 'dashicons-admin-users' );
 	if ( ! empty( $menu[70][2] ) && 'profile.php' === $menu[70][2] ) {
 		$menu[70][0] = __( 'Preferences', 'byline-manager' );
 	}
