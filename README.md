@@ -74,6 +74,10 @@ $ git checkout production
 
 ## Changelog
 
+### 0.3.3
+
+* Removes editor support for the profiles post type
+
 ### 0.3.2
 
 * Uses links instead of spans to contain author data in the block interface
