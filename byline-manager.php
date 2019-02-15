@@ -6,7 +6,7 @@
  * Author:          Alley Interactive
  * Text Domain:     byline-manager
  * Domain Path:     /languages
- * Version:         0.3.2
+ * Version:         0.3.3
  *
  * @package         Byline_Manager
  */
