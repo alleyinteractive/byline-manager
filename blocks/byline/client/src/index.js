@@ -66,7 +66,6 @@ registerBlockType(blockName, {
   ],
   attributes: {},
   supports: {
-    className: false,
     multiple: false,
   },
   transforms: {
