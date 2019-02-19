@@ -59,14 +59,8 @@ const BylineEdit = (props) => {
         value={bylineRendered}
         onChange={onChange}
         aria-label={__('Byline block', 'byline-manager')}
-        placeholder={
-          bylineRendered ?
-            '' :
-            __(
-              'Start writing, or insert an author from the toolbar.',
-              'byline-manager'
-            )
-        }
+        placeholder={__('Start writing, or insert an author from the toolbar.',
+          'byline-manager')}
       />
     </Fragment>
   );
@@ -81,7 +75,8 @@ BylineEdit.propTypes = {
 export default compose(
   withSelect((select) => {
     const byline = select('core/editor').getEditedPostAttribute('byline');
-    const bylineRendered = byline ? byline.rendered : '';
+    const bylineRendered = byline ? byline.rendered :
+      __('By ', 'byline-manager');
     return ({ bylineRendered });
   }),
   withDispatch((dispatch) => ({
