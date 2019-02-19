@@ -36,6 +36,7 @@ const {
 
 const BylineEdit = (props) => {
   const {
+    className,
     bylineRendered,
     onChange,
     isSelected,
@@ -61,12 +62,14 @@ const BylineEdit = (props) => {
         aria-label={__('Byline block', 'byline-manager')}
         placeholder={__('Start writing, or insert an author from the toolbar.',
           'byline-manager')}
+        className={className}
       />
     </Fragment>
   );
 };
 
 BylineEdit.propTypes = {
+  className: PropTypes.string.isRequired,
   bylineRendered: PropTypes.string.isRequired,
   isSelected: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
