@@ -74,6 +74,10 @@ $ git checkout production
 
 ## Changelog
 
+### 0.3.4
+
+* Pre-populates the byline block with "By"
+
 ### 0.3.3
 
 * Removes editor support for the profiles post type
