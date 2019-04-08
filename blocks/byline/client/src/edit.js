@@ -12,14 +12,10 @@ import PropTypes from 'prop-types';
  * WP dependencies
  */
 const {
-  components: {
-    PanelBody,
-  },
   compose: {
     compose,
   },
   editor: {
-    InspectorControls,
     RichText,
   },
   element: {
@@ -39,20 +35,10 @@ const BylineEdit = (props) => {
     className,
     bylineRendered,
     onChange,
-    isSelected,
   } = props;
-
-  // @memberof BylineEdit
-  const inspectorControls = (
-    <InspectorControls key="inspector">
-      <PanelBody title={__('Byline settings', 'dow-jones')}>
-        {'byline inspector settings'}
-      </PanelBody>
-    </InspectorControls>);
 
   return (
     <Fragment key="itemFragment">
-      {isSelected && inspectorControls}
       <RichText
         identifier="byline"
         formattingControls={['bold', 'italic', 'strikethrough']}
@@ -71,7 +57,6 @@ const BylineEdit = (props) => {
 BylineEdit.propTypes = {
   className: PropTypes.string.isRequired,
   bylineRendered: PropTypes.string.isRequired,
-  isSelected: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
 };
 
