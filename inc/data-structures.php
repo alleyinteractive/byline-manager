@@ -89,6 +89,7 @@ function register_byline() {
 		[
 			'public'       => false,
 			'sort'         => true,
+			'rewrite'      => false,
 			'capabilities' => [
 				'manage_terms' => 'do_not_allow',
 				'edit_terms'   => 'do_not_allow',
