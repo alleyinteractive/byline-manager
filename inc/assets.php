@@ -77,8 +77,8 @@ function admin_enqueue_scripts( $hook ) {
 				'userAlreadyLinked'      => __( 'This user is linked to another profile', 'byline-manager' ),
 				'linkedToLabel'          => __( 'Linked to:', 'byline-manager' ),
 				'unlinkLabel'            => __( 'Unlink', 'byline-manager' ),
-				'profilesApiUrl'         => home_url( '/wp-json/byline-manager/v1/authors' ),
-				'usersApiUrl'            => home_url( '/wp-json/byline-manager/v1/users' ),
+				'profilesApiUrl'         => rest_url( '/byline-manager/v1/authors' ),
+				'usersApiUrl'            => rest_url( '/byline-manager/v1/users' ),
 				'postId'                 => get_the_ID(),
 				'bylineMetaBox'          => $byline_metabox_data,
 			]
