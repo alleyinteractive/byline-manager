@@ -146,6 +146,25 @@ function delete_byline_by_profile_id( $post_id ) {
 add_action( 'before_delete_post', __NAMESPACE__ . '\delete_byline_by_profile_id' );
 
 /**
+ * When a profile post is trashed, disassociate user account, if any.
+ *
+ * @param int $post_id Post ID.
+ */
+function disassociate_user( $post_id ) {
+	if ( PROFILE_POST_TYPE !== get_post_type( $post_id ) ) {
+		return;
+	}
+
+	// Delete metas linking this profile to a user account, if any.
+	$user_id = absint( get_post_meta( $post_id, 'user_id', true ) );
+	if ( $user_id ) {
+		delete_post_meta( $post_id, 'user_id', $user_id );
+		delete_user_meta( $user_id, 'profile_id', $post_id );
+	}
+}
+add_action( 'wp_trash_post', __NAMESPACE__ . '\disassociate_user' );
+
+/**
  * Set the title field placeholder text on profile posts.
  *
  * @param string   $title Placeholder text.
