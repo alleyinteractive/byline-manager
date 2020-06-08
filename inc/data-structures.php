@@ -163,6 +163,7 @@ function disassociate_user( $post_id ) {
 	}
 }
 add_action( 'wp_trash_post', __NAMESPACE__ . '\disassociate_user' );
+add_action( 'before_delete_post', __NAMESPACE__ . '\disassociate_user' );
 
 /**
  * Set the title field placeholder text on profile posts.
