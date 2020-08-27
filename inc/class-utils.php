@@ -143,7 +143,7 @@ class Utils {
 		$default_args = [
 			'byline_entries' => [],
 		];
-		$byline_meta = wp_parse_args( $byline_meta, $default_args );
+		$byline_meta  = wp_parse_args( $byline_meta, $default_args );
 
 		// Extract the term IDs from the byline meta.
 		$byline_terms = array_map(

@@ -54,13 +54,13 @@ function get_the_byline_posts_links() {
 		function( $entry ) {
 			$args = [
 				'before_html' => '',
-				'href' => $entry->link,
-				'rel' => 'author',
+				'href'        => $entry->link,
+				'rel'         => 'author',
 				// translators: Posts by a given author.
-				'title' => sprintf( __( 'Posts by %1$s', 'byline-manager' ), $entry->display_name ),
-				'class' => 'author url fn',
-				'text' => $entry->display_name,
-				'after_html' => '',
+				'title'       => sprintf( __( 'Posts by %1$s', 'byline-manager' ), $entry->display_name ),
+				'class'       => 'author url fn',
+				'text'        => $entry->display_name,
+				'after_html'  => '',
 			];
 
 			/**
@@ -138,10 +138,10 @@ function byline_render( $byline, $render_callback, $args = [] ) {
 		'between_last_two'  => __( ' and ', 'byline-manager' ),
 		'between_last_many' => __( ', and ', 'byline-manager' ),
 	];
-	$args = array_merge( $defaults, $args );
-	$total = count( $byline );
-	$current = 0;
-	$output = '';
+	$args     = array_merge( $defaults, $args );
+	$total    = count( $byline );
+	$current  = 0;
+	$output   = '';
 	foreach ( $byline as $author ) {
 		$current++;
 		if ( $current > 1 ) {

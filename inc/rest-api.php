@@ -46,7 +46,7 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_routes' );
  * @return \WP_REST_Response REST API response.
  */
 function rest_profile_search( \WP_REST_Request $request ) {
-	$posts = get_posts(
+	$posts    = get_posts(
 		[
 			'post_type'        => PROFILE_POST_TYPE,
 			's'                => $request->get_param( 's' ),

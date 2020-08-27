@@ -6,6 +6,8 @@ const getPlugins = require('./plugins');
 
 module.exports = (env, argv) => {
   const { mode } = argv;
+  // The base entries used in production mode.
+
   return {
     devServer: getDevServer(env, mode),
     entry: getEntry(mode),

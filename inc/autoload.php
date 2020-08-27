@@ -18,10 +18,10 @@ function autoload( $cls ) {
 		return;
 	}
 
-	$cls = strtolower( str_replace( [ 'Byline_Manager\\', '_' ], [ '', '-' ], $cls ) );
+	$cls  = strtolower( str_replace( [ 'Byline_Manager\\', '_' ], [ '', '-' ], $cls ) );
 	$dirs = explode( '\\', $cls );
-	$cls = array_pop( $dirs );
+	$cls  = array_pop( $dirs );
 
-	require_once( PATH . rtrim( '/inc/' . implode( '/', $dirs ), '/' ) . '/class-' . $cls . '.php' );
+	require_once PATH . rtrim( '/inc/' . implode( '/', $dirs ), '/' ) . '/class-' . $cls . '.php';
 }
 spl_autoload_register( '\Byline_Manager\autoload' );

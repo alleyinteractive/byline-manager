@@ -61,7 +61,7 @@ const BylineList = SortableContainer(({ profiles, removeItem }) => (
 
 class BylineProfiles extends Component {
   static propTypes = {
-    profiles: PropTypes.array,
+    profiles: PropTypes.shape,
   };
 
   static defaultProps = {
@@ -101,15 +101,12 @@ class BylineProfiles extends Component {
   };
 
   doProfileSearch = (fragment) => {
-    fetch(
-      `${window.bylineData.profilesApiUrl}?s=${fragment}`
-    )
+    fetch(`${window.bylineData.profilesApiUrl}?s=${fragment}`)
       .then((res) => res.json())
       .then((rawResults) => {
         const currentIds = this.state.profiles.map((profile) => profile.id);
-        const searchResults = rawResults.filter(
-          (result) => 0 > currentIds.indexOf(result.id)
-        );
+        // eslint-disable-next-line max-len
+        const searchResults = rawResults.filter((result) => 0 > currentIds.indexOf(result.id));
         this.setState({ searchResults });
       });
   };

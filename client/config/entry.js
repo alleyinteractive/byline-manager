@@ -13,6 +13,9 @@ module.exports = function getEntry(mode) {
         main: [
           path.join(appRoot, 'index.js'),
         ],
+        blocks: [
+          path.join(appRoot, 'blocks.js'),
+        ],
       };
 
     case 'development':

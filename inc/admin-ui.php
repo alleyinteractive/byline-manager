@@ -15,6 +15,23 @@ use Byline_Manager\Models\Profile;
 function register_meta_boxes() {
 	$supported_post_types = Utils::get_supported_post_types();
 
+	add_meta_box(
+		'byline-manager-user-link-meta-box',
+		__( 'User Account', 'byline-manager' ),
+		__NAMESPACE__ . '\user_link_meta_box',
+		PROFILE_POST_TYPE
+	);
+
+	// Only load within the classic editor.
+	$current_screen = get_current_screen();
+
+	if (
+		$current_screen instanceof \WP_Screen
+		&& $current_screen->is_block_editor()
+	) {
+		return;
+	}
+
 	if ( $supported_post_types ) {
 		add_meta_box(
 			'byline-manager-byline-meta-box',
@@ -23,13 +40,6 @@ function register_meta_boxes() {
 			$supported_post_types
 		);
 	}
-
-	add_meta_box(
-		'byline-manager-user-link-meta-box',
-		__( 'User Account', 'byline-manager' ),
-		__NAMESPACE__ . '\user_link_meta_box',
-		PROFILE_POST_TYPE
-	);
 }
 add_action( 'add_meta_boxes', __NAMESPACE__ . '\register_meta_boxes' );
 
@@ -235,7 +245,7 @@ add_filter( 'manage_profile_posts_columns', __NAMESPACE__ . '\add_posts_column' 
  */
 function render_posts_column( $column, $post_id ) {
 	if ( 'posts' === $column ) {
-		$term = get_term_by( 'slug', 'profile-' . $post_id, BYLINE_TAXONOMY );
+		$term     = get_term_by( 'slug', 'profile-' . $post_id, BYLINE_TAXONOMY );
 		$numposts = $term->count;
 		if ( 1 === $numposts ) {
 			$post_count_str = __( 'One post by this author', 'byline-manager' );
