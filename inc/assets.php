@@ -147,7 +147,7 @@ function action_enqueue_block_editor_assets() {
 	}
 
 	wp_localize_script(
-		'byline-manager-js',
+		'bm-blocks-js',
 		'bylineData',
 		[
 			'addAuthorLabel'         => __( 'Search for an author to add to the byline', 'byline-manager' ),
