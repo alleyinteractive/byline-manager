@@ -12,7 +12,10 @@ const BylineSetting = () => (
     title="Byline"
     className="byline"
   >
-    <BylineProfiles profiles={window.bylineData.bylineMetaBox.profiles || {}} />
+    <BylineProfiles
+      metaKey="byline"
+      profiles={window.bylineData.bylineMetaBox.profiles || {}}
+    />
   </PluginDocumentSettingPanel>
 
 );
