@@ -14,7 +14,6 @@ const BylineSetting = () => (
   >
     <BylineSlot
       metaKey="byline"
-      profiles={window.bylineData.bylineMetaBox.profiles || {}}
     />
   </PluginDocumentSettingPanel>
 

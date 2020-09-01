@@ -66,6 +66,7 @@ class Utils {
 		];
 
 		$post = get_post( $post );
+		print_r(json_encode(get_post_meta( $post->ID, 'byline', true )));
 		if ( $post ) {
 			return wp_parse_args(
 				get_post_meta( $post->ID, 'byline', true ),

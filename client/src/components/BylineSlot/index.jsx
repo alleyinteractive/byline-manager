@@ -45,8 +45,11 @@ export default compose([
     // Extract the meta key as primaryTerm from edited post meta.
     const {
       [metaKey]: metaValue,
-    } = editor.getEditedPostAttribute('meta');
+	} = editor.getEditedPostAttribute('meta');
 
+	debugger;
+	console.log(metaValue.profiles);
+	console.log(window.bylineData.bylineMetaBox.profiles);
     return {
       metaValue,
     };
