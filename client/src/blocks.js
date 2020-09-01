@@ -1,5 +1,5 @@
 import React from 'react';
-import BylineProfiles from 'components/BylineMetaBox/BylineProfiles';
+import BylineSlot from 'components/BylineSlot';
 
 import './styles/styles.scss';
 
@@ -12,7 +12,7 @@ const BylineSetting = () => (
     title="Byline"
     className="byline"
   >
-    <BylineProfiles
+    <BylineSlot
       metaKey="byline"
       profiles={window.bylineData.bylineMetaBox.profiles || {}}
     />
