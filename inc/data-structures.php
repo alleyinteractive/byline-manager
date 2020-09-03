@@ -14,33 +14,6 @@ const PROFILE_POST_TYPE = 'profile';
 const BYLINE_TAXONOMY = 'byline';
 
 /**
- * Register the custom post meta.
- */
-
-// register_post_meta(
-// 	'',
-// 	'byline',
-// 	[
-// 		'single'       => true,
-// 		'type'       => 'object',
-// 		'show_in_rest' => [
-// 			'schema' => [
-// 				'type'       => 'object',
-// 				'properties' => [
-// 					'profiles' => [
-// 						'btype' => 'string',
-// 						'atts' => [
-// 							'term_id' => 'integer',
-// 							'post_id' => 'integer',
-// 						],
-// 					],
-// 				],
-// 			],
-// 		],
-// 	]
-// );
-
-/**
  * Create the profile post type.
  */
 function register_profile() {

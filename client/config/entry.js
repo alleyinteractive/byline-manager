@@ -13,8 +13,8 @@ module.exports = function getEntry(mode) {
         main: [
           path.join(appRoot, 'index.js'),
         ],
-        blocks: [
-          path.join(appRoot, 'blocks.js'),
+        blockEditor: [
+          path.join(appRoot, 'blockEditor.js'),
         ],
       };
 

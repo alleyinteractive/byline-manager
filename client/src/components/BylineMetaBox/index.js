@@ -16,7 +16,10 @@ class BylineMetaBox extends Component {
     return (
       <div className="byline-list byline-manager-meta-box">
         <input type="hidden" name="byline_source" value="profiles" />
-        <BylineProfiles profiles={this.metaBoxData.profiles} />
+        <BylineProfiles
+          profiles={this.metaBoxData.profiles}
+          blockEditor={false}
+        />
       </div>
     );
   }

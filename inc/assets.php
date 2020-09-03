@@ -44,56 +44,8 @@ function admin_enqueue_scripts( $hook ) {
 			wp_enqueue_script( 'byline-manager-js', get_asset_uri( 'main.js' ), [], '0.1.0', true );
 		}
 
-		// Build the byline metabox data.
-		$byline_metabox_data = Utils::get_byline_meta_for_post();
-		if ( ! empty( $byline_metabox_data['profiles'] ) ) {
-			$profiles = [];
-			$index    = 0;
-			foreach ( $byline_metabox_data['profiles'] as $entry ) {
-				if (
-					! empty( $entry['type'] )
-					&& 'byline_id' === $entry['type']
-					&& ! empty( $entry['atts']['post_id'] )
-				) {
-					// Handle byline profile ID entries.
-					$profile = Profile::get_by_post( $entry['atts']['post_id'] );
-					if ( $profile instanceof Profile ) {
-						$profiles[] = get_profile_data_for_meta_box( $profile );
-					}
-				} elseif ( ! empty( $entry['atts']['text'] ) ) {
-					// Handle text-only bylines.
-					$text_profile = TextProfile::create( $entry['atts'] );
-					$profiles[]   = [
-						// Uses a semi-arbitrary ID to give the script a reference point.
-						'id'   => $text_profile->id,
-						'name' => $text_profile->display_name,
-					];
-				}
-				$index++;
-			}
-			$byline_metabox_data['profiles'] = $profiles;
-		}
-
-		wp_localize_script(
-			'byline-manager-js',
-			'bylineData',
-			[
-				'addAuthorLabel'         => __( 'Search for an author to add to the byline', 'byline-manager' ),
-				'addAuthorPlaceholder'   => __( 'Enter name', 'byline-manager' ),
-				'removeAuthorLabel'      => __( 'Remove author from byline', 'byline-manager' ),
-				'addFreeformlabel'       => __( 'Enter text to add to the byline', 'byline-manager' ),
-				'addFreeformPlaceholder' => __( 'Enter text', 'byline-manager' ),
-				'addFreeformButtonLabel' => __( 'Insert', 'byline-manager' ),
-				'linkUserPlaceholder'    => __( 'Search for a user account by name', 'byline-manager' ),
-				'userAlreadyLinked'      => __( 'This user is linked to another profile', 'byline-manager' ),
-				'linkedToLabel'          => __( 'Linked to:', 'byline-manager' ),
-				'unlinkLabel'            => __( 'Unlink', 'byline-manager' ),
-				'profilesApiUrl'         => rest_url( '/byline-manager/v1/authors' ),
-				'usersApiUrl'            => rest_url( '/byline-manager/v1/users' ),
-				'postId'                 => get_the_ID(),
-				'bylineMetaBox'          => $byline_metabox_data,
-			]
-		);
+		// Add Byline data for script.
+		localize_admin_script( 'byline-manager-block-editor-js' );
 	}
 }
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\admin_enqueue_scripts' );
@@ -111,11 +63,22 @@ function action_enqueue_block_editor_assets() {
 	}
 
 	if ( ! empty( $_GET['bm-dev'] ) ) {
-		wp_enqueue_script( 'bm-blocks-js', '//localhost:8080/dev.bundle.js', [ 'wp-i18n', 'wp-blocks', 'wp-api-fetch' ], '0.1.0', true );
+		wp_enqueue_script( 'byline-manager-block-editor-js', '//localhost:8080/dev.bundle.js', [ 'wp-i18n', 'wp-blocks', 'wp-api-fetch', 'wp-components' ], '0.1.0', true );
 	} else {
-		wp_enqueue_script( 'bm-blocks-js', get_asset_uri( 'blocks.js' ), [ 'wp-i18n', 'wp-blocks', 'wp-api-fetch' ], '0.1.0', true );
+		wp_enqueue_script( 'byline-manager-block-editor-js', get_asset_uri( 'blockEditor.js' ), [ 'wp-i18n', 'wp-blocks', 'wp-api-fetch', 'wp-components' ], '0.1.0', true );
 	}
 
+	// Add Byline data for script.
+	localize_admin_script( 'byline-manager-block-editor-js' );
+}
+add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\action_enqueue_block_editor_assets' );
+
+/**
+ * Localizes an admin script with Byline data.
+ *
+ * @param  string $handle The script handle.
+ */
+function localize_admin_script( $handle ) {
 	// Build the byline metabox data.
 	$byline_metabox_data = Utils::get_byline_meta_for_post();
 	if ( ! empty( $byline_metabox_data['profiles'] ) ) {
@@ -147,7 +110,7 @@ function action_enqueue_block_editor_assets() {
 	}
 
 	wp_localize_script(
-		'bm-blocks-js',
+		$handle,
 		'bylineData',
 		[
 			'addAuthorLabel'         => __( 'Search for an author to add to the byline', 'byline-manager' ),
@@ -167,7 +130,6 @@ function action_enqueue_block_editor_assets() {
 		]
 	);
 }
-add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\action_enqueue_block_editor_assets' );
 
 /**
  * Attempt to load a file at the specified path and parse its contents as JSON.
