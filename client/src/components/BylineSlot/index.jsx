@@ -24,12 +24,15 @@ const BylineSlot = (props) => {
   const [hydratedProfiles, setHydratedProfiles] = React.useState([]);
 
   const onSortEnd = ({ oldIndex, newIndex }) => {
-    onUpdate('byline', arrayMove(byline.profiles, oldIndex, newIndex));
+    onUpdate('byline', {
+      profiles: arrayMove([...byline.profiles], oldIndex, newIndex),
+    });
   };
 
   const removeItem = (id) => {
     const { profiles } = byline;
-    const index = profiles.findIndex((item) => item.id === id);
+    const index = hydratedProfiles.findIndex((item) => item.id === id);
+
     if (0 <= index) {
       onUpdate('byline', {
         profiles: [
@@ -56,11 +59,14 @@ const BylineSlot = (props) => {
   };
 
   React.useEffect(() => {
+    setHydratedProfiles([]);
+
     async function hydrateProfiles() {
       setHydratedProfiles(await getHydrateProfiles(byline.profiles || []));
     }
+
     hydrateProfiles();
-  }, []);
+  }, [byline]);
 
   return (
     <div>

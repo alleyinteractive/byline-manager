@@ -26,6 +26,8 @@ function admin_enqueue_scripts( $hook ) {
 			|| PROFILE_POST_TYPE === get_post_type()
 		)
 	) {
+		wp_enqueue_style( 'byline-manager-css', get_asset_uri( 'main.css' ), [], '0.1.0' );
+
 		// Only load within the classic editor.
 		$current_screen = get_current_screen();
 
@@ -35,8 +37,6 @@ function admin_enqueue_scripts( $hook ) {
 		) {
 			return;
 		}
-
-		wp_enqueue_style( 'byline-manager-css', get_asset_uri( 'main.css' ), [], '0.1.0' );
 
 		if ( ! empty( $_GET['bm-dev'] ) ) {
 			wp_enqueue_script( 'byline-manager-js', '//localhost:8080/dev.bundle.js', [], '0.1.0', true );
