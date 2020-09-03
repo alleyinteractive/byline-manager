@@ -111,9 +111,9 @@ function action_enqueue_block_editor_assets() {
 	}
 
 	if ( ! empty( $_GET['bm-dev'] ) ) {
-		wp_enqueue_script( 'bm-blocks-js', '//localhost:8080/dev.bundle.js', [ 'wp-i18n', 'wp-blocks' ], '0.1.0', true );
+		wp_enqueue_script( 'bm-blocks-js', '//localhost:8080/dev.bundle.js', [ 'wp-i18n', 'wp-blocks', 'wp-api-fetch' ], '0.1.0', true );
 	} else {
-		wp_enqueue_script( 'bm-blocks-js', get_asset_uri( 'blocks.js' ), [ 'wp-i18n', 'wp-blocks' ], '0.1.0', true );
+		wp_enqueue_script( 'bm-blocks-js', get_asset_uri( 'blocks.js' ), [ 'wp-i18n', 'wp-blocks', 'wp-api-fetch' ], '0.1.0', true );
 	}
 
 	// Build the byline metabox data.

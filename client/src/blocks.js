@@ -12,9 +12,7 @@ const BylineSetting = () => (
     title="Byline"
     className="byline"
   >
-    <BylineSlot
-      metaKey="byline"
-    />
+    <BylineSlot />
   </PluginDocumentSettingPanel>
 
 );
