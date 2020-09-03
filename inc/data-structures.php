@@ -90,11 +90,12 @@ function register_byline() {
 			'public'       => false,
 			'sort'         => true,
 			'rewrite'      => false,
+			'show_in_rest' => true,
 			'capabilities' => [
 				'manage_terms' => 'do_not_allow',
 				'edit_terms'   => 'do_not_allow',
 				'delete_terms' => 'do_not_allow',
-				'assign_terms' => 'do_not_allow',
+				'assign_terms' => 'assign_terms',
 			],
 		]
 	);

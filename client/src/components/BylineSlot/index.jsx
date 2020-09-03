@@ -109,6 +109,21 @@ export default compose([
   }),
   withDispatch((dispatch) => ({
     onUpdate: (metaKey, metaValue) => {
+      const termBylines = metaValue.profiles.filter(
+        (value) => 'undefined' !== typeof value.type &&
+        'byline_id' === value.type
+      );
+
+      if (0 < termBylines.length) {
+        dispatch('core/editor').editPost({
+          byline: [...termBylines.map((item) => item.atts.term_id)],
+        });
+      } else {
+        dispatch('core/editor').editPost({
+          byline: [],
+        });
+      }
+
       dispatch('core/editor').editPost({
         meta: {
           [metaKey]: metaValue,

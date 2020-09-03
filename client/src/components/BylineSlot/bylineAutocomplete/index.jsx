@@ -70,7 +70,13 @@ class BylineAutocomplete extends React.Component {
           this.onUpdate('byline', {
             profiles: [
               ...this.state.profiles,
-              item,
+              {
+                type: 'byline_id',
+                atts: {
+                  term_id: item.byline_id,
+                  post_id: item.id,
+                },
+              },
             ],
           });
         }}
