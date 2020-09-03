@@ -44,8 +44,8 @@ const SortableItem = SortableElement(({
 ));
 
 const BylineList = SortableContainer(({ profiles, removeItem }) => (
-  <ol style={{ 'margin-left': 0 }}>
-    {0 < profiles.length && profiles.map((profile, index) => (
+  <ol>
+    {profiles.map((profile, index) => (
       <SortableItem
         key={`item-${profile.id}`}
         index={index}
@@ -62,18 +62,14 @@ const BylineList = SortableContainer(({ profiles, removeItem }) => (
 class BylineProfiles extends Component {
   static propTypes = {
     profiles: PropTypes.array,
-    blockEditor: PropTypes.bool,
   };
 
   static defaultProps = {
     profiles: [],
-    blockEditor: true,
   };
 
   constructor(props) {
     super(props);
-
-    console.log(props.blockEditor);
 
     this.state = {
       profiles: props.profiles,
@@ -110,10 +106,7 @@ class BylineProfiles extends Component {
     )
       .then((res) => res.json())
       .then((rawResults) => {
-        let currentIds = [];
-        if (0 < this.state.profiles.length) {
-          currentIds = this.state.profiles.map((profile) => profile.id);
-        }
+        const currentIds = this.state.profiles.map((profile) => profile.id);
         const searchResults = rawResults.filter(
           (result) => 0 > currentIds.indexOf(result.id)
         );

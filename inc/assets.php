@@ -26,8 +26,6 @@ function admin_enqueue_scripts( $hook ) {
 			|| PROFILE_POST_TYPE === get_post_type()
 		)
 	) {
-		wp_enqueue_style( 'byline-manager-css', get_asset_uri( 'main.css' ), [], '0.1.0' );
-
 		// Only load within the classic editor.
 		$current_screen = get_current_screen();
 
@@ -38,6 +36,8 @@ function admin_enqueue_scripts( $hook ) {
 			return;
 		}
 
+		wp_enqueue_style( 'byline-manager-css', get_asset_uri( 'main.css' ), [], '0.1.0' );
+
 		if ( ! empty( $_GET['bm-dev'] ) ) {
 			wp_enqueue_script( 'byline-manager-js', '//localhost:8080/dev.bundle.js', [], '0.1.0', true );
 		} else {
@@ -45,7 +45,7 @@ function admin_enqueue_scripts( $hook ) {
 		}
 
 		// Add Byline data for script.
-		localize_admin_script( 'byline-manager-block-editor-js' );
+		localize_admin_script( 'byline-manager-js' );
 	}
 }
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\admin_enqueue_scripts' );
@@ -63,9 +63,9 @@ function action_enqueue_block_editor_assets() {
 	}
 
 	if ( ! empty( $_GET['bm-dev'] ) ) {
-		wp_enqueue_script( 'byline-manager-block-editor-js', '//localhost:8080/dev.bundle.js', [ 'wp-i18n', 'wp-blocks', 'wp-api-fetch', 'wp-components' ], '0.1.0', true );
+		wp_enqueue_script( 'byline-manager-block-editor-js', '//localhost:8080/dev.bundle.js', [ 'wp-editor', 'wp-i18n', 'wp-blocks', 'wp-api-fetch', 'wp-components' ], '0.1.0', true );
 	} else {
-		wp_enqueue_script( 'byline-manager-block-editor-js', get_asset_uri( 'blockEditor.js' ), [ 'wp-i18n', 'wp-blocks', 'wp-api-fetch', 'wp-components' ], '0.1.0', true );
+		wp_enqueue_script( 'byline-manager-block-editor-js', get_asset_uri( 'blockEditor.js' ), [ 'wp-editor', 'wp-i18n', 'wp-blocks', 'wp-api-fetch', 'wp-components' ], '0.1.0', true );
 	}
 
 	// Add Byline data for script.

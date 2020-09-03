@@ -1,5 +1,5 @@
 import React from 'react';
-import BylineProfiles from 'components/BylineMetaBox/BylineProfiles';
+import BylineSlot from 'components/BylineSlot';
 
 import './styles/styles.scss';
 
@@ -10,10 +10,10 @@ const { __ } = wp.i18n;
 const BylineSlotFill = () => (
   <div>
     <PluginPostStatusInfo>
-      <h3 style={{ 'margin-bottom': 0 }}>{__('Bylines')}</h3>
+      <h3 style={{ marginBottom: 0 }}>{__('Bylines')}</h3>
     </PluginPostStatusInfo>
     <PluginPostStatusInfo>
-      <BylineProfiles profiles={window.bylineData.bylineMetaBox || {}} />
+      <BylineSlot />
     </PluginPostStatusInfo>
   </div>
 );

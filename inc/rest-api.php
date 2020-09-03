@@ -7,6 +7,9 @@
 
 namespace Byline_Manager;
 
+use Byline_Manager\Models\Profile;
+use Byline_Manager\Models\TextProfile;
+
 /**
  * REST API namespace.
  *
@@ -24,6 +27,15 @@ function register_rest_routes() {
 		[
 			'methods'             => \WP_REST_Server::READABLE,
 			'callback'            => __NAMESPACE__ . '\rest_profile_search',
+			'permission_callback' => '__return_true',
+		]
+	);
+	register_rest_route(
+		REST_NAMESPACE,
+		'/hydrateProfiles',
+		[
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => __NAMESPACE__ . '\rest_hydrate_profiles',
 			'permission_callback' => '__return_true',
 		]
 	);
@@ -70,6 +82,49 @@ function rest_profile_search( \WP_REST_Request $request ) {
 }
 
 /**
+ * Hydrate profiles ids.
+ *
+ * @param \WP_REST_Request $request REST request data.
+ * @return \WP_REST_Response REST API response.
+ */
+function rest_hydrate_profiles( \WP_REST_Request $request ) {
+	$byline_profiles = $request['profiles'] ?? [];
+	$profiles        = [];
+
+	if ( ! empty( $byline_profiles ) ) {
+		$index = 0;
+
+		foreach ( $byline_profiles as $entry ) {
+			if (
+				! empty( $entry['type'] )
+				&& 'byline_id' === $entry['type']
+				&& ! empty( $entry['atts']['post_id'] )
+			) {
+				// Handle byline profile ID entries.
+				$profile = Profile::get_by_post( $entry['atts']['post_id'] );
+				if ( $profile instanceof Profile ) {
+					$profiles[] = get_profile_data_for_meta_box( $profile );
+				}
+			} elseif ( ! empty( $entry['atts']['text'] ) ) {
+				// Handle text-only bylines.
+				$text_profile = TextProfile::create( $entry['atts'] );
+				$profiles[]   = [
+					// Uses a semi-arbitrary ID to give the script a reference point.
+					'id'   => $text_profile->id,
+					'name' => $text_profile->display_name,
+				];
+			}
+			$index++;
+		}
+
+		$byline_profiles = $profiles;
+	}
+
+	// Send the response.
+	return rest_ensure_response( $profiles );
+}
+
+/**
  * Send API response for REST endpoint.
  *
  * @param \WP_REST_Request $request REST request data.
@@ -93,3 +148,42 @@ function rest_user_search( \WP_REST_Request $request ) {
 	// Send the response.
 	return rest_ensure_response( $data );
 }
+
+register_post_meta(
+	'',
+	'byline',
+	[
+		'single'       => true,
+		'type'         => 'object',
+		'show_in_rest' => [
+			'schema' => [
+				'type'       => 'object',
+				'properties' => [
+					'profiles' => [
+						'type'  => 'array',
+						'items' => [
+							'type'       => 'object',
+							'properties' => [
+								'type' => 'string',
+								'atts' => [
+									'type'       => 'object',
+									'properties' => [
+										'term_id' => [
+											'type' => 'integer',
+										],
+										'post_id' => [
+											'type' => 'integer',
+										],
+										'text'    => [
+											'type' => 'string',
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		],
+	]
+);

@@ -270,4 +270,3 @@ function render_posts_column( $column, $post_id ) {
 	}
 }
 add_action( 'manage_profile_posts_custom_column', __NAMESPACE__ . '\render_posts_column', 10, 2 );
-
