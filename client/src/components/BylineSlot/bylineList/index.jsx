@@ -2,7 +2,7 @@ import { SortableContainer } from 'react-sortable-hoc';
 import BylineListItem from './bylineListItem';
 
 export default SortableContainer(({ profiles, removeItem }) => (
-  <ol>
+  <ol style={{ margin: 0 }}>
     {profiles.map((profile, index) => (
       <BylineListItem
         key={`item-${profile.id}`}

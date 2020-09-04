@@ -169,7 +169,7 @@ const BylineSlot = (props) => {
   }, []);
 
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <BylineAutocomplete
         byline={{
           profiles: hydratedProfiles,
