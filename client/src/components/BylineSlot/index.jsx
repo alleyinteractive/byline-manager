@@ -23,28 +23,8 @@ const BylineSlot = (props) => {
 
   const [hydratedProfiles, setHydratedProfiles] = React.useState([]);
 
-  const onSortEnd = ({ oldIndex, newIndex }) => {
-    onUpdate('byline', {
-      profiles: arrayMove([...byline.profiles], oldIndex, newIndex),
-    });
-  };
-
-  const removeItem = (id) => {
-    const { profiles } = byline;
-    const index = hydratedProfiles.findIndex((item) => item.id === id);
-
-    if (0 <= index) {
-      onUpdate('byline', {
-        profiles: [
-          ...profiles.slice(0, index),
-          ...profiles.slice(index + 1),
-        ],
-      });
-    }
-  };
-
   const getHydrateProfiles = (items) => {
-    if (0 > items.length) {
+    if (0 >= items.length) {
       return [];
     }
 
@@ -58,6 +38,71 @@ const BylineSlot = (props) => {
       .catch(() => []);
   };
 
+  const transformHydratedProfiles = (profiles) => {
+    if (0 >= profiles.length) {
+      return [];
+    }
+
+    return profiles.map((value) => {
+      // Profile type.
+      if (value.byline_id && 'number' === typeof value.id) {
+        return {
+          type: 'byline_id',
+          atts: {
+            term_id: value.byline_id,
+            post_id: value.id,
+          },
+        };
+      }
+
+      return {
+        type: 'text',
+        atts: {
+          text: value.name,
+        },
+      };
+    });
+  };
+
+  const saveBylines = (bylinesToSave) => {
+    // Update the Redux store.
+    onUpdate({
+      profiles: [
+        ...transformHydratedProfiles([...bylinesToSave]),
+      ],
+    });
+  };
+
+  const addByline = (bylineToAdd) => {
+    setHydratedProfiles(
+      [
+        ...hydratedProfiles,
+        bylineToAdd,
+      ]
+    );
+  };
+
+  const onSortEnd = ({ oldIndex, newIndex }) => {
+    setHydratedProfiles(arrayMove([...hydratedProfiles], oldIndex, newIndex));
+  };
+
+  const removeItem = (id) => {
+    const index = hydratedProfiles.findIndex((item) => item.id === id);
+
+    if (0 <= index) {
+      setHydratedProfiles(
+        [
+          ...hydratedProfiles.slice(0, index),
+          ...hydratedProfiles.slice(index + 1),
+        ]
+      );
+    }
+  };
+
+  React.useEffect(() => {
+    saveBylines([...hydratedProfiles]);
+  }, [hydratedProfiles]);
+
   React.useEffect(() => {
     setHydratedProfiles([]);
 
@@ -66,17 +111,18 @@ const BylineSlot = (props) => {
     }
 
     hydrateProfiles();
-  }, [byline]);
+  }, []);
 
   return (
     <div>
       <BylineAutocomplete
-        byline={byline}
-        onUpdate={onUpdate}
+        byline={{
+          profiles: hydratedProfiles,
+        }}
+        onUpdate={setHydratedProfiles}
       />
       <BylineFreeform
-        byline={byline}
-        onUpdate={onUpdate}
+        onUpdate={addByline}
       />
       <BylineList
         profiles={hydratedProfiles}
@@ -108,7 +154,7 @@ export default compose([
     };
   }),
   withDispatch((dispatch) => ({
-    onUpdate: (metaKey, metaValue) => {
+    onUpdate: (metaValue) => {
       const termBylines = metaValue.profiles.filter(
         (value) => 'undefined' !== typeof value.type &&
         'byline_id' === value.type
@@ -126,7 +172,7 @@ export default compose([
 
       dispatch('core/editor').editPost({
         meta: {
-          [metaKey]: metaValue,
+          byline: metaValue,
         },
       });
     },

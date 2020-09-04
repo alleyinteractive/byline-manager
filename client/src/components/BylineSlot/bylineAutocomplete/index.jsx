@@ -5,7 +5,9 @@ import Autocomplete from 'react-autocomplete';
 class BylineAutocomplete extends React.Component {
   static propTypes = {
     byline: PropTypes.shape({
-      profiles: PropTypes.array,
+      profiles: PropTypes.arrayOf({
+        id: PropTypes.string,
+      }),
     }).isRequired,
     onUpdate: PropTypes.func.isRequired,
   };
@@ -15,7 +17,6 @@ class BylineAutocomplete extends React.Component {
 
     this.onUpdate = props.onUpdate;
     this.state = {
-      profiles: props.byline.profiles,
       search: '',
       searchResults: [],
     };
@@ -29,7 +30,9 @@ class BylineAutocomplete extends React.Component {
     )
       .then((res) => res.json())
       .then((rawResults) => {
-        const currentIds = this.state.profiles.map((profile) => profile.id);
+        const currentIds = this.props.byline.profiles.map(
+          (profile) => profile.id
+        );
         const searchResults = rawResults.filter(
           (result) => 0 > currentIds.indexOf(result.id)
         );
@@ -58,27 +61,15 @@ class BylineAutocomplete extends React.Component {
         getItemValue={(item) => item.name}
         wrapperStyle={{ position: 'relative', display: 'block' }}
         onSelect={(value, item) => {
-          this.setState((state) => ({
+          this.setState(() => ({
             search: '',
             searchResults: [],
-            profiles: [
-              ...state.profiles,
-              item,
-            ],
           }));
 
-          this.onUpdate('byline', {
-            profiles: [
-              ...this.state.profiles,
-              {
-                type: 'byline_id',
-                atts: {
-                  term_id: item.byline_id,
-                  post_id: item.id,
-                },
-              },
-            ],
-          });
+          this.onUpdate([
+            ...this.props.byline.profiles,
+            item,
+          ]);
         }}
         onChange={(event, value) => {
           clearTimeout(this.delay);
