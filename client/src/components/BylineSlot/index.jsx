@@ -21,9 +21,28 @@ const BylineSlot = (props) => {
     onUpdate,
   } = props;
 
+  /**
+   * Local state that contains hydrated (transformed profiles with different and
+   * new attributes) profiles.
+   *
+   * The existing React components expect profiles to be formatted differently than
+   * how the data is stored in post meta. Therefore, we will use this hydrated
+   * profiles array as an intermediary state for existing React components,
+   * while still ensuring that we save the data back to post meta as originally saved.
+   *
+   * In the long term we should consider removing this logic and just use the raw
+   * post meta as the canonical format.
+   */
   const [hydratedProfiles, setHydratedProfiles] = React.useState([]);
 
-  const getHydrateProfiles = (items) => {
+  /**
+   * Hydrate profiles for use in this React app. The data is saved in another
+   * format, so we will need to trandform the data back when saving to post meta.
+   *
+   * @param  {Array} items Array of profiles from post meta.
+   * @return {Promise} Promise from an API request to get hydrated profiles.
+   */
+  const getHydrateProfiles = async (items) => {
     if (0 >= items.length) {
       return [];
     }
@@ -38,12 +57,18 @@ const BylineSlot = (props) => {
       .catch(() => []);
   };
 
-  const transformHydratedProfiles = (profiles) => {
-    if (0 >= profiles.length) {
+  /**
+   * Transforms hydrated profiles to a format that can be saved to post meta.
+   *
+   * @param {Array} items Hydrated profiles.
+   * @return {Array} Array of profiles ready to be saved to post meta.
+   */
+  const transformHydratedProfiles = (items) => {
+    if (0 >= items.length) {
       return [];
     }
 
-    return profiles.map((value) => {
+    return items.map((value) => {
       // Profile type.
       if (value.byline_id && 'number' === typeof value.id) {
         return {
@@ -64,6 +89,12 @@ const BylineSlot = (props) => {
     });
   };
 
+  /**
+   * Save bylines to the Redux store.
+   *
+   * @param {Array} bylinesToSave Bylines to be saved to post meta. This should
+   *                              be a hydrated array of profiles.
+   */
   const saveBylines = (bylinesToSave) => {
     // Update the Redux store.
     onUpdate({
@@ -73,6 +104,11 @@ const BylineSlot = (props) => {
     });
   };
 
+  /**
+   * Add a single hydrated profile to an array of hydrated profiles.
+   *
+   * @param {Object} bylineToAdd Hydrated profile.
+   */
   const addByline = (bylineToAdd) => {
     setHydratedProfiles(
       [
@@ -82,10 +118,21 @@ const BylineSlot = (props) => {
     );
   };
 
+  /**
+   * Callback after profiles are sorted.
+   *
+   * @param {Integer} oldIndex Old index of the profile.
+   * @param {Integer} newIndex New index of the profile.
+   */
   const onSortEnd = ({ oldIndex, newIndex }) => {
     setHydratedProfiles(arrayMove([...hydratedProfiles], oldIndex, newIndex));
   };
 
+  /**
+   * Callback when a profile is removed.
+   *
+   * @param {String} id The hydrated profile ID to be removed.
+   */
   const removeItem = (id) => {
     const index = hydratedProfiles.findIndex((item) => item.id === id);
 
@@ -99,10 +146,18 @@ const BylineSlot = (props) => {
     }
   };
 
+  /**
+   * When the hydrated profiles are updated, transform and save the data to the
+   * Redux store. This allows us to get data from post meta, hydrate the profiles,
+   * perform modifications on the hydrated profiles, save back to post meta.
+   */
   React.useEffect(() => {
     saveBylines([...hydratedProfiles]);
   }, [hydratedProfiles]);
 
+  /**
+   * On load hydrate the profiles.
+   */
   React.useEffect(() => {
     setHydratedProfiles([]);
 
