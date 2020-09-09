@@ -164,7 +164,9 @@ register_post_meta(
 						'items' => [
 							'type'       => 'object',
 							'properties' => [
-								'type' => 'string',
+								'type' => [
+									'type' => 'string',
+								],
 								'atts' => [
 									'type'       => 'object',
 									'properties' => [
