@@ -122,11 +122,4 @@ class BylineAutocomplete extends React.Component {
   }
 }
 
-BylineAutocomplete.propTypes = {
-  byline: PropTypes.shape({
-    profiles: PropTypes.array,
-  }).isRequired,
-  onUpdate: PropTypes.func.isRequired,
-};
-
 export default BylineAutocomplete;

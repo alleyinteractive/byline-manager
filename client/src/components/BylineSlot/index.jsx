@@ -44,7 +44,7 @@ const BylineSlot = (props) => {
    */
   const getHydrateProfiles = async (items) => {
     if (0 >= items.length) {
-      return [];
+      return Promise.resolve([]);
     }
 
     return wp.apiFetch({

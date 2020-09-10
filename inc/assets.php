@@ -33,6 +33,7 @@ function admin_enqueue_scripts( $hook ) {
 
 		if (
 			$current_screen instanceof \WP_Screen
+			&& post_type_supports( $current_screen->post_type, 'custom-fields' )
 			&& $current_screen->is_block_editor()
 		) {
 			return;
