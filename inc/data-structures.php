@@ -95,7 +95,7 @@ function register_byline() {
 				'manage_terms' => 'do_not_allow',
 				'edit_terms'   => 'do_not_allow',
 				'delete_terms' => 'do_not_allow',
-				'assign_terms' => 'assign_terms',
+				'assign_terms' => 'edit_posts',
 			],
 		]
 	);
