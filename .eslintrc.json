@@ -32,7 +32,8 @@
     }
   },
   "globals": {
-    "jQuery": false
+    "jQuery": false,
+    "wp": true
   },
   // Do NOT change these rules
   "rules": {

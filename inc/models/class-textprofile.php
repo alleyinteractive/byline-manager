@@ -42,9 +42,9 @@ class TextProfile {
 	 * @param array $atts Attributes for a text profile.
 	 */
 	private function __construct( array $atts ) {
-		$this->atts = $atts;
+		$this->atts         = $atts;
 		$this->display_name = $atts['text'] ?? false;
-		$this->id = $this->generate_id();
+		$this->id           = $this->generate_id();
 	}
 
 	/**
