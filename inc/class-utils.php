@@ -202,7 +202,6 @@ class Utils {
 		update_post_meta( $post_id, 'byline', $byline );
 	}
 
-
 	/**
 	 * Get or create a byline based on a slug.
 	 *
