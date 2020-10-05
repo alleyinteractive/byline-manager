@@ -201,4 +201,60 @@ class Utils {
 		$byline = apply_filters( 'byline_manager_post_byline_meta', $byline, $post_id );
 		update_post_meta( $post_id, 'byline', $byline );
 	}
+
+	/**
+	 * Get or create a byline based on a slug.
+	 *
+	 * @param string $byline_slug Byline slug.
+	 * @param string $byline_title Byline title.
+	 * @param string $content Byline post content. Optional.
+	 * @return Profile Byline profile object.
+	 */
+	public static function get_or_create_byline( $byline_slug, $byline_title, $content = '' ) {
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
+		$byline_query = get_posts(
+			[
+				'post_type'        => PROFILE_POST_TYPE,
+				'name'             => $byline_slug,
+				'post_status'      => 'publish',
+				'numberposts'      => 1,
+				'suppress_filters' => false,
+			]
+		);
+
+		if ( ! empty( $byline_query[0]->ID ) ) {
+			return Profile::get_by_post( $byline_query[0] );
+		}
+
+		return Profile::create(
+			[
+				'post_title'   => $byline_title ?? ' ',
+				'post_name'    => $byline_slug,
+				'post_content' => $content,
+			]
+		);
+	}
+
+	/**
+	 * Assign bylines to a post.
+	 *
+	 * @param int   $post_id    Post ID.
+	 * @param array $byline_ids Array of byline IDs.
+	 */
+	public static function assign_bylines_to_post( $post_id, $byline_ids ) {
+		$meta = [
+			'byline_entries' => [],
+		];
+
+		foreach ( $byline_ids as $byline_id ) {
+			$meta['byline_entries'][] = [
+				'type' => 'byline_id',
+				'atts' => compact( 'byline_id' ),
+			];
+		}
+
+		if ( ! empty( $meta['byline_entries'] ) ) {
+			self::set_post_byline( $post_id, $meta );
+		}
+	}
 }
