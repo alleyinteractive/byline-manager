@@ -95,12 +95,23 @@ function user_link_meta_box( $post ) {
  * }
  */
 function get_profile_data_for_meta_box( Profile $profile ) {
-	return [
+	$profile_data = [
 		'id'        => $profile->post_id,
 		'byline_id' => absint( get_post_meta( $profile->post_id, 'byline_id', true ) ),
 		'name'      => $profile->display_name,
 		'image'     => get_the_post_thumbnail_url( $profile->post_id, [ 50, 50 ] ),
 	];
+	/**
+	 * Filters the profile data sent to the metabox.
+	 *
+	 * @param array $profile_data Profile details.
+	 * @param object $profile Profile object.
+	 */
+	return apply_filters(
+		'byline_manager_get_profile_data_for_meta_box',
+		$profile_data,
+		$profile
+	);
 }
 
 /**
