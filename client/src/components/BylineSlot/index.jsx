@@ -4,6 +4,8 @@ import { arrayMove } from 'react-sortable-hoc';
 import BylineAutocomplete from './bylineAutocomplete';
 import BylineFreeform from './bylineFreeform';
 import BylineList from './bylineList';
+import getHydrateProfiles, { profilesHydrated } from './getHydrateProfiles';
+import transformHydratedProfiles from './transformHydratedProfiles';
 
 const {
   compose: {
@@ -34,60 +36,6 @@ const BylineSlot = (props) => {
    * post meta as the canonical format.
    */
   const [hydratedProfiles, setHydratedProfiles] = React.useState([]);
-
-  /**
-   * Hydrate profiles for use in this React app. The data is saved in another
-   * format, so we will need to trandform the data back when saving to post meta.
-   *
-   * @param  {Array} items Array of profiles from post meta.
-   * @return {Promise} Promise from an API request to get hydrated profiles.
-   */
-  const getHydrateProfiles = async (items) => {
-    if (0 >= items.length) {
-      return Promise.resolve([]);
-    }
-
-    return wp.apiFetch({
-      path: '/byline-manager/v1/hydrateProfiles/',
-      method: 'POST',
-      data: {
-        profiles: items,
-      },
-    }).then((value) => value)
-      .catch(() => []);
-  };
-
-  /**
-   * Transforms hydrated profiles to a format that can be saved to post meta.
-   *
-   * @param {Array} items Hydrated profiles.
-   * @return {Array} Array of profiles ready to be saved to post meta.
-   */
-  const transformHydratedProfiles = (items) => {
-    if (0 >= items.length) {
-      return [];
-    }
-
-    return items.map((value) => {
-      // Profile type.
-      if (value.byline_id && 'number' === typeof value.id) {
-        return {
-          type: 'byline_id',
-          atts: {
-            term_id: value.byline_id,
-            post_id: value.id,
-          },
-        };
-      }
-
-      return {
-        type: 'text',
-        atts: {
-          text: value.name,
-        },
-      };
-    });
-  };
 
   /**
    * Save bylines to the Redux store.
@@ -152,6 +100,7 @@ const BylineSlot = (props) => {
    * perform modifications on the hydrated profiles, save back to post meta.
    */
   React.useEffect(() => {
+    console.log(hydratedProfiles);
     saveBylines([...hydratedProfiles]);
   }, [hydratedProfiles]);
 
@@ -159,13 +108,16 @@ const BylineSlot = (props) => {
    * On load hydrate the profiles.
    */
   React.useEffect(() => {
-    setHydratedProfiles([]);
+    console.log(profilesHydrated);
 
     async function hydrateProfiles() {
       setHydratedProfiles(await getHydrateProfiles(byline.profiles || []));
     }
 
-    hydrateProfiles();
+    if (! profilesHydrated) {
+      setHydratedProfiles([]);
+      hydrateProfiles();
+    }
   }, []);
 
   return (
