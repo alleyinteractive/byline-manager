@@ -39,11 +39,7 @@ function admin_enqueue_scripts( $hook ) {
 			return;
 		}
 
-		if ( ! empty( $_GET['bm-dev'] ) ) {
-			wp_enqueue_script( 'byline-manager-js', '//localhost:8080/dev.bundle.js', [], '0.1.0', true );
-		} else {
-			wp_enqueue_script( 'byline-manager-js', get_asset_uri( 'main.js' ), [], '0.1.0', true );
-		}
+		wp_enqueue_script( 'byline-manager-js', get_asset_uri( 'main.js' ), [], '0.1.0', true );
 
 		// Add Byline data for script.
 		localize_admin_script( 'byline-manager-js' );
@@ -63,11 +59,7 @@ function action_enqueue_block_editor_assets() {
 		return;
 	}
 
-	if ( ! empty( $_GET['bm-dev'] ) ) {
-		wp_enqueue_script( 'byline-manager-block-editor-js', '//localhost:8080/dev.bundle.js', [ 'wp-editor', 'wp-i18n', 'wp-blocks', 'wp-api-fetch', 'wp-components' ], '0.1.0', true );
-	} else {
-		wp_enqueue_script( 'byline-manager-block-editor-js', get_asset_uri( 'blockEditor.js' ), [ 'wp-editor', 'wp-i18n', 'wp-blocks', 'wp-api-fetch', 'wp-components' ], '0.1.0', true );
-	}
+	wp_enqueue_script( 'byline-manager-block-editor-js', get_asset_uri( 'blockEditor.js' ), [ 'wp-editor', 'wp-i18n', 'wp-blocks', 'wp-api-fetch', 'wp-components' ], '0.1.0', true );
 
 	// Add Byline data for script.
 	localize_admin_script( 'byline-manager-block-editor-js' );

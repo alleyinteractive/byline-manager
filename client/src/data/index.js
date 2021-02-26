@@ -15,28 +15,28 @@ const {
 } = wp;
 
 const actions = {
-    actionHydrateProfiles,
-    actionReceiveHydratedProfiles,
+  actionHydrateProfiles,
+  actionReceiveHydratedProfiles,
 };
 
-const store = createReduxStore( 'byline-manager', {
-    reducer: combineReducers({
-      byline: hydrateReducer,
-    }),
+const store = createReduxStore('byline-manager', {
+  reducer: combineReducers({
+    byline: hydrateReducer,
+  }),
 
-    actions,
+  actions,
 
-    selectors: {
-        getProfiles,
-    },
+  selectors: {
+      getProfiles,
+  },
 
-    controls: {
-      ...hydrateControls,
-    },
+  controls: {
+    ...hydrateControls,
+  },
 
-    resolvers: {
-      getProfiles: resolveProfiles,
-    },
-} );
+  resolvers: {
+    getProfiles: resolveProfiles,
+  },
+});
 
 register(store);
