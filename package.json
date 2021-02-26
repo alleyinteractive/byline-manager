@@ -5,8 +5,7 @@
   "main": "client/src/index.js",
   "scripts": {
     "build": "webpack --config client/config/webpack.config.js --mode production --env.production",
-    "watch": "webpack --config client/config/webpack.config.js --watch --debug --colors --output-pathinfo --mode production --no-inline --env.production",
-    "dev": "webpack-dev-server --config client/config/webpack.config.js  --debug --colors --output-pathinfo --mode development --env.dev",
+    "watch": "webpack --config client/config/webpack.config.js --watch --debug --colors --output-pathinfo --mode development --no-inline --env.dev",
     "lint": "eslint --color . ",
     "test": "jest",
     "test:watch": "jest --watch"

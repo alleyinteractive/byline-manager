@@ -1,4 +1,3 @@
-const getDevServer = require('./devServer');
 const getEntry = require('./entry');
 const getRules = require('./rules');
 const getOutput = require('./output');
@@ -7,7 +6,6 @@ const getPlugins = require('./plugins');
 module.exports = (env, argv) => {
   const { mode } = argv;
   return {
-    devServer: getDevServer(env, mode),
     entry: getEntry(mode),
     module: {
       rules: getRules(mode),
