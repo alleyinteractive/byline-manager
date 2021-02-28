@@ -1,5 +1,3 @@
-let profilesHydrated = false; // eslint-disable-line import/no-mutable-exports
-
 /**
  * Hydrate profiles for use in this React app. The data is saved in another
  * format, so we will need to trandform the data back when saving to post meta.
@@ -18,13 +16,8 @@ const getHydrateProfiles = async (items = []) => {
     data: {
       profiles: items,
     },
-  })
-    .then((value) => {
-      profilesHydrated = true;
-      return value;
-    })
+  }).then((value) => value)
     .catch(() => []);
 };
 
 export default getHydrateProfiles;
-export { profilesHydrated };

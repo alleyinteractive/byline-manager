@@ -3,40 +3,70 @@ import hydrateReducer, {
   actionReceiveHydratedProfiles,
   getProfiles,
   resolveProfiles,
-  hydrateControls,
+  hydrateProfilesControl,
+  hydrateActions,
 } from './modules/hydrate';
+import modifyReducer, {
+  actionAddProfile,
+  actionRemoveProfile,
+  actionReorderProfile,
+  modifyActions,
+} from './modules/modify';
 
 const {
   data: {
-    combineReducers,
-    createReduxStore,
-    register,
+    registerStore,
   },
 } = wp;
 
 const actions = {
   actionHydrateProfiles,
   actionReceiveHydratedProfiles,
+  actionAddProfile,
+  actionRemoveProfile,
+  actionReorderProfile,
 };
 
-const store = createReduxStore('byline-manager', {
-  reducer: combineReducers({
-    byline: hydrateReducer,
-  }),
+const defaultState = {
+  byline: {
+    profiles: [],
+  },
+  profilesHydrated: false,
+};
+
+const store = {
+  reducer: (state = defaultState, action = {}) => {
+    console.log('bylines-manager reducer: ', state, action);
+
+    switch (true) {
+      case Object.values(hydrateActions).includes(action.type):
+        return hydrateReducer(state, action);
+
+      case Object.values(modifyActions).includes(action.type):
+        return {
+          byline: {
+            profiles: modifyReducer(state.byline.profiles, action),
+          },
+        };
+
+      default:
+        return state;
+    }
+  },
 
   actions,
 
   selectors: {
-      getProfiles,
+    getProfiles,
   },
 
   controls: {
-    ...hydrateControls,
+    [hydrateActions.HYDRATE_PROFILES]: hydrateProfilesControl,
   },
 
   resolvers: {
     getProfiles: resolveProfiles,
   },
-});
+};
 
-register(store);
+registerStore('byline-manager', store);

@@ -4,10 +4,8 @@ import Autocomplete from 'react-autocomplete';
 
 class BylineAutocomplete extends React.Component {
   static propTypes = {
-    byline: PropTypes.shape({
-      profiles: PropTypes.arrayOf({
-        id: PropTypes.string,
-      }),
+    profiles: PropTypes.arrayOf({
+      id: PropTypes.string,
     }).isRequired,
     onUpdate: PropTypes.func.isRequired,
   };
@@ -30,7 +28,7 @@ class BylineAutocomplete extends React.Component {
     )
       .then((res) => res.json())
       .then((rawResults) => {
-        const currentIds = this.props.byline.profiles.map(
+        const currentIds = this.props.profiles.map(
           (profile) => profile.id
         );
         const searchResults = rawResults.filter(
@@ -70,10 +68,9 @@ class BylineAutocomplete extends React.Component {
                 searchResults: [],
               }));
 
-              this.onUpdate([
-                ...this.props.byline.profiles,
-                item,
-              ]);
+              console.log('autocomplete', item, this.onUpdate);
+
+              this.onUpdate(item);
             }}
             onChange={(event, value) => {
               clearTimeout(this.delay);

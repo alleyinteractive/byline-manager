@@ -1,41 +1,82 @@
+import { arrayMove } from 'react-sortable-hoc';
+
+export const modifyActions = {
+  ADD_PROFILE: 'byline-manager/modify/ADD_PROFILE',
+  REMOVE_PROFILE: 'byline-manager/modify/REMOVE_PROFILE',
+  REORDER_PROFILE: 'byline-manager/modify/REORDER_PROFILE',
+};
+
+const reducer = (state = {}, action = {}) => {
+  const {
+    type,
+    payload,
+  } = action;
+
+  /* eslint-disable no-case-declarations */
+  switch (type) {
+    case modifyActions.ADD_PROFILE:
+      return [
+        ...state,
+        action.payload,
+      ];
+
+    case modifyActions.REMOVE_PROFILE:
+      const index = state.findIndex(
+        (item) => item.id === payload
+      );
+
+      if (0 <= index) {
+        return [
+          ...state.slice(0, index),
+          ...state.slice(index + 1),
+        ];
+      }
+
+      return state;
+
+    case modifyActions.REORDER_PROFILE:
+      const { oldIndex, newIndex } = payload;
+      return arrayMove(
+        [...state],
+        oldIndex,
+        newIndex
+      );
+
+    default:
+      return state;
+  }
+  /* eslint-enable */
+};
+
 /**
- * Add a single hydrated profile to an array of hydrated profiles.
+ * Creating action to add a single hydrated profile to an array of
+ * hydrated profiles.
  *
  * @param {Object} bylineToAdd Hydrated profile.
  */
-const actionAddProfile = (bylineToAdd) => {
-  setHydratedProfiles(
-    [
-      ...hydratedProfiles,
-      bylineToAdd,
-    ]
-  );
-};
+export const actionAddProfile = (bylineToAdd) => ({
+  type: modifyActions.ADD_PROFILE,
+  payload: bylineToAdd,
+});
 
 /**
- * Callback after profiles are sorted.
- *
- * @param {Integer} oldIndex Old index of the profile.
- * @param {Integer} newIndex New index of the profile.
- */
-const actionReorderProfile = ({ oldIndex, newIndex }) => {
-  setHydratedProfiles(arrayMove([...hydratedProfiles], oldIndex, newIndex));
-};
-
-/**
- * Callback when a profile is removed.
+ * Create action to remove a profile by ID from the current array of profiles.
  *
  * @param {String} id The hydrated profile ID to be removed.
  */
-const actionRemoveProfile = (id) => {
-  const index = hydratedProfiles.findIndex((item) => item.id === id);
+export const actionRemoveProfile = (id) => ({
+  type: modifyActions.REMOVE_PROFILE,
+  payload: id,
+});
 
-  if (0 <= index) {
-    setHydratedProfiles(
-      [
-        ...hydratedProfiles.slice(0, index),
-        ...hydratedProfiles.slice(index + 1),
-      ]
-    );
-  }
-};
+/**
+ * Create action to reorder profiles currently selected.
+ *
+ * @param {object} indices old and new index for moved item.
+ */
+export const actionReorderProfile = (indices) => ({
+  type: modifyActions.REORDER_PROFILE,
+  payload: indices,
+});
+
+export default reducer;

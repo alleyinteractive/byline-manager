@@ -1,5 +1,6 @@
 import React from 'react';
 import BylineSlot from 'components/BylineSlot';
+import './data';
 
 import './styles/styles.scss';
 
