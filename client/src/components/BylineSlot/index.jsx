@@ -25,7 +25,6 @@ const BylineSlot = (props) => {
   } = props;
 
   React.useEffect(() => {
-    console.log('BylineSlot callback', profiles);
     saveByline(profiles);
   }, [profiles]);
 

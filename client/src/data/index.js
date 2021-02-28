@@ -36,8 +36,6 @@ const defaultState = {
 
 const store = {
   reducer: (state = defaultState, action = {}) => {
-    console.log('bylines-manager reducer: ', state, action);
-
     switch (true) {
       case Object.values(hydrateActions).includes(action.type):
         return hydrateReducer(state, action);

@@ -68,8 +68,6 @@ class BylineAutocomplete extends React.Component {
                 searchResults: [],
               }));
 
-              console.log('autocomplete', item, this.onUpdate);
-
               this.onUpdate(item);
             }}
             onChange={(event, value) => {
