@@ -1,6 +1,6 @@
 /* globals React */
 import PropTypes from 'prop-types';
-import createSaveByline from '../../data/modules/save';
+import createSaveByline from './saveByline';
 import BylineAutocomplete from './bylineAutocomplete';
 import BylineFreeform from './bylineFreeform';
 import BylineList from './bylineList';

@@ -9,6 +9,8 @@ const createSaveByline = (dispatch) => (profiles) => {
   }
 
   const preparedProfiles = transformHydratedProfiles(profiles);
+
+  // Save byline tax term relationships.
   const termBylines = preparedProfiles.filter(
     (value) => 'undefined' !== typeof value.type &&
     'byline_id' === value.type
@@ -24,6 +26,7 @@ const createSaveByline = (dispatch) => (profiles) => {
     });
   }
 
+  // Save profile metadata.
   return dispatch('core/editor').editPost({
     meta: {
       byline: {
