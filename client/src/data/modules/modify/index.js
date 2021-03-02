@@ -26,7 +26,7 @@ const reducer = (state = [], action = {}) => {
       );
 
       if (0 <= index) {
-        state.filter((item) => item.id !== payload);
+        return state.filter((item) => item.id !== payload);
       }
 
       return state;
