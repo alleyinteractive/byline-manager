@@ -16,8 +16,7 @@ const getHydrateProfiles = async (items = []) => {
     data: {
       profiles: items,
     },
-  }).then((value) => value)
-    .catch(() => []);
+  }).catch(() => []);
 };
 
 export default getHydrateProfiles;

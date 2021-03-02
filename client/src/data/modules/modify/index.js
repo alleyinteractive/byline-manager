@@ -1,4 +1,4 @@
-import { arrayMove } from 'react-sortable-hoc';
+import arrayMove from 'array-move';
 
 export const modifyActions = {
   ADD_PROFILE: 'byline-manager/modify/ADD_PROFILE',
@@ -6,7 +6,7 @@ export const modifyActions = {
   REORDER_PROFILE: 'byline-manager/modify/REORDER_PROFILE',
 };
 
-const reducer = (state = {}, action = {}) => {
+const reducer = (state = [], action = {}) => {
   const {
     type,
     payload,
@@ -26,10 +26,7 @@ const reducer = (state = {}, action = {}) => {
       );
 
       if (0 <= index) {
-        return [
-          ...state.slice(0, index),
-          ...state.slice(index + 1),
-        ];
+        state.filter((item) => item.id !== payload);
       }
 
       return state;
@@ -37,7 +34,7 @@ const reducer = (state = {}, action = {}) => {
     case modifyActions.REORDER_PROFILE:
       const { oldIndex, newIndex } = payload;
       return arrayMove(
-        [...state],
+        state,
         oldIndex,
         newIndex
       );

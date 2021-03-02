@@ -26,7 +26,7 @@ const BylineSlot = (props) => {
 
   React.useEffect(() => {
     saveByline(profiles);
-  }, [profiles]);
+  });
 
   return (
     <div style={{ width: '100%' }}>
@@ -49,7 +49,14 @@ const BylineSlot = (props) => {
 };
 
 BylineSlot.propTypes = {
-  profiles: PropTypes.array.isRequired,
+  profiles: PropTypes.arrayOf(
+    PropTypes.shape({
+      byline_id: PropTypes.number,
+      id: PropTypes.number,
+      image: PropTypes.string,
+      name: PropTypes.string,
+    })
+  ).isRequired,
   saveByline: PropTypes.func.isRequired,
   addProfile: PropTypes.func.isRequired,
   removeProfile: PropTypes.func.isRequired,

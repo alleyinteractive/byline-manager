@@ -34,4 +34,19 @@ describe('transformHydratedProfiles', () => {
       },
     ]);
   })
+
+  it('should handle conversion of text-only bylines not linked to a term/post', () => {
+    const textProfile = transformHydratedProfiles([
+      { name: 'Winifred WordPress' }
+    ]);
+
+    expect(textProfile).toEqual([
+      {
+        type: 'text',
+        atts: {
+          text: 'Winifred WordPress',
+        },
+      },
+    ]);
+  })
 })

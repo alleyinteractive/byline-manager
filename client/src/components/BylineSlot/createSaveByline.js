@@ -12,11 +12,10 @@ const createSaveByline = (dispatch) => (profiles) => {
 
   // Save byline tax term relationships.
   const termBylines = preparedProfiles.filter(
-    (value) => 'undefined' !== typeof value.type &&
-    'byline_id' === value.type
+    (value) => (value.type && 'byline_id' === value.type)
   );
 
-  if (0 < termBylines.length) {
+  if (termBylines.length) {
     dispatch('core/editor').editPost({
       byline: [...termBylines.map((item) => item.atts.term_id)],
     });
