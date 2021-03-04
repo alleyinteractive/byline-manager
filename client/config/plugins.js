@@ -36,9 +36,14 @@ module.exports = function getPlugins(mode) {
 
     case 'development':
       return [
-        new webpack.HotModuleReplacementPlugin(),
         new MiniCssExtractPlugin({
           filename: '[name].css',
+        }),
+        new StylelintPlugin({
+          configFile: path.join(paths.config, 'stylelint.config.js'),
+        }),
+        new ManifestPlugin({
+          fileName: 'asset-manifest.json',
         }),
       ];
 

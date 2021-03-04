@@ -7,20 +7,17 @@ const { buildRoot } = require('./paths');
  */
 module.exports = function getOutput(mode) {
   switch (mode) {
+    case 'development':
+      return {
+        path: buildRoot,
+        filename: '[name].bundle.js',
+      };
+
     case 'production':
+    default:
       return {
         path: buildRoot,
         filename: '[name].[chunkhash:8].bundle.js',
       };
-
-    case 'development':
-      return {
-        path: buildRoot,
-        publicPath: '//localhost:8080/',
-        filename: '[name].bundle.js',
-      };
-
-    default:
-      return {};
   }
 };

@@ -23,6 +23,9 @@ module.exports = function getEntry(mode) {
         dev: [
           path.join(appRoot, 'index.js'),
         ],
+        blockEditor: [
+          path.join(appRoot, 'blockEditor.js'),
+        ],
       };
 
     default:
