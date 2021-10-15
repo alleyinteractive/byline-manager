@@ -90,7 +90,15 @@ function rest_profile_search( \WP_REST_Request $request ) {
 function rest_hydrate_profiles( \WP_REST_Request $request ) {
 	$byline_profiles = $request['profiles'] ?? [];
 	$profiles        = [];
+	// Check to see if the current user has profile associated with their user.
+	$current_user_profile_id = get_user_meta( get_current_user_id(), 'profile_id', true );
+	$current_user_profile    = Profile::get_by_post( $current_user_profile_id );
+	$auto_set_user_profile   = apply_filters( 'byline_manager_auto_set_user_profile', true );
 
+	/**
+	 * If we have bylines, hydrate them with meta.
+	 * Else return the user's associated profile if one was found and $auto_set_user_profile === true.
+	 */
 	if ( ! empty( $byline_profiles ) ) {
 		$index = 0;
 
@@ -118,6 +126,8 @@ function rest_hydrate_profiles( \WP_REST_Request $request ) {
 		}
 
 		$byline_profiles = $profiles;
+	} elseif ( $current_user_profile instanceof Profile && $auto_set_user_profile ) {
+		$profiles[] = get_profile_data_for_meta_box( $current_user_profile );
 	}
 
 	// Send the response.
@@ -187,5 +197,27 @@ register_post_meta(
 				],
 			],
 		],
+	]
+);
+
+register_meta(
+	'user',
+	'profile_id',
+	[
+		'type'         => 'integer',
+		'single'       => true,
+		'default'      => 0,
+		'show_in_rest' => true,
+	]
+);
+
+register_post_meta(
+	'profile',
+	'byline_id',
+	[
+		'type'         => 'integer',
+		'single'       => true,
+		'default'      => 0,
+		'show_in_rest' => true,
 	]
 );
