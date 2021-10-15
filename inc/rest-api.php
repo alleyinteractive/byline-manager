@@ -96,7 +96,7 @@ function rest_hydrate_profiles( \WP_REST_Request $request ) {
 	$auto_set_user_profile   = apply_filters( 'byline_manager_auto_set_user_profile', true );
 
 	/**
-	 * If we have bylines, hydrate them with meta.
+	 * If we have bylines, hydrate them with meta values.
 	 * Else return the user's associated profile if one was found and $auto_set_user_profile === true.
 	 */
 	if ( ! empty( $byline_profiles ) ) {
