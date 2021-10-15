@@ -17,15 +17,12 @@ const {
 
 const BylineSlot = (props) => {
   const {
-    currentUserId,
     profiles,
     saveByline,
     addProfile,
     removeProfile,
     reorderProfile,
   } = props;
-
-  console.log(currentUserId);
 
   React.useEffect(() => {
     saveByline(profiles);
@@ -58,9 +55,8 @@ BylineSlot.propTypes = {
       id: PropTypes.number,
       image: PropTypes.string,
       name: PropTypes.string,
-    }),
+    })
   ).isRequired,
-  currentUserId: PropTypes.number.isRequired,
   saveByline: PropTypes.func.isRequired,
   addProfile: PropTypes.func.isRequired,
   removeProfile: PropTypes.func.isRequired,
@@ -70,11 +66,8 @@ BylineSlot.propTypes = {
 export default compose([
   withSelect((select) => {
     const profiles = select('byline-manager').getProfiles();
-    const currentUserId = select('core').getCurrentUser().id || 0;
-    return {
-      currentUserId,
-      profiles,
-    };
+
+    return { profiles };
   }),
   withDispatch((dispatch) => {
     const {
