@@ -93,7 +93,13 @@ function rest_hydrate_profiles( \WP_REST_Request $request ) {
 	// Check to see if the current user has profile associated with their user.
 	$current_user_profile_id = get_user_meta( get_current_user_id(), 'profile_id', true );
 	$current_user_profile    = Profile::get_by_post( $current_user_profile_id );
-	$auto_set_user_profile   = apply_filters( 'byline_manager_auto_set_user_profile', true );
+
+	/**
+	 * Determine wether to auto set byline if a user object has a byline associated with it.
+	 *
+	 * @param boolean wether or not to auto set profile.
+	 */
+	$auto_set_user_profile = apply_filters( 'byline_manager_auto_set_user_profile', true );
 
 	/**
 	 * If we have bylines, hydrate them with meta values.
