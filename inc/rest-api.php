@@ -199,25 +199,3 @@ register_post_meta(
 		],
 	]
 );
-
-register_meta(
-	'user',
-	'profile_id',
-	[
-		'type'         => 'integer',
-		'single'       => true,
-		'default'      => 0,
-		'show_in_rest' => true,
-	]
-);
-
-register_post_meta(
-	'profile',
-	'byline_id',
-	[
-		'type'         => 'integer',
-		'single'       => true,
-		'default'      => 0,
-		'show_in_rest' => true,
-	]
-);

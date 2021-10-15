@@ -59,7 +59,6 @@ export function* resolveProfiles() {
   // Fetch profile data from hydration endpoint and merge into state.
   const metaBylines = select('core/editor')
     .getEditedPostAttribute('meta').byline || {};
-  console.log('metabylines', metaBylines);
   const hydratedProfiles = yield actionHydrateProfiles(metaBylines.profiles);
   return actionReceiveHydratedProfiles(hydratedProfiles);
 }
