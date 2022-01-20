@@ -35,7 +35,6 @@ module.exports = function getLoaders(mode) {
           loader: 'css-loader',
           options: {
             url: false,
-            minimize: isProd,
             importLoaders: 1,
             sourceMap: ! isProd,
           },
@@ -44,8 +43,8 @@ module.exports = function getLoaders(mode) {
           loader: 'postcss-loader',
           options: {
             sourceMap: ! isProd,
-            config: {
-              path: path.join(paths.config, 'postcss.config.js'),
+            postcssOptions: {
+              config: path.join(paths.config, 'postcss.config.js'),
             },
           },
         },

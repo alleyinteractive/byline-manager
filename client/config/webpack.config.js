@@ -1,3 +1,5 @@
+const CSSMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
 const getEntry = require('./entry');
 const getRules = require('./rules');
 const getOutput = require('./output');
@@ -11,8 +13,12 @@ module.exports = (env, argv) => {
       rules: getRules(mode),
     },
     optimization: {
-      namedModules: true,
+      moduleIds: 'named',
       noEmitOnErrors: true,
+      minimizer: 'production' === mode ? [
+        new TerserJSPlugin({}),
+        new CSSMinimizerPlugin(),
+      ] : [],
     },
     output: getOutput(mode),
     plugins: getPlugins(mode),

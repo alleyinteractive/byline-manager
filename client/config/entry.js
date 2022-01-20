@@ -20,7 +20,7 @@ module.exports = function getEntry(mode) {
 
     case 'development':
       return {
-        dev: [
+        main: [
           path.join(appRoot, 'index.js'),
         ],
         blockEditor: [

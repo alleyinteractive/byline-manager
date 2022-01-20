@@ -1,5 +1,3 @@
-@import './core/index';
-
 /* postCSS allows support for CSS custom properties
  * SASS variables are also supported
  */
@@ -56,12 +54,12 @@
   .freeformInputGrp {
     display: flex;
     margin: rem(5px) 0;
-    
+
     input {
       border-right: 0;
       margin: 0;
     }
-    
+
     button {
       border-bottom-left-radius: 0;
       border-top-left-radius: 0;
