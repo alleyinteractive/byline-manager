@@ -1,8 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-const CleanPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const StylelintPlugin = require('stylelint-webpack-plugin');
 const paths = require('./paths');
 
@@ -16,9 +15,6 @@ module.exports = function getPlugins(mode) {
     case 'production':
       return [
         new webpack.NoEmitOnErrorsPlugin(),
-        new CleanPlugin(['build'], {
-          root: paths.clientRoot,
-        }),
         new StylelintPlugin({
           configFile: path.join(paths.config, 'stylelint.config.js'),
         }),
@@ -29,7 +25,8 @@ module.exports = function getPlugins(mode) {
 
         // Generate a manifest file which contains a mapping of all asset filenames
         // to their corresponding output file.
-        new ManifestPlugin({
+        new WebpackManifestPlugin({
+          publicPath: '',
           fileName: 'asset-manifest.json',
         }),
       ];
@@ -42,7 +39,8 @@ module.exports = function getPlugins(mode) {
         new StylelintPlugin({
           configFile: path.join(paths.config, 'stylelint.config.js'),
         }),
-        new ManifestPlugin({
+        new WebpackManifestPlugin({
+          publicPath: '',
           fileName: 'asset-manifest.json',
         }),
       ];

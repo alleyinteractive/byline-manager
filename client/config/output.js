@@ -16,6 +16,7 @@ module.exports = function getOutput(mode) {
     case 'production':
     default:
       return {
+        clean: true,
         path: buildRoot,
         filename: '[name].[chunkhash:8].bundle.js',
       };

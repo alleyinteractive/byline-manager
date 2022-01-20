@@ -11,8 +11,9 @@ module.exports = (env, argv) => {
       rules: getRules(mode),
     },
     optimization: {
-      namedModules: true,
+      moduleIds: 'named',
       noEmitOnErrors: true,
+      minimize: mode === 'production',
     },
     output: getOutput(mode),
     plugins: getPlugins(mode),
