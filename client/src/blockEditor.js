@@ -15,7 +15,7 @@ import './styles/styles.scss';
 const BylineSlotFill = () => (
   <PluginPostStatusInfo>
     <div style={{ width: '100%' }}>
-      <p style={{ marginTop: 25 }}>
+      <p>
         <strong>{__('Author Bylines', 'byline-manager')}</strong>
       </p>
       <BylineSlot />
