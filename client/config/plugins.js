@@ -2,6 +2,8 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
+
 const StylelintPlugin = require('stylelint-webpack-plugin');
 const paths = require('./paths');
 
@@ -14,6 +16,8 @@ module.exports = function getPlugins(mode) {
   switch (mode) {
     case 'production':
       return [
+        // This maps references to @wordpress/{package-name} to the wp object.
+        new DependencyExtractionWebpackPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new StylelintPlugin({
           configFile: path.join(paths.config, 'stylelint.config.js'),
@@ -33,6 +37,8 @@ module.exports = function getPlugins(mode) {
 
     case 'development':
       return [
+        // This maps references to @wordpress/{package-name} to the wp object.
+        new DependencyExtractionWebpackPlugin(),
         new MiniCssExtractPlugin({
           filename: '[name].css',
         }),
@@ -43,6 +49,7 @@ module.exports = function getPlugins(mode) {
           publicPath: '',
           fileName: 'asset-manifest.json',
         }),
+
       ];
 
     default:
