@@ -1,19 +1,13 @@
-/* globals React */
+import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from '@wordpress/compose';
+import { withDispatch, withSelect } from '@wordpress/data';
+
+// Components.
 import createSaveByline from './createSaveByline';
 import BylineAutocomplete from './bylineAutocomplete';
 import BylineFreeform from './bylineFreeform';
 import BylineList from './bylineList';
-
-const {
-  compose: {
-    compose,
-  },
-  data: {
-    withSelect,
-    withDispatch,
-  },
-} = wp;
 
 const BylineSlot = (props) => {
   const {
@@ -29,7 +23,7 @@ const BylineSlot = (props) => {
   });
 
   return (
-    <div style={{ width: '100%' }}>
+    <div className="components-base-control">
       <BylineAutocomplete
         profiles={profiles}
         onUpdate={addProfile}
@@ -55,7 +49,7 @@ BylineSlot.propTypes = {
       id: PropTypes.number,
       image: PropTypes.string,
       name: PropTypes.string,
-    })
+    }),
   ).isRequired,
   saveByline: PropTypes.func.isRequired,
   addProfile: PropTypes.func.isRequired,

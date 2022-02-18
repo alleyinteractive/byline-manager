@@ -4,6 +4,8 @@
  * SASS variables are also supported
  */
 
+/* stylelint-disable selector-max-specificity */
+
 :root {
   --spacer: rem(20px);
 }
@@ -24,6 +26,13 @@
 }
 
 */
+
+.profile-controls {
+
+  label {
+    margin-bottom: rem(4);
+  }
+}
 
 .byline-manager-meta-box {
 
@@ -136,15 +145,18 @@
 
 }
 
-.byline-list-item {
+.components-item-group div[role='listitem']:last-child .byline-list-item {
+  margin-bottom: 0;
+}
+
+div.byline-list-item {
   align-items: center;
-  background: #fafafa;
-  box-shadow: 0 1px 1px rgba(64, 64, 64, 0.1);
+  background-color: #fff;
   cursor: move;
   display: flex;
-  font-size: rem(20px);
   list-style: none;
-  padding: rem(5px);
+  margin-bottom: rem(5);
+  padding: rem(5 0 5 10);
 
   * {
     vertical-align: middle;
@@ -156,18 +168,11 @@
     width: rem(50px);
   }
 
-  button {
+  button.components-button.is-destructive {
     background: none;
     border: 1px solid transparent;
     cursor: pointer;
-    float: right;
     margin-left: auto;
     transition: background-color 0.2s;
-
-    &:hover {
-      background-color: #fdd;
-      border-color: #ecc;
-      color: #933;
-    }
   }
 }

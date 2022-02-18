@@ -1,5 +1,6 @@
-/* globals React */
+import React from 'react';
 import PropTypes from 'prop-types';
+import { Button } from '@wordpress/components';
 
 const BylineFreeform = (props) => {
   const {
@@ -21,30 +22,43 @@ const BylineFreeform = (props) => {
   };
 
   return (
-    <div className="freeform-controls">
-      <label htmlFor="byline_freeform">
+    <div
+      className="freeform-controls components-base-control__field"
+      style={{ marginTop: 15 }}
+    >
+      {/* eslint-disable jsx-a11y/label-has-for */}
+      <label
+        className="components-base-control__label"
+        htmlFor="byline_freeform"
+      >
         {window.bylineData.addFreeformlabel}
-        <div className="freeformInputGrp">
-          <input
-            type="text"
-            placeholder={window.bylineData.addFreeformPlaceholder}
-            name="byline_freeform"
-            id="byline_freeform"
-            value={value}
-            onChange={(e) => {
-              setValue(e.target.value);
-            }}
-          />
-          <button
-            aria-label={window.bylineData.addFreeformButtonLabel}
-            className="button"
-            disabled={! value}
-            onClick={onSubmit}
-          >
-            {window.bylineData.addFreeformButtonLabel}
-          </button>
-        </div>
       </label>
+      <div className="freeformInputGrp">
+        <input
+          className="components-text-control__input"
+          id="byline_freeform"
+          name="byline_freeform"
+          onChange={(e) => {
+            setValue(e.target.value);
+          }}
+          placeholder={window.bylineData.addFreeformPlaceholder}
+          type="text"
+          value={value}
+        />
+        <Button
+          label={window.bylineData.addFreeformButtonLabel}
+          className="button"
+          disabled={! value}
+          isSecondary
+          variant="secondary"
+          isSmall
+          onClick={onSubmit}
+          style={{ marginTop: 10 }}
+        >
+          {window.bylineData.addFreeformButtonLabel}
+        </Button>
+      </div>
+      {/* eslint-enable jsx-a11y/label-has-for */}
     </div>
   );
 };

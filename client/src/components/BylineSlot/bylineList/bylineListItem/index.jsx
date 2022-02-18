@@ -1,21 +1,27 @@
 import { SortableElement } from 'react-sortable-hoc';
+import { __experimentalItem as Item, Button } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 export default SortableElement(({
   name,
   image,
   removeItem,
 }) => (
-  <li className="byline-list-item">
+  <Item className="byline-list-item">
     { image && <img src={image} alt={name} /> }
     <span>{name}</span>
-    <button
-      aria-label={window.bylineData.removeAuthorLabel}
+    <Button
+      label={window.bylineData.removeAuthorLabel}
+      isLink
+      isDestructive
+      variant="secondary"
+      isSmall
       onClick={(e) => {
         e.preventDefault();
         removeItem();
       }}
     >
-      &times;
-    </button>
-  </li>
+      {__('Remove', 'byline-manager')}
+    </Button>
+  </Item>
 ));

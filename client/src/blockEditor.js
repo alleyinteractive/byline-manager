@@ -2,20 +2,25 @@ import React from 'react';
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
 import { PluginPostStatusInfo } from '@wordpress/edit-post';
+
+// Components.
 import BylineSlot from 'components/BylineSlot';
+
+// Data.
 import './data';
 
+// Styles.
 import './styles/styles.scss';
 
 const BylineSlotFill = () => (
-  <div>
-    <PluginPostStatusInfo>
-      <h3 style={{ marginBottom: 0 }}>{__('Bylines', 'byline-manager')}</h3>
-    </PluginPostStatusInfo>
-    <PluginPostStatusInfo>
+  <PluginPostStatusInfo>
+    <div style={{ width: '100%' }}>
+      <p style={{ marginTop: 25 }}>
+        <strong>{__('Bylines', 'byline-manager')}</strong>
+      </p>
       <BylineSlot />
-    </PluginPostStatusInfo>
-  </div>
+    </div>
+  </PluginPostStatusInfo>
 );
 
 registerPlugin('byline-manager', { render: BylineSlotFill });

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Autocomplete from 'react-autocomplete';
 import PropTypes from 'prop-types';
+import { Button } from '@wordpress/components';
 
 class UserLinkMetaBox extends Component {
   static propTypes = {
@@ -30,7 +31,7 @@ class UserLinkMetaBox extends Component {
   doUserSearch(fragment) {
     const { usersApiUrl, postId } = window.bylineData;
     fetch(
-      `${usersApiUrl}?s=${fragment}&post=${postId}`
+      `${usersApiUrl}?s=${fragment}&post=${postId}`,
     )
       .then((res) => res.json())
       .then((searchResults) => {
@@ -63,15 +64,19 @@ class UserLinkMetaBox extends Component {
               {this.state.user.name}
             </a>
             {' '}
-            <button
+            <Button
               className="button button-link-delete button-small"
+              isSecondary
+              variant="secondary"
+              isDestructive
+              isSmall
               onClick={(e) => {
                 e.preventDefault();
                 this.setState({ user: {} });
               }}
             >
               {window.bylineData.unlinkLabel}
-            </button>
+            </Button>
           </p>
         )}
         <Autocomplete

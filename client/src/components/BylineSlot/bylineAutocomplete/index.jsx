@@ -1,4 +1,4 @@
-/* globals React */
+import React from 'react';
 import PropTypes from 'prop-types';
 import Autocomplete from 'react-autocomplete';
 
@@ -24,15 +24,15 @@ class BylineAutocomplete extends React.Component {
 
   doProfileSearch = (fragment) => {
     fetch(
-      `${window.bylineData.profilesApiUrl}?s=${fragment}`
+      `${window.bylineData.profilesApiUrl}?s=${fragment}`,
     )
       .then((res) => res.json())
       .then((rawResults) => {
         const currentIds = this.props.profiles.map(
-          (profile) => profile.id
+          (profile) => profile.id,
         );
         const searchResults = rawResults.filter(
-          (result) => 0 > currentIds.indexOf(result.id)
+          (result) => 0 > currentIds.indexOf(result.id),
         );
         this.setState({ searchResults });
       });
@@ -40,6 +40,7 @@ class BylineAutocomplete extends React.Component {
 
   render() {
     const inputProps = {
+      className: 'components-text-control__input',
       type: 'text',
       placeholder: window.bylineData.addAuthorPlaceholder,
       id: 'profiles_autocomplete',
@@ -52,65 +53,68 @@ class BylineAutocomplete extends React.Component {
     };
 
     return (
-      <div className="profile-controls">
+      <div className="profile-controls components-base-control__field">
         {/* eslint-disable jsx-a11y/label-has-for */}
-        <label htmlFor="profiles_autocomplete">
+        <label
+          className="components-base-control__label"
+          htmlFor="profiles_autocomplete"
+        >
           {window.bylineData.addAuthorLabel}
-          <Autocomplete
-            inputProps={inputProps}
-            items={this.state.searchResults}
-            value={this.state.search}
-            getItemValue={(item) => item.name}
-            wrapperStyle={{ position: 'relative', display: 'block' }}
-            onSelect={(value, item) => {
-              this.setState(() => ({
-                search: '',
-                searchResults: [],
-              }));
-
-              this.onUpdate(item);
-            }}
-            onChange={(event, value) => {
-              clearTimeout(this.delay);
-              this.setState({
-                search: value,
-              });
-
-              this.delay = setTimeout(() => {
-                this.doProfileSearch(value);
-              }, 500);
-            }}
-            renderMenu={(children) => (
-              <div
-                className="menu"
-                style={{
-                  border: '1px solid black',
-                  borderBottom: 0,
-                  borderTop: 0,
-                  padding: 0,
-                }}
-              >
-                {children}
-              </div>
-            )}
-            renderItem={(item, isHighlighted) => (
-              <div
-                className={`item ${isHighlighted ?
-                  'item-highlighted' : ''}`}
-                key={item.id}
-                style={{
-                  borderBottom: '1px solid black',
-                  padding: '10px',
-                }}
-              >
-                {item.name}
-              </div>
-            )}
-            renderInput={(props) =>
-              <input {...props} style={{ width: '100%' }} />
-            }
-          />
         </label>
+        <Autocomplete
+          inputProps={inputProps}
+          items={this.state.searchResults}
+          value={this.state.search}
+          getItemValue={(item) => item.name}
+          wrapperStyle={{ position: 'relative', display: 'block' }}
+          onSelect={(value, item) => {
+            this.setState(() => ({
+              search: '',
+              searchResults: [],
+            }));
+
+            this.onUpdate(item);
+          }}
+          onChange={(event, value) => {
+            clearTimeout(this.delay);
+            this.setState({
+              search: value,
+            });
+
+            this.delay = setTimeout(() => {
+              this.doProfileSearch(value);
+            }, 500);
+          }}
+          renderMenu={(children) => (
+            <div
+              className="menu"
+              style={{
+                border: '1px solid black',
+                borderBottom: 0,
+                borderTop: 0,
+                padding: 0,
+              }}
+            >
+              {children}
+            </div>
+          )}
+          renderItem={(item, isHighlighted) => (
+            <div
+              className={`item ${isHighlighted ?
+                'item-highlighted' : ''}`}
+              key={item.id}
+              style={{
+                borderBottom: '1px solid black',
+                padding: '10px',
+              }}
+            >
+              {item.name}
+            </div>
+          )}
+          renderInput={(props) =>
+            <input {...props} style={{ width: '100%' }} />
+          }
+        />
         {/* eslint-enable jsx-a11y/label-has-for */}
       </div>
     );
