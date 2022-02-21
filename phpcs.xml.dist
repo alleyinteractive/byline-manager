@@ -22,6 +22,7 @@
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>inc/cli.php</exclude-pattern>
 	<exclude-pattern>tests/</exclude-pattern>
+	<exclude-pattern>client/build/</exclude-pattern>
 
 	<rule ref="WordPress">
 		<!-- Turn off some rules that we don't like. -->
