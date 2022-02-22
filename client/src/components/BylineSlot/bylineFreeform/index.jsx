@@ -26,7 +26,6 @@ const BylineFreeform = (props) => {
       className="freeform-controls components-base-control__field"
       style={{ marginTop: 15 }}
     >
-      {/* eslint-disable jsx-a11y/label-has-for */}
       <label
         className="components-base-control__label"
         htmlFor="byline_freeform"
@@ -58,7 +57,6 @@ const BylineFreeform = (props) => {
           {window.bylineData.addFreeformButtonLabel}
         </Button>
       </div>
-      {/* eslint-enable jsx-a11y/label-has-for */}
     </div>
   );
 };
