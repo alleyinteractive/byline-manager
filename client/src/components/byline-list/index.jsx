@@ -2,7 +2,7 @@ import { SortableContainer } from 'react-sortable-hoc';
 import { __experimentalItemGroup as ItemGroup } from '@wordpress/components';
 
 // Components.
-import BylineListItem from './bylineListItem';
+import BylineListItem from '../byline-list-item';
 
 export default SortableContainer(({ profiles, removeItem }) => (
   <ItemGroup style={{ margin: '15px 0 0' }}>

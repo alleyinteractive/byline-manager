@@ -5,9 +5,9 @@ import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 
 // Components.
 import createSaveByline from '../../utils/create-save-byline';
-import BylineAutocomplete from './byline-autocomplete';
-import BylineFreeform from './byline-freeform';
-import BylineList from './byline-list';
+import BylineAutocomplete from '../byline-autocomplete';
+import BylineFreeform from '../byline-freeform';
+import BylineList from '../byline-list';
 
 const BylineSlot = () => {
 //   const {
