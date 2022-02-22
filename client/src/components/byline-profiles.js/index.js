@@ -2,7 +2,7 @@
  * Byline Profiles UI.
  */
 
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import {
   SortableContainer,
@@ -13,7 +13,11 @@ import Autocomplete from 'react-autocomplete';
 import PropTypes from 'prop-types';
 import { Button } from '@wordpress/components';
 
-// import useDebounce from '../../services/use-debounce';
+// Hooks.
+import useDebounce from '../../services/use-debounce';
+
+// Proptypes.
+import BYLINE_PROFILE_SHAPE from '../../../config/prop-types';
 
 const SortableItem = SortableElement(({
   count,
@@ -21,6 +25,7 @@ const SortableItem = SortableElement(({
   name,
   image,
   removeItem,
+  removeAuthorLabel,
 }) => (
   <li className="byline-list-item">
     <input
@@ -36,7 +41,7 @@ const SortableItem = SortableElement(({
     { image && <img src={image} alt={name} /> }
     <span>{name}</span>
     <Button
-      label={window.bylineData.removeAuthorLabel}
+      label={removeAuthorLabel}
       isSecondary
       isDestructive
       isSmall
@@ -51,7 +56,11 @@ const SortableItem = SortableElement(({
   </li>
 ));
 
-const BylineList = SortableContainer(({ profiles, removeItem }) => (
+const BylineList = SortableContainer(({
+  profiles,
+  removeItem,
+  removeAuthorLabel,
+}) => (
   <ol>
     {profiles.map((profile, index) => (
       <SortableItem
@@ -62,41 +71,35 @@ const BylineList = SortableContainer(({ profiles, removeItem }) => (
         name={profile.name}
         image={profile.image}
         removeItem={() => removeItem(profile.id)}
+        removeAuthorLabel={removeAuthorLabel}
       />
     ))}
   </ol>
 ));
 
-class BylineProfiles extends Component {
-  static propTypes = {
-    profiles: PropTypes.array,
+const BylineProfiles = ({
+  addAuthorLabel,
+  addAuthorPlaceholder,
+  addFreeformButtonLabel,
+  addFreeformlabel,
+  addFreeformPlaceholder,
+  profiles: profilesRaw,
+  profilesApiUrl,
+  removeAuthorLabel,
+}) => {
+  const [profiles, setProfiles] = useState(profilesRaw);
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [value, setValue] = useState('');
+
+  // Debounce search string from input.
+  const debouncedSearchString = useDebounce(search, 750);
+
+  const onSortEnd = ({ oldIndex, newIndex }) => {
+    setProfiles(arrayMove(profiles, oldIndex, newIndex));
   };
 
-  static defaultProps = {
-    profiles: [],
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      profiles: props.profiles,
-      search: '',
-      searchResults: [],
-      value: '',
-    };
-  }
-
-  onSortEnd = ({ oldIndex, newIndex }) => {
-    this.setState({
-      profiles: arrayMove(this.state.profiles, oldIndex, newIndex),
-    });
-  };
-
-  delay = null;
-
-  removeItem = (id) => {
-    const { profiles } = this.state;
+  const removeItem = (id) => {
     const index = profiles.findIndex((item) => item.id === id);
     if (0 <= index) {
       this.setState({
@@ -108,153 +111,153 @@ class BylineProfiles extends Component {
     }
   };
 
-  doProfileSearch = (fragment) => {
+  const doProfileSearch = (fragment) => {
     fetch(
-      `${window.bylineData.profilesApiUrl}?s=${fragment}`,
+      `${profilesApiUrl}?s=${fragment}`,
     )
       .then((res) => res.json())
       .then((rawResults) => {
-        const currentIds = this.state.profiles.map((profile) => profile.id);
-        const searchResults = rawResults.filter(
+        const currentIds = profiles.map((profile) => profile.id);
+        const newSearchResults = rawResults.filter(
           (result) => 0 > currentIds.indexOf(result.id),
         );
-        this.setState({ searchResults });
+        setSearchResults({ newSearchResults });
       });
   };
 
-  generateKey = (pre) => `${pre}-${new Date().getTime()}`;
+  const generateKey = (pre) => `${pre}-${new Date().getTime()}`;
 
-  render() {
-    const inputProps = {
-      className: 'components-text-control__input',
-      type: 'text',
-      placeholder: window.bylineData.addAuthorPlaceholder,
-      id: 'profiles_autocomplete',
-      onKeyDown: (e) => {
-        // If the user hits 'enter', stop the parent form from submitting.
-        if (13 === e.keyCode) {
-          e.preventDefault();
-        }
-      },
-    };
+  const inputProps = {
+    className: 'components-text-control__input',
+    type: 'text',
+    placeholder: addAuthorPlaceholder,
+    id: 'profiles_autocomplete',
+    onKeyDown: (e) => {
+      // If the user hits 'enter', stop the parent form from submitting.
+      if (13 === e.keyCode) {
+        e.preventDefault();
+      }
+    },
+  };
 
-    return (
-      <div>
-        <div className="byline-list-controls components-base-control">
-          <div className="profile-controls components-base-control__field">
-            {/* eslint-disable jsx-a11y/label-has-for */}
-            <label
-              className="components-base-control__label"
-              htmlFor="profiles_autocomplete"
-            >
-              {window.bylineData.addAuthorLabel}
-            </label>
-            <Autocomplete
-              inputProps={inputProps}
-              items={this.state.searchResults}
-              value={this.state.search}
-              getItemValue={(item) => item.name}
-              wrapperStyle={{ position: 'relative', display: 'block' }}
-              onSelect={(value, item) => {
-                this.setState((state) => ({
-                  search: '',
-                  searchResults: [],
-                  profiles: [
-                    ...state.profiles,
-                    item,
-                  ],
-                }));
-              }}
-              onChange={(event, value) => {
-                clearTimeout(this.delay);
-                this.setState({
-                  search: value,
-                });
+  useEffect(() => {
+    if ('' !== debouncedSearchString) {
+      doProfileSearch(debouncedSearchString);
+    }
+  }, [debouncedSearchString]);
 
-                this.delay = setTimeout(() => {
-                  this.doProfileSearch(value);
-                }, 500);
-              }}
-              renderMenu={(children) => (
-                <div className="menu">
-                  {children}
-                </div>
-              )}
-              renderItem={(item, isHighlighted) => (
-                <div
-                  className={
-                    classNames(
-                      'item',
-                      {
-                        'item-highlighted': isHighlighted,
-                      }
-                    )
-                  }
-                  key={item.id}
-                >
-                  {item.name}
-                </div>
-              )}
-            />
-          </div>
-          <div className="freeform-controls components-base-control__field">
-            <label
-              className="components-base-control__label"
-              htmlFor="byline_freeform"
-            >
-              {window.bylineData.addFreeformlabel}
-            </label>
-            <div className="freeformInputGrp">
-              <input
-                className="components-text-control__input"
-                id="byline_freeform"
-                name="byline_freeform"
-                onChange={(e) => {
-                  this.setState({ value: e.target.value });
-                }}
-                placeholder={window.bylineData.addFreeformPlaceholder}
-                type="text"
-                value={this.state.value}
-              />
-              <Button
-                label={window.bylineData.addFreeformButtonLabel}
-                className="button"
-                disabled={! this.state.value}
-                isSecondary
-                variant="secondary"
-                isSmall
-                onClick={(e) => {
-                  e.preventDefault();
-                  const newItem = {
-                    id: this.generateKey('text'),
-                    name: this.state.value,
-                  };
-                  this.setState((state) => ({
-                    profiles: [
-                      ...state.profiles,
-                      newItem,
-                    ],
-                    value: '',
-                  }));
-                }}
-                style={{ marginTop: 10 }}
+  return (
+    <div>
+      <div className="byline-list-controls components-base-control">
+        <div className="profile-controls components-base-control__field">
+          {/* eslint-disable jsx-a11y/label-has-for */}
+          <label
+            className="components-base-control__label"
+            htmlFor="profiles_autocomplete"
+          >
+            {addAuthorLabel}
+          </label>
+          <Autocomplete
+            inputProps={inputProps}
+            items={searchResults}
+            value={search}
+            getItemValue={(item) => item.name}
+            wrapperStyle={{ position: 'relative', display: 'block' }}
+            onSelect={(item, next) => {
+              setSearch('');
+              setSearchResults([]);
+              setProfiles([...profiles, next]);
+            }}
+            onChange={(event, next) => setSearch(next)}
+            renderMenu={(children) => (
+              <div className="menu">
+                {children}
+              </div>
+            )}
+            renderItem={(item, isHighlighted) => (
+              <div
+                className={
+                  classNames(
+                    'item',
+                    {
+                      'item-highlighted': isHighlighted,
+                    }
+                  )
+                }
+                key={item.id}
               >
-                {window.bylineData.addFreeformButtonLabel}
-              </Button>
-            </div>
+                {item.name}
+              </div>
+            )}
+          />
+        </div>
+        <div className="freeform-controls components-base-control__field">
+          <label
+            className="components-base-control__label"
+            htmlFor="byline_freeform"
+          >
+            {addFreeformlabel}
+          </label>
+          <div className="freeformInputGrp">
+            <input
+              className="components-text-control__input"
+              id="byline_freeform"
+              name="byline_freeform"
+              onChange={(e) => {
+                setValue(e.target.value);
+              }}
+              placeholder={addFreeformPlaceholder}
+              type="text"
+              value={value}
+            />
+            <Button
+              label={addFreeformButtonLabel}
+              className="button"
+              disabled={! value}
+              isSecondary
+              variant="secondary"
+              isSmall
+              onClick={(e) => {
+                e.preventDefault();
+                const newItem = {
+                  id: generateKey('text'),
+                  name: value,
+                };
+                setProfiles([
+                  ...profiles,
+                  newItem,
+                ]);
+                setValue('');
+              }}
+              style={{ marginTop: 10 }}
+            >
+              {addFreeformButtonLabel}
+            </Button>
           </div>
         </div>
-        <BylineList
-          profiles={this.state.profiles}
-          onSortEnd={this.onSortEnd}
-          lockAxis="y"
-          helperClass="byline-list-item"
-          removeItem={this.removeItem}
-        />
-        {/* eslint-enable jsx-a11y/label-has-for */}
       </div>
-    );
-  }
-}
+      <BylineList
+        profiles={profiles}
+        onSortEnd={onSortEnd}
+        lockAxis="y"
+        helperClass="byline-list-item"
+        removeItem={removeItem}
+        removeAuthorLabel={removeAuthorLabel}
+      />
+      {/* eslint-enable jsx-a11y/label-has-for */}
+    </div>
+  );
+};
+
+BylineProfiles.propTypes = {
+  addAuthorLabel: PropTypes.string.isRequired,
+  addAuthorPlaceholder: PropTypes.string.isRequired,
+  addFreeformButtonLabel: PropTypes.string.isRequired,
+  addFreeformlabel: PropTypes.string.isRequired,
+  addFreeformPlaceholder: PropTypes.string.isRequired,
+  profilesApiUrl: PropTypes.string.isRequired,
+  removeAuthorLabel: PropTypes.string.isRequired,
+  profiles: PropTypes.arrayOf(PropTypes.shape(BYLINE_PROFILE_SHAPE)).isRequired,
+};
 
 export default BylineProfiles;
