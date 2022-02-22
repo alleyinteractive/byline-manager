@@ -1,4 +1,4 @@
-// /* global bylineData */
+/* global bylineData */
 
 import React, { useEffect } from 'react';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
@@ -10,22 +10,22 @@ import BylineFreeform from '../byline-freeform';
 import BylineList from '../byline-list';
 
 const BylineSlot = () => {
-//   const {
-//     addAuthorLabel,
-//     addAuthorPlaceholder,
-//     removeAuthorLabel,
-//     addFreeformlabel,
-//     addFreeformPlaceholder,
-//     addFreeformButtonLabel,
-//     linkUserPlaceholder,
-//     userAlreadyLinked,
-//     linkedToLabel,
-//     unlinkLabel,
-//     profilesApiUrl,
-//     usersApiUrl,
-//     postId,
-//     bylineMetaBox,
-//   } = bylineData;
+  const {
+    addAuthorLabel,
+    addAuthorPlaceholder,
+    // removeAuthorLabel,
+    // addFreeformlabel,
+    // addFreeformPlaceholder,
+    // addFreeformButtonLabel,
+    // linkUserPlaceholder,
+    // userAlreadyLinked,
+    // linkedToLabel,
+    // unlinkLabel,
+    profilesApiUrl,
+    // usersApiUrl,
+    // postId,
+    // bylineMetaBox,
+  } = bylineData;
 
   const profiles = useSelect(
     (select) => select('byline-manager').getProfiles()
@@ -48,6 +48,9 @@ const BylineSlot = () => {
       <BylineAutocomplete
         profiles={profiles}
         onUpdate={addProfile}
+        profilesApiUrl={profilesApiUrl}
+        addAuthorPlaceholder={addAuthorPlaceholder}
+        addAuthorLabel={addAuthorLabel}
       />
       <BylineFreeform
         onUpdate={addProfile}

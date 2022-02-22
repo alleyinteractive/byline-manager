@@ -1,124 +1,121 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Autocomplete from 'react-autocomplete';
 
-class BylineAutocomplete extends React.Component {
-  static propTypes = {
-    profiles: PropTypes.arrayOf({
-      id: PropTypes.string,
-    }).isRequired,
-    onUpdate: PropTypes.func.isRequired,
-  };
+// Hooks.
+import useDebounce from '../../services/use-debounce';
 
-  constructor(props) {
-    super(props);
+const BylineAutocomplete = ({
+  profiles,
+  onUpdate,
+  profilesApiUrl,
+  addAuthorPlaceholder,
+  addAuthorLabel,
+}) => {
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
-    this.onUpdate = props.onUpdate;
-    this.state = {
-      search: '',
-      searchResults: [],
-    };
-  }
+  // Debounce search string from input.
+  const debouncedSearchString = useDebounce(search, 750);
 
-  delay = null;
-
-  doProfileSearch = (fragment) => {
+  const doProfileSearch = (fragment) => {
     fetch(
-      `${window.bylineData.profilesApiUrl}?s=${fragment}`,
+      `${profilesApiUrl}?s=${fragment}`,
     )
       .then((res) => res.json())
       .then((rawResults) => {
-        const currentIds = this.props.profiles.map(
+        const currentIds = profiles.map(
           (profile) => profile.id,
         );
-        const searchResults = rawResults.filter(
+        const newSearchResults = rawResults.filter(
           (result) => 0 > currentIds.indexOf(result.id),
         );
-        this.setState({ searchResults });
+        setSearchResults(newSearchResults);
       });
   };
 
-  render() {
-    const inputProps = {
-      className: 'components-text-control__input',
-      type: 'text',
-      placeholder: window.bylineData.addAuthorPlaceholder,
-      id: 'profiles_autocomplete',
-      onKeyDown: (e) => {
-        // If the user hits 'enter', stop the parent form from submitting.
-        if (13 === e.keyCode) {
-          e.preventDefault();
+  const inputProps = {
+    className: 'components-text-control__input',
+    type: 'text',
+    placeholder: addAuthorPlaceholder,
+    id: 'profiles_autocomplete',
+    onKeyDown: (e) => {
+      // If the user hits 'enter', stop the parent form from submitting.
+      if (13 === e.keyCode) {
+        e.preventDefault();
+      }
+    },
+  };
+
+  useEffect(() => {
+    if ('' !== debouncedSearchString) {
+      doProfileSearch(debouncedSearchString);
+    }
+  }, [debouncedSearchString]);
+
+  return (
+    <div className="profile-controls components-base-control__field">
+      <label
+        className="components-base-control__label"
+        htmlFor="profiles_autocomplete"
+      >
+        {addAuthorLabel}
+      </label>
+      <Autocomplete
+        inputProps={inputProps}
+        items={searchResults}
+        value={search}
+        getItemValue={(item) => item.name}
+        wrapperStyle={{ position: 'relative', display: 'block' }}
+        onSelect={(value, item) => {
+          setSearch('');
+          setSearchResults([]);
+
+          onUpdate(item);
+        }}
+        onChange={(event, next) => setSearch(next)}
+        renderMenu={(children) => (
+          <div
+            className="menu"
+            style={{
+              border: '1px solid black',
+              borderBottom: 0,
+              borderTop: 0,
+              padding: 0,
+            }}
+          >
+            {children}
+          </div>
+        )}
+        renderItem={(item, isHighlighted) => (
+          <div
+            className={`item ${isHighlighted ?
+              'item-highlighted' : ''}`}
+            key={item.id}
+            style={{
+              borderBottom: '1px solid black',
+              padding: '10px',
+            }}
+          >
+            {item.name}
+          </div>
+        )}
+        renderInput={(props) =>
+          <input {...props} style={{ width: '100%' }} />
         }
-      },
-    };
+      />
+    </div>
+  );
+};
 
-    return (
-      <div className="profile-controls components-base-control__field">
-        {/* eslint-disable jsx-a11y/label-has-for */}
-        <label
-          className="components-base-control__label"
-          htmlFor="profiles_autocomplete"
-        >
-          {window.bylineData.addAuthorLabel}
-        </label>
-        <Autocomplete
-          inputProps={inputProps}
-          items={this.state.searchResults}
-          value={this.state.search}
-          getItemValue={(item) => item.name}
-          wrapperStyle={{ position: 'relative', display: 'block' }}
-          onSelect={(value, item) => {
-            this.setState(() => ({
-              search: '',
-              searchResults: [],
-            }));
-
-            this.onUpdate(item);
-          }}
-          onChange={(event, value) => {
-            clearTimeout(this.delay);
-            this.setState({
-              search: value,
-            });
-
-            this.delay = setTimeout(() => {
-              this.doProfileSearch(value);
-            }, 500);
-          }}
-          renderMenu={(children) => (
-            <div
-              className="menu"
-              style={{
-                border: '1px solid black',
-                borderBottom: 0,
-                borderTop: 0,
-                padding: 0,
-              }}
-            >
-              {children}
-            </div>
-          )}
-          renderItem={(item, isHighlighted) => (
-            <div
-              className={`item ${isHighlighted ?
-                'item-highlighted' : ''}`}
-              key={item.id}
-              style={{
-                borderBottom: '1px solid black',
-                padding: '10px',
-              }}
-            >
-              {item.name}
-            </div>
-          )}
-          renderInput={(props) =>
-            <input {...props} style={{ width: '100%' }} />
-          }
-        />
-        {/* eslint-enable jsx-a11y/label-has-for */}
-      </div>
-    );
-  }
-}
+BylineAutocomplete.propTypes = {
+  profiles: PropTypes.arrayOf({
+    id: PropTypes.string,
+  }).isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  profilesApiUrl: PropTypes.string.isRequired,
+  addAuthorPlaceholder: PropTypes.string.isRequired,
+  addAuthorLabel: PropTypes.string.isRequired,
+};
 
 export default BylineAutocomplete;
