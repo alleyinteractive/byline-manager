@@ -6,12 +6,13 @@ export default SortableElement(({
   name,
   image,
   removeItem,
+  removeAuthorLabel,
 }) => (
   <Item className="byline-list-item">
     { image && <img src={image} alt={name} /> }
     <span>{name}</span>
     <Button
-      label={window.bylineData.removeAuthorLabel}
+      label={removeAuthorLabel}
       isLink
       isDestructive
       variant="secondary"

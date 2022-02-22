@@ -13,18 +13,11 @@ const BylineSlot = () => {
   const {
     addAuthorLabel,
     addAuthorPlaceholder,
-    // removeAuthorLabel,
+    removeAuthorLabel,
     addFreeformlabel,
     addFreeformPlaceholder,
     addFreeformButtonLabel,
-    // linkUserPlaceholder,
-    // userAlreadyLinked,
-    // linkedToLabel,
-    // unlinkLabel,
     profilesApiUrl,
-    // usersApiUrl,
-    // postId,
-    // bylineMetaBox,
   } = bylineData;
 
   const profiles = useSelect(
@@ -64,6 +57,7 @@ const BylineSlot = () => {
         lockAxis="y"
         helperClass="byline-list-item"
         removeItem={removeProfile}
+        removeAuthorLabel={removeAuthorLabel}
       />
     </div>
   );

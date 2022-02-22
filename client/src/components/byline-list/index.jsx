@@ -4,7 +4,11 @@ import { __experimentalItemGroup as ItemGroup } from '@wordpress/components';
 // Components.
 import BylineListItem from '../byline-list-item';
 
-export default SortableContainer(({ profiles, removeItem }) => (
+export default SortableContainer(({
+  profiles,
+  removeItem,
+  removeAuthorLabel,
+}) => (
   <ItemGroup style={{ margin: '15px 0 0' }}>
     {profiles.map((profile, index) => (
       <BylineListItem
@@ -15,6 +19,7 @@ export default SortableContainer(({ profiles, removeItem }) => (
         name={profile.name || ''}
         image={profile.image || ''}
         removeItem={() => removeItem(profile.id)}
+        removeAuthorLabel={removeAuthorLabel}
       />
     ))}
   </ItemGroup>
