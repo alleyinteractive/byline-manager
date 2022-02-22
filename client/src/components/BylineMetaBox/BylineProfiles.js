@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import {
   SortableContainer,
   SortableElement,
@@ -11,6 +12,7 @@ import {
 import Autocomplete from 'react-autocomplete';
 import PropTypes from 'prop-types';
 import { Button } from '@wordpress/components';
+import classNames from 'classnames';
 
 const SortableItem = SortableElement(({
   count,
@@ -179,8 +181,14 @@ class BylineProfiles extends Component {
               )}
               renderItem={(item, isHighlighted) => (
                 <div
-                  className={`item ${isHighlighted ?
-                    'item-highlighted' : ''}`}
+                  className={
+                    classNames(
+                      'item',
+                      {
+                        'item-highlighted': isHighlighted,
+                      }
+                    )
+                  }
                   key={item.id}
                 >
                   {item.name}
