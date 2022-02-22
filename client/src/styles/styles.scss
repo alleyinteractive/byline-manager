@@ -50,7 +50,6 @@
   }
 
   .byline-list-controls {
-    background: #fafafa;
     border-bottom: 1px solid var(--grayLight);
     display: flex;
     flex-wrap: wrap;
@@ -58,17 +57,23 @@
 
     > div {
       flex: 1;
-      margin: 0.5rem;
+      margin: 0 0.5rem;
       min-width: rem(260px);
+
+      .block-editor-page & {
+        margin: 0.5rem;
+      }
     }
   }
 
   .freeformInputGrp {
-    display: flex;
     margin: rem(5px) 0;
 
+    .block-editor-page & {
+      display: flex;
+    }
+
     input {
-      border-right: 0;
       margin: 0;
     }
 
@@ -106,6 +111,11 @@
     position: absolute;
     width: 100%;
     z-index: 100;
+
+    .block-editor-page & {
+      background: transparent;
+      border: 0;
+    }
   }
 
   .item {
@@ -144,6 +154,15 @@
     margin-left: 0;
   }
 
+  &-item {
+    align-items: center;
+    display: flex;
+    max-width: rem(250);
+
+    button {
+      margin-left: auto;
+    }
+  }
 }
 
 .components-item-group div[role='listitem']:last-child .byline-list-item {
