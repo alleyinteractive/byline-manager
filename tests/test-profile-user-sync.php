@@ -22,8 +22,8 @@ class Test_Profile_User_Sync extends \WP_UnitTestCase {
 
 	public function test_update_link() {
 		$profile = Profile::get_by_post( $this->profile_id );
-		$user1 = self::factory()->user->create( [ 'role' => 'author' ] );
-		$user2 = self::factory()->user->create( [ 'role' => 'editor' ] );
+		$user1   = self::factory()->user->create( [ 'role' => 'author' ] );
+		$user2   = self::factory()->user->create( [ 'role' => 'editor' ] );
 
 		$this->assertSame( 0, $profile->get_linked_user_id() );
 
@@ -43,7 +43,7 @@ class Test_Profile_User_Sync extends \WP_UnitTestCase {
 
 	public function test_unlink() {
 		$profile = Profile::get_by_post( $this->profile_id );
-		$user = self::factory()->user->create( [ 'role' => 'author' ] );
+		$user    = self::factory()->user->create( [ 'role' => 'author' ] );
 
 		// Link user and confirm that all data got set properly.
 		$profile->update_user_link( $user );

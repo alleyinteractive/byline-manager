@@ -45,16 +45,22 @@ class Test_Profile_Byline_Sync extends \WP_UnitTestCase {
 
 	public function test_byline_relationships() {
 		$post_type_no_author = 'test-without-author';
-		register_post_type( $post_type_no_author, [
-			'public' => true,
-			'supports' => [ 'title', 'editor' ],
-		] );
+		register_post_type(
+			$post_type_no_author,
+			[
+				'public'   => true,
+				'supports' => [ 'title', 'editor' ],
+			] 
+		);
 
 		$post_type_with_author = 'test-with-author';
-		register_post_type( $post_type_with_author, [
-			'public' => true,
-			'supports' => [ 'title', 'editor', 'author' ],
-		] );
+		register_post_type(
+			$post_type_with_author,
+			[
+				'public'   => true,
+				'supports' => [ 'title', 'editor', 'author' ],
+			] 
+		);
 
 		unregister_taxonomy( BYLINE_TAXONOMY );
 		register_byline();

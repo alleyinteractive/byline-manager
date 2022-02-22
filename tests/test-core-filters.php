@@ -20,17 +20,23 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 
 		parent::setUp();
 
-		$user_id = $this->factory->user->create( [
-			'role' => 'editor',
-		] );
-		$this->b1 = Profile::create( [
-			'post_name'  => 'b1',
-			'post_title' => 'Byline 1',
-		] );
-		$this->b2 = Profile::create( [
-			'post_name'  => 'b2',
-			'post_title' => 'Byline 2',
-		] );
+		$user_id           = $this->factory->user->create(
+			[
+				'role' => 'editor',
+			] 
+		);
+		$this->b1          = Profile::create(
+			[
+				'post_name'  => 'b1',
+				'post_title' => 'Byline 1',
+			] 
+		);
+		$this->b2          = Profile::create(
+			[
+				'post_name'  => 'b2',
+				'post_title' => 'Byline 2',
+			] 
+		);
 		$this->byline_meta = [
 			'byline_entries' => [
 				[
@@ -47,7 +53,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 				],
 			],
 		];
-		$post = $this->factory->post->create_and_get( [ 'post_author' => $user_id ] );
+		$post              = $this->factory->post->create_and_get( [ 'post_author' => $user_id ] );
 		setup_postdata( $post );
 	}
 
@@ -141,7 +147,7 @@ class Test_Core_Filters extends \WP_UnitTestCase {
 		ob_start();
 		global $post;
 		try {
-			@require( ABSPATH . 'wp-includes/feed-rss2.php' );
+			@require ABSPATH . 'wp-includes/feed-rss2.php';
 			$out = ob_get_clean();
 		} catch ( Exception $e ) {
 			$out = ob_get_clean();
