@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@wordpress/components';
 
 const BylineFreeform = (props) => {
   const {
+    addFreeformlabel,
+    addFreeformPlaceholder,
+    addFreeformButtonLabel,
     onUpdate,
   } = props;
 
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = useState('');
 
   const generateKey = (pre) => `${pre}-${new Date().getTime()}`;
 
@@ -30,7 +33,7 @@ const BylineFreeform = (props) => {
         className="components-base-control__label"
         htmlFor="byline_freeform"
       >
-        {window.bylineData.addFreeformlabel}
+        {addFreeformlabel}
       </label>
       <div className="freeformInputGrp">
         <input
@@ -40,12 +43,12 @@ const BylineFreeform = (props) => {
           onChange={(e) => {
             setValue(e.target.value);
           }}
-          placeholder={window.bylineData.addFreeformPlaceholder}
+          placeholder={addFreeformPlaceholder}
           type="text"
           value={value}
         />
         <Button
-          label={window.bylineData.addFreeformButtonLabel}
+          label={addFreeformButtonLabel}
           className="button"
           disabled={! value}
           isSecondary
@@ -54,7 +57,7 @@ const BylineFreeform = (props) => {
           onClick={onSubmit}
           style={{ marginTop: 10 }}
         >
-          {window.bylineData.addFreeformButtonLabel}
+          {addFreeformButtonLabel}
         </Button>
       </div>
     </div>
@@ -62,6 +65,10 @@ const BylineFreeform = (props) => {
 };
 
 BylineFreeform.propTypes = {
+  bylineData: PropTypes.shape({}).isRequired,
+  addFreeformlabel: PropTypes.string.isRequired,
+  addFreeformPlaceholder: PropTypes.string.isRequired,
+  addFreeformButtonLabel: PropTypes.string.isRequired,
   onUpdate: PropTypes.func.isRequired,
 };
 

@@ -14,9 +14,9 @@ const BylineSlot = () => {
     addAuthorLabel,
     addAuthorPlaceholder,
     // removeAuthorLabel,
-    // addFreeformlabel,
-    // addFreeformPlaceholder,
-    // addFreeformButtonLabel,
+    addFreeformlabel,
+    addFreeformPlaceholder,
+    addFreeformButtonLabel,
     // linkUserPlaceholder,
     // userAlreadyLinked,
     // linkedToLabel,
@@ -54,6 +54,9 @@ const BylineSlot = () => {
       />
       <BylineFreeform
         onUpdate={addProfile}
+        addFreeformlabel={addFreeformlabel}
+        addFreeformPlaceholder={addFreeformPlaceholder}
+        addFreeformButtonLabel={addFreeformButtonLabel}
       />
       <BylineList
         profiles={profiles}
