@@ -6,7 +6,7 @@
   "scripts": {
     "preinstall": "npx check-node-version --package",
     "build": "webpack --config client/config/webpack.config.js --mode production",
-    "watch": "webpack --config client/config/webpack.config.js --watch --output-pathinfo --mode development",
+    "dev": "webpack --config client/config/webpack.config.js --watch --output-pathinfo --mode development",
     "lint": "eslint --color . ",
     "test": "jest",
     "test:watch": "jest --watch"
