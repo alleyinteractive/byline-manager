@@ -134,7 +134,7 @@ function load_asset_file( $path ) {
 	if ( ! file_exists( $path ) ) {
 		return null;
 	}
-	$contents = file_get_contents( $path );
+	$contents = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 	if ( empty( $contents ) ) {
 		return null;
 	}

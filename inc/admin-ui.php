@@ -155,7 +155,7 @@ function set_byline( $post_id, $post ) {
 	// Verify that the nonce is valid.
 	if (
 		empty( $_POST['post_byline_nonce'] )
-		|| ! wp_verify_nonce( $_POST['post_byline_nonce'], 'set_byline_data' ) // WPCS: sanitization ok.
+		|| ! wp_verify_nonce( $_POST['post_byline_nonce'], 'set_byline_data' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	) {
 		return;
 	}
@@ -164,7 +164,7 @@ function set_byline( $post_id, $post ) {
 		'byline_entries' => [],
 	];
 	// The data from this array is sanitized as it's used.
-	$byline_entries = isset( $_POST['byline_entry'] ) ? wp_unslash( $_POST['byline_entry'] ) : []; // WPCS: sanitization ok.
+	$byline_entries = isset( $_POST['byline_entry'] ) ? wp_unslash( $_POST['byline_entry'] ) : []; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 	if ( ! empty( $byline_entries ) && is_array( $byline_entries ) ) {
 		foreach ( $byline_entries as $entry ) {
@@ -216,7 +216,7 @@ function set_profile_user_link( $post_id, $post ) {
 	// Verify that the nonce is valid.
 	if (
 		empty( $_POST['profile_user_link_nonce'] )
-		|| ! wp_verify_nonce( $_POST['profile_user_link_nonce'], 'set_user_link' ) // WPCS: sanitization ok.
+		|| ! wp_verify_nonce( $_POST['profile_user_link_nonce'], 'set_user_link' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	) {
 		return;
 	}

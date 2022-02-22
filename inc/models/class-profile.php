@@ -84,13 +84,13 @@ class Profile {
 		}
 
 		// Clone applicable user fields.
-		$user_fields = array(
+		$user_fields = [
 			'first_name',
 			'last_name',
 			'user_email',
 			'user_login',
 			'user_url',
-		);
+		];
 		update_post_meta( $profile->post->ID, 'user_id', $user->ID );
 		foreach ( $user_fields as $field ) {
 			update_post_meta( $profile->post->ID, $field, $user->$field );
