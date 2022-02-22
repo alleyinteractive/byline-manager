@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import {
   SortableContainer,
   SortableElement,
@@ -12,7 +12,6 @@ import {
 import Autocomplete from 'react-autocomplete';
 import PropTypes from 'prop-types';
 import { Button } from '@wordpress/components';
-import classNames from 'classnames';
 
 const SortableItem = SortableElement(({
   count,
