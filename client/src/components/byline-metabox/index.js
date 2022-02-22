@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import BylineProfiles from './BylineProfiles';
+import BylineProfiles from './byline-profiles';
 
 class BylineMetaBox extends Component {
   constructor(props) {

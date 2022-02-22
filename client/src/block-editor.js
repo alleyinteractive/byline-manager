@@ -4,7 +4,7 @@ import { registerPlugin } from '@wordpress/plugins';
 import { PluginPostStatusInfo } from '@wordpress/edit-post';
 
 // Components.
-import BylineSlot from 'components/BylineSlot';
+import BylineSlot from 'components/byline-slot';
 
 // Data.
 import './data';

@@ -1,13 +1,13 @@
-/* global bylineData */
+// /* global bylineData */
 
 import React, { useEffect } from 'react';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 
 // Components.
-import createSaveByline from './createSaveByline';
-import BylineAutocomplete from './bylineAutocomplete';
-import BylineFreeform from './bylineFreeform';
-import BylineList from './bylineList';
+import createSaveByline from '../../utils/create-save-byline';
+import BylineAutocomplete from './byline-autocomplete';
+import BylineFreeform from './byline-freeform';
+import BylineList from './byline-list';
 
 const BylineSlot = () => {
 //   const {
