@@ -2,7 +2,8 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
-const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
+const DependencyExtractionWebpackPlugin =
+  require('@wordpress/dependency-extraction-webpack-plugin');
 
 const StylelintPlugin = require('stylelint-webpack-plugin');
 const paths = require('./paths');
