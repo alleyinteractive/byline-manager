@@ -38,7 +38,7 @@ const SortableItem = SortableElement(({
       name={`byline_entry[${count}][value]`}
       value={bylineId || name}
     />
-    { image && <img src={image} alt={name} /> }
+    { image ? <img src={image} alt={name} /> : null }
     <span>{name}</span>
     <Button
       label={removeAuthorLabel}
