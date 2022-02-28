@@ -4,7 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Components.
-import BylineProfiles from '../byline-profiles.js';
+import BylineProfiles from '../byline-profiles';
 
 // Proptypes.
 import BYLINE_PROFILE_SHAPE from '../../../config/prop-types';
