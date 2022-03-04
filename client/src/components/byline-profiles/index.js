@@ -16,9 +16,6 @@ import { Button } from '@wordpress/components';
 // Hooks.
 import useDebounce from '../../services/use-debounce';
 
-// Proptypes.
-import BYLINE_PROFILE_SHAPE from '../../../config/prop-types';
-
 const SortableItem = SortableElement(({
   count,
   bylineId,
@@ -257,7 +254,18 @@ BylineProfiles.propTypes = {
   addFreeformPlaceholder: PropTypes.string.isRequired,
   profilesApiUrl: PropTypes.string.isRequired,
   removeAuthorLabel: PropTypes.string.isRequired,
-  profiles: PropTypes.arrayOf(PropTypes.shape(BYLINE_PROFILE_SHAPE)).isRequired,
+  profiles: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+    byline_id: PropTypes.number,
+    name: PropTypes.string,
+    image: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.string,
+    ]),
+  })).isRequired,
 };
 
 export default BylineProfiles;
