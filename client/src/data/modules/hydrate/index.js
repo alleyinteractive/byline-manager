@@ -1,10 +1,7 @@
-import getHydrateProfiles from './getHydrateProfiles';
+import { select } from '@wordpress/data';
 
-const {
-  data: {
-    select,
-  },
-} = wp;
+// Components.
+import getHydrateProfiles from './getHydrateProfiles';
 
 export const hydrateActions = {
   HYDRATE_PROFILES: 'byline-manager/hydrate/HYDRATE_PROFILES',

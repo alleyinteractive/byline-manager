@@ -1,3 +1,5 @@
+import { registerStore } from '@wordpress/data';
+
 import hydrateReducer, {
   actionHydrateProfiles,
   actionReceiveHydratedProfiles,
@@ -12,12 +14,6 @@ import modifyReducer, {
   actionReorderProfile,
   modifyActions,
 } from './modules/modify';
-
-const {
-  data: {
-    registerStore,
-  },
-} = wp;
 
 const actions = {
   actionHydrateProfiles,

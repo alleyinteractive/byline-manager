@@ -1,8 +1,15 @@
 import { SortableContainer } from 'react-sortable-hoc';
-import BylineListItem from './bylineListItem';
+import { __experimentalItemGroup as ItemGroup } from '@wordpress/components';
 
-export default SortableContainer(({ profiles, removeItem }) => (
-  <ol style={{ margin: 0 }}>
+// Components.
+import BylineListItem from '../byline-list-item';
+
+export default SortableContainer(({
+  profiles,
+  removeItem,
+  removeAuthorLabel,
+}) => (
+  <ItemGroup style={{ margin: '15px 0 0' }}>
     {profiles.map((profile, index) => (
       <BylineListItem
         key={`item-${profile.id}`}
@@ -12,7 +19,8 @@ export default SortableContainer(({ profiles, removeItem }) => (
         name={profile.name || ''}
         image={profile.image || ''}
         removeItem={() => removeItem(profile.id)}
+        removeAuthorLabel={removeAuthorLabel}
       />
     ))}
-  </ol>
+  </ItemGroup>
 ));

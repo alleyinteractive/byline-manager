@@ -4,6 +4,8 @@
  * SASS variables are also supported
  */
 
+/* stylelint-disable selector-max-specificity */
+
 :root {
   --spacer: rem(20px);
 }
@@ -25,6 +27,14 @@
 
 */
 
+.freeform-controls,
+.profile-controls {
+
+  label {
+    display: block;
+  }
+}
+
 .byline-manager-meta-box {
 
   label {
@@ -40,7 +50,6 @@
   }
 
   .byline-list-controls {
-    background: #fafafa;
     border-bottom: 1px solid var(--grayLight);
     display: flex;
     flex-wrap: wrap;
@@ -48,17 +57,23 @@
 
     > div {
       flex: 1;
-      margin: 0.5rem;
+      margin: 0 0.5rem;
       min-width: rem(260px);
+
+      .block-editor-page & {
+        margin: 0.5rem;
+      }
     }
   }
 
   .freeformInputGrp {
-    display: flex;
     margin: rem(5px) 0;
 
+    .block-editor-page & {
+      display: flex;
+    }
+
     input {
-      border-right: 0;
       margin: 0;
     }
 
@@ -96,6 +111,11 @@
     position: absolute;
     width: 100%;
     z-index: 100;
+
+    .block-editor-page & {
+      background: transparent;
+      border: 0;
+    }
   }
 
   .item {
@@ -134,17 +154,29 @@
     margin-left: 0;
   }
 
+  &-item {
+    align-items: center;
+    display: flex;
+    max-width: rem(250);
+
+    button {
+      margin-left: auto;
+    }
+  }
 }
 
-.byline-list-item {
+.components-item-group div[role='listitem']:last-child .byline-list-item {
+  margin-bottom: 0;
+}
+
+div.byline-list-item {
   align-items: center;
-  background: #fafafa;
-  box-shadow: 0 1px 1px rgba(64, 64, 64, 0.1);
+  background-color: #fff;
   cursor: move;
   display: flex;
-  font-size: rem(20px);
   list-style: none;
-  padding: rem(5px);
+  margin-bottom: rem(5);
+  padding: rem(5 0 5 10);
 
   * {
     vertical-align: middle;
@@ -156,18 +188,11 @@
     width: rem(50px);
   }
 
-  button {
+  button.components-button.is-destructive {
     background: none;
     border: 1px solid transparent;
     cursor: pointer;
-    float: right;
     margin-left: auto;
     transition: background-color 0.2s;
-
-    &:hover {
-      background-color: #fdd;
-      border-color: #ecc;
-      color: #933;
-    }
   }
 }

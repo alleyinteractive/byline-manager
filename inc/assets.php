@@ -106,7 +106,7 @@ function localize_admin_script( $handle ) {
 		$handle,
 		'bylineData',
 		[
-			'addAuthorLabel'         => __( 'Search for an author to add to the byline', 'byline-manager' ),
+			'addAuthorLabel'         => __( 'Search for an author', 'byline-manager' ),
 			'addAuthorPlaceholder'   => __( 'Enter name', 'byline-manager' ),
 			'removeAuthorLabel'      => __( 'Remove author from byline', 'byline-manager' ),
 			'addFreeformlabel'       => __( 'Enter text to add to the byline', 'byline-manager' ),
