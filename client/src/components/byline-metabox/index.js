@@ -6,9 +6,6 @@ import PropTypes from 'prop-types';
 // Components.
 import BylineProfiles from '../byline-profiles';
 
-// Proptypes.
-import BYLINE_PROFILE_SHAPE from '../../../config/prop-types';
-
 const BylineMetaBox = ({
   bylineMetaBox: {
     profiles = [],
@@ -48,7 +45,18 @@ const BylineMetaBox = ({
 
 BylineMetaBox.propTypes = {
   bylineMetaBox: PropTypes.shape({
-    profiles: PropTypes.arrayOf(PropTypes.shape(BYLINE_PROFILE_SHAPE)),
+    profiles: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string,
+      ]),
+      byline_id: PropTypes.number,
+      name: PropTypes.string,
+      image: PropTypes.oneOfType([
+        PropTypes.bool,
+        PropTypes.string,
+      ]),
+    })),
   }).isRequired,
 };
 
