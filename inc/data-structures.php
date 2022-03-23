@@ -74,6 +74,9 @@ function register_profile() {
 			'menu_icon'           => 'dashicons-id',
 			'menu_position'       => 71,
 			'supports'            => [ 'title', 'editor', 'revisions', 'thumbnail' ],
+			'show_in_graphql'     => true,
+			'graphql_single_name' => 'profile',
+			'graphql_plural_name' => 'profiles',
 		]
 	);
 }
@@ -91,6 +94,9 @@ function register_byline() {
 			'sort'         => true,
 			'rewrite'      => false,
 			'show_in_rest' => true,
+			'show_in_graphql'     => true,
+			'graphql_single_name' => 'byline',
+			'graphql_plural_name' => 'bylines',
 			'capabilities' => [
 				'manage_terms' => 'do_not_allow',
 				'edit_terms'   => 'do_not_allow',
@@ -160,3 +166,60 @@ function profile_post_title_placeholder( $title, $post ) {
 	return $title;
 }
 add_filter( 'enter_title_here', __NAMESPACE__ . '\profile_post_title_placeholder', 10, 2 );
+
+/**
+ * Register graphQL field for post dek.
+ *
+ */
+function register_byline_field() {
+	// Register the field on the post.
+	register_graphql_field(
+		'Post',
+		'byline',
+		[
+			'type'        => 'String',
+			'description' => 'Bylines meta',
+			'args'        => [
+				'slug' => [
+					'type'        => 'String',
+					'description' => __( 'Format of the field output', 'wp-graphql' ),
+				],
+			],
+			'resolve'     => function ( $source, $args ) {
+				$bylines = get_post_meta( get_post()->ID, 'byline', true );
+				return json_encode( $args );
+			},
+		]
+	);
+}
+add_action( 'graphql_register_types', __NAMESPACE__ . '\register_byline_field' );
+
+/**
+ * Register graphQL connection between profiles and posts.
+ */
+function register_profile_connection() {
+	register_graphql_connection(
+		[
+			'fromType'       => 'Post',
+			'toType'         => 'Profile',
+			'queryClass'     => 'WP_Query',
+			'fromFieldName'  => 'profiles',
+			'connectionArgs' => \WPGraphQL\Connection\PostObjects::get_connection_args( [], get_post_type_object( 'profile' ) ),
+			'resolve'        => function ( $post, $args, $context, $info ) {
+				$bylines = get_post_meta( $post->ID, 'byline', true );
+				$byline_ids = array_map(
+					function( $byline ) {
+						return $byline['atts']['post_id'];
+					},
+					$bylines['profiles']
+				);
+				$resolver   = new \WPGraphQL\Data\Connection\PostObjectConnectionResolver( $post, $args, $context, $info, 'post' );
+				$resolver->set_query_arg( 'post__in', $byline_ids );
+				$connection = $resolver->get_connection();
+
+				return $connection;
+			},
+		]
+	);
+}
+add_action( 'graphql_register_types', __NAMESPACE__ . '\register_profile_connection' );
