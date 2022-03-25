@@ -39,5 +39,8 @@ require_once PATH . 'inc/admin-ui.php';
 // REST API interfaces.
 require_once PATH . 'inc/rest-api.php';
 
+// GraphQL interfaces.
+require_once PATH . 'inc/graphql.php';
+
 // Hook into core filters to output byline.
 require_once PATH . 'inc/core-filters.php';
