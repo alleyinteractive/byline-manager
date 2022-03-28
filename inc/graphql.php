@@ -19,7 +19,7 @@ function register_byline_types() {
 	register_graphql_object_type(
 		'TextProfile',
 		[
-			'description' => __( 'Promoted Book', 'byline-manager' ),
+			'description' => __( 'A TextProfile type', 'byline-manager' ),
 			'fields'      => [
 				'text' => [
 					'type'        => 'String',
