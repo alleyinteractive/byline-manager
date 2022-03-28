@@ -127,7 +127,7 @@ UserLinkMetaBox.propTypes = {
     name: PropTypes.string,
     linked: PropTypes.bool,
   }),
-  userAlreadyLinked: PropTypes.bool.isRequired,
+  userAlreadyLinked: PropTypes.string.isRequired,
   usersApiUrl: PropTypes.string.isRequired,
 };
 

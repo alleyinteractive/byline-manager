@@ -39,7 +39,7 @@ function admin_enqueue_scripts( $hook ) {
 			return;
 		}
 
-		wp_enqueue_script( 'byline-manager-js', get_asset_uri( 'main.js' ), [], '0.1.0', true );
+		wp_enqueue_script( 'byline-manager-js', get_asset_uri( 'main.js' ), [ 'wp-element', 'wp-i18n', 'wp-components' ], '0.1.0', true );
 
 		// Add Byline data for script.
 		localize_admin_script( 'byline-manager-js' );
