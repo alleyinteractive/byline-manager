@@ -147,6 +147,8 @@
 
     > div {
       flex: 1;
+      max-width: rem(550px);
+      min-width: rem(250px);
     }
   }
 
