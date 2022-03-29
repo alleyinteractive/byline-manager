@@ -35,77 +35,38 @@
   }
 }
 
-.byline-manager-meta-box {
-
-  label {
-    color: #555d66;
-    display: block;
-  }
-
-  input[type=text] {
-    display: block;
-    margin: rem(5px) 0 0;
-    min-height: 28px;
-    width: 100%;
-  }
-
-  .byline-list-controls {
-    border-bottom: 1px solid var(--grayLight);
-    display: flex;
-    flex-wrap: wrap;
-    padding: 0.5rem;
-
-    > div {
-      flex: 1;
-      margin: 0 0.5rem;
-      min-width: rem(260px);
-
-      .block-editor-page & {
-        margin: 0.5rem;
-      }
-    }
-  }
+.freeform-controls {
 
   .freeformInputGrp {
+    align-items: flex-start;
+    display: flex;
     margin: rem(5px) 0;
 
-    .block-editor-page & {
-      display: flex;
-    }
-
-    input {
+    .components-text-control__input {
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
       margin: 0;
     }
 
     button {
       border-bottom-left-radius: 0;
+      border-left: 0;
       border-top-left-radius: 0;
       box-shadow: none;
       margin: 0;
     }
   }
+}
 
-  .current-user-link {
-    font-weight: 700;
+.profile-controls,
+.profile-user-link {
 
-    button {
-      font-weight: 500;
-      margin-left: rem(10px);
-    }
-  }
-
-  .byline-override-option {
-    float: right;
-    margin: rem(5px) 0 rem(15px) rem(15px);
-  }
-
-  label span {
-    display: block;
+  .components-text-control__input {
+    margin: rem(5px) 0 0;
   }
 
   .menu {
     background: #fff;
-    border: 1px solid #cccccc;
     box-sizing: border-box;
     padding: 0;
     position: absolute;
@@ -119,8 +80,20 @@
   }
 
   .item {
+    background: white;
+    border: 0 solid #ccc;
+    border-left-width: 1px;
+    border-right-width: 1px;
     cursor: default;
-    padding: 2px 6px;
+    padding: 0.5rem;
+  }
+
+  .item:first-of-type {
+    border-top-width: 1px;
+  }
+
+  .item:last-of-type {
+    border-bottom-width: 1px;
   }
 
   .item-highlighted {
@@ -142,6 +115,56 @@
     background-color: #eeeeee;
     color: #454545;
     font-weight: 700;
+  }
+}
+
+.profile-user-link .menu {
+  max-width: rem(600px);
+}
+
+.byline-manager-meta-box {
+
+  label {
+    color: #555d66;
+    display: block;
+  }
+
+  input[type="text"],
+  input[role="combobox"] {
+    display: block;
+    min-height: 28px;
+    min-width: 300px;
+    width: 100%;
+  }
+
+  .byline-list-controls {
+    border-bottom: 1px solid var(--grayLight);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+
+    > div {
+      flex: 1;
+    }
+  }
+
+  .current-user-link {
+    font-weight: 700;
+
+    button {
+      font-weight: 500;
+      margin-left: rem(10px);
+    }
+  }
+
+  .byline-override-option {
+    float: right;
+    margin: rem(5px) 0 rem(15px) rem(15px);
+  }
+
+  label span {
+    display: block;
   }
 }
 

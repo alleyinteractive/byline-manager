@@ -42,7 +42,7 @@ function admin_enqueue_scripts( $hook ) {
 		wp_enqueue_script(
 			'byline-manager-js',
 			get_asset_path( 'main.js' ),
-			get_asset_dependencies( 'main.php'),
+			get_asset_dependencies( 'main.php' ),
 			get_asset_hash( 'main.js' ),
 			true
 		);
@@ -121,7 +121,7 @@ function localize_admin_script( $handle ) {
 			'addAuthorLabel'         => __( 'Search for an author', 'byline-manager' ),
 			'addAuthorPlaceholder'   => __( 'Enter name', 'byline-manager' ),
 			'removeAuthorLabel'      => __( 'Remove author from byline', 'byline-manager' ),
-			'addFreeformlabel'       => __( 'Enter text to add to the byline', 'byline-manager' ),
+			'addFreeformLabel'       => __( 'Enter text to add to the byline', 'byline-manager' ),
 			'addFreeformPlaceholder' => __( 'Enter text', 'byline-manager' ),
 			'addFreeformButtonLabel' => __( 'Insert', 'byline-manager' ),
 			'linkUserPlaceholder'    => __( 'Search for a user account by name', 'byline-manager' ),
