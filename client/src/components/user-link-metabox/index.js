@@ -112,6 +112,9 @@ const UserLinkMetaBox = ({
               <em>{userAlreadyLinked}</em>}
           </div>
         )}
+        wrapperStyle={{
+          display: 'block',
+        }}
       />
     </div>
   );

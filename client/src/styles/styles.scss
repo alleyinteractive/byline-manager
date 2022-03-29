@@ -104,10 +104,12 @@
   .item-disabled {
     color: #aaa;
     cursor: not-allowed;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 
     em {
-      float: right;
-      margin-left: rem(10px);
+      margin-left: 0.5rem;
     }
   }
 
@@ -133,7 +135,6 @@
   input[role="combobox"] {
     display: block;
     min-height: 28px;
-    min-width: 300px;
     width: 100%;
   }
 
@@ -165,6 +166,25 @@
 
   label span {
     display: block;
+  }
+}
+
+#advanced-sortables,
+#normal-sortables {
+
+  .profile-user-link input {
+    width: rem(450px);
+  }
+}
+
+@media (min-width: 851px) {
+
+  #side-sortables {
+
+    .menu {
+      right: rem(10px);
+      width: rem(440px);
+    }
   }
 }
 

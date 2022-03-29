@@ -19,7 +19,8 @@ function register_meta_boxes() {
 		'byline-manager-user-link-meta-box',
 		__( 'User Account', 'byline-manager' ),
 		__NAMESPACE__ . '\user_link_meta_box',
-		PROFILE_POST_TYPE
+		PROFILE_POST_TYPE,
+		'side'
 	);
 
 	// Only load within the classic editor.
