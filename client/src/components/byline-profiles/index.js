@@ -99,12 +99,10 @@ const BylineProfiles = ({
   const removeItem = (id) => {
     const index = profiles.findIndex((item) => item.id === id);
     if (0 <= index) {
-      this.setState({
-        profiles: [
-          ...profiles.slice(0, index),
-          ...profiles.slice(index + 1),
-        ],
-      });
+      setProfiles([
+        ...profiles.slice(0, index),
+        ...profiles.slice(index + 1),
+      ]);
     }
   };
 
@@ -118,7 +116,7 @@ const BylineProfiles = ({
         const newSearchResults = rawResults.filter(
           (result) => 0 > currentIds.indexOf(result.id),
         );
-        setSearchResults({ newSearchResults });
+        setSearchResults(newSearchResults);
       });
   };
 

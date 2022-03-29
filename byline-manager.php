@@ -29,6 +29,7 @@ require_once PATH . 'inc/template-tags.php';
 
 // Asset loader.
 require_once PATH . 'inc/assets.php';
+require_once PATH . 'inc/asset-loader-bridge.php';
 
 // Data structures.
 require_once PATH . 'inc/data-structures.php';
