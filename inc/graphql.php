@@ -47,6 +47,7 @@ function register_byline_types() {
 		]
 	);
 
+	// Register options for byline format.
 	register_graphql_enum_type(
 		'BylineTextEnum',
 		[
@@ -70,7 +71,7 @@ function register_byline_types() {
 		[
 			'description' => __( 'Byline manager byline', 'byline-manager' ),
 			'fields'      => [
-				'bylineText'      => [
+				'bylineText' => [
 					'args'        => [
 						'format' => [
 							'type'        => 'BylineTextEnum',
@@ -98,7 +99,7 @@ function register_byline_types() {
 						return $byline;
 					},
 				],
-				'profiles' => [
+				'profiles'   => [
 					'type'        => [ 'list_of' => 'ProfileTypes' ],
 					'description' => __( 'Byline profiles', 'byline-manager' ),
 					'resolve'     => function ( WPGraphQL\Model\Post $post ) {
