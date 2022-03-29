@@ -110,7 +110,7 @@ module.exports = (stats, opts) => {
 
   // Write out asset manifest explicitly or else it'll be served from localhost, where wp can't access it
   if (mode === 'development') {
-    const assetMap = path.join(__dirname, '../assetMap.json');
+    const assetMap = path.join(__dirname, '../build/assetMap.json');
     const assetMapPath = path.dirname(assetMap);
 
     // Create build directory if it doesn't exist, as may be the case on first run.
