@@ -39,8 +39,6 @@ function admin_enqueue_scripts( $hook ) {
 			return;
 		}
 
-		print_r( get_asset_dependencies( 'main.php') );
-
 		wp_enqueue_script(
 			'byline-manager-js',
 			get_asset_path( 'main.js' ),

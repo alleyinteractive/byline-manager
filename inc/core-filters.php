@@ -99,5 +99,3 @@ function unset_rewrites( $rules ) {
 	return $rules;
 }
 add_filter( 'rewrite_rules_array', __NAMESPACE__ . '\unset_rewrites' );
-
-add_filter('use_block_editor_for_post_type', '__return_false');
