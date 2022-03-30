@@ -21,7 +21,7 @@
     "phpcs": "phpcs . --runtime-set text_domain byline-manager",
     "phpunit": "phpunit"
   },
-  "type": "project",
+  "type": "wordpress-plugin",
   "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
