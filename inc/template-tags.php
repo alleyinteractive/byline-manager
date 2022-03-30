@@ -24,10 +24,12 @@ function the_byline() {
  * override if present.
  *
  * Equivalent to get_the_author() template tag.
+ *
+ * @param int|\WP_Post $post Optional Post ID or WP_Post object. Default is global $post.
  */
-function get_the_byline() {
+function get_the_byline( $post = null ) {
 	return byline_render(
-		Utils::get_byline_entries_for_post(),
+		Utils::get_byline_entries_for_post( $post ),
 		function( $entry ) {
 			return wp_strip_all_tags( $entry->display_name );
 		}
@@ -47,10 +49,12 @@ function the_byline_posts_links() {
 /**
  * Renders the profiles display names, with links to their posts, or the byline
  * override if present.
+ *
+ * @param int|\WP_Post $post Optional Post ID or WP_Post object. Default is global $post.
  */
-function get_the_byline_posts_links() {
+function get_the_byline_posts_links( $post = null ) {
 	return byline_render(
-		Utils::get_byline_entries_for_post(),
+		Utils::get_byline_entries_for_post( $post ),
 		function( $entry ) {
 			$args = [
 				'before_html' => '',
@@ -100,10 +104,12 @@ function the_byline_links() {
 /**
  * Renders the profiles display names, with their website link if it exists, or
  * the byline override if present.
+ *
+ * @param int|\WP_Post $post Optional Post ID or WP_Post object. Default is global $post.
  */
-function get_the_byline_links() {
+function get_the_byline_links( $post = null ) {
 	return byline_render(
-		Utils::get_byline_entries_for_post(),
+		Utils::get_byline_entries_for_post( $post ),
 		function( $entry ) {
 			if ( $entry instanceof Models\Profile && $entry->user_url ) {
 				return sprintf(
