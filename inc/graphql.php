@@ -19,11 +19,11 @@ function register_byline_types() {
 	register_graphql_object_type(
 		'TextProfile',
 		[
-			'description' => __( 'A TextProfile type', 'byline-manager' ),
+			'description' => __( 'A TextProfile type.', 'byline-manager' ),
 			'fields'      => [
 				'text' => [
 					'type'        => 'String',
-					'description' => __( 'Text for a text profile', 'byline-manager' ),
+					'description' => __( 'Text for a text profile.', 'byline-manager' ),
 				],
 			],
 		]
@@ -51,7 +51,7 @@ function register_byline_types() {
 	register_graphql_enum_type(
 		'BylineTextEnum',
 		[
-			'description' => __( 'Byline format', 'byline-manager' ),
+			'description' => __( 'Byline format.', 'byline-manager' ),
 			'values'      => [
 				'TEXT'       => [
 					'value' => 'text',
@@ -66,10 +66,11 @@ function register_byline_types() {
 		]
 	);
 
+	// Register the Byline object type.
 	register_graphql_object_type(
 		'Byline',
 		[
-			'description' => __( 'Byline manager byline', 'byline-manager' ),
+			'description' => __( 'Byline manager byline.', 'byline-manager' ),
 			'fields'      => [
 				'bylineText' => [
 					'args'        => [
@@ -79,7 +80,7 @@ function register_byline_types() {
 						],
 					],
 					'type'        => 'String',
-					'description' => __( 'Byline text', 'byline-manager' ),
+					'description' => __( 'Byline text.', 'byline-manager' ),
 					'resolve'     => function( WPGraphQL\Model\Post $post, array $args ) {
 						switch ( $args['format'] ) {
 							case 'links':
@@ -89,12 +90,13 @@ function register_byline_types() {
 								return get_the_byline_posts_links( $post->ID );
 						}
 
+						// Default handling of 'text' formats.
 						return get_the_byline( $post->ID );
 					},
 				],
 				'profiles'   => [
 					'type'        => [ 'list_of' => 'ProfileTypes' ],
-					'description' => __( 'Byline profiles', 'byline-manager' ),
+					'description' => __( 'Byline profiles.', 'byline-manager' ),
 					'resolve'     => function ( WPGraphQL\Model\Post $post ) {
 						$byline_data = get_post_meta( $post->ID, 'byline', true );
 
@@ -119,15 +121,13 @@ function register_byline_types() {
 	/*
 	 * Register byline fields on nodes that support authors, which is also
 	 * the check byline manager uses to determine if a post supports bylines.
-	 * The byline field will return a list of either Profile posts or text
-	 * profiles based on the type stored in the post meta object
 	 */
 	register_graphql_field(
 		'NodeWithAuthor',
 		'byline',
 		[
 			'type'        => 'Byline',
-			'description' => __( 'Byline profiles', 'byline-manager' ),
+			'description' => __( 'Byline profiles.', 'byline-manager' ),
 			'resolve'     => function ( WPGraphQL\Model\Post $post ) {
 				return $post;
 			},
