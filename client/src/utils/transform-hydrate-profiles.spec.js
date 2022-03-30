@@ -1,4 +1,4 @@
-import transformHydratedProfiles from './transformHydratedProfiles';
+import transformHydratedProfiles from './transform-hydrate-profiles';
 
 describe('transformHydratedProfiles', () => {
   it(
