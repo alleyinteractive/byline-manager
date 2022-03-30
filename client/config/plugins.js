@@ -1,11 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const StatsPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const DependencyExtractionWebpackPlugin =
   require('@wordpress/dependency-extraction-webpack-plugin');
-
 const StylelintPlugin = require('stylelint-webpack-plugin');
+const createWriteWpAssetManifest = require('./wpAssets');
+
 const paths = require('./paths');
 
 /**
@@ -28,11 +29,11 @@ module.exports = function getPlugins(mode) {
           chunkFilename: '[id].[chunkhash:8].css',
         }),
 
-        // Generate a manifest file which contains a mapping of all asset filenames
-        // to their corresponding output file.
-        new WebpackManifestPlugin({
-          publicPath: '',
-          fileName: 'asset-manifest.json',
+        // This creates our assetMap.json file to get build hashes for cache busting.
+        new StatsPlugin({
+          transform: createWriteWpAssetManifest,
+          fields: ['assetsByChunkName', 'hash'],
+          filename: 'assetMap.json',
         }),
       ];
 
@@ -46,11 +47,12 @@ module.exports = function getPlugins(mode) {
         new StylelintPlugin({
           configFile: path.join(paths.config, 'stylelint.config.js'),
         }),
-        new WebpackManifestPlugin({
-          publicPath: '',
-          fileName: 'asset-manifest.json',
+        // This creates our assetMap.json file to get build hashes for cache busting.
+        new StatsPlugin({
+          transform: createWriteWpAssetManifest,
+          fields: ['assetsByChunkName', 'hash'],
+          filename: 'assetMap.json',
         }),
-
       ];
 
     default:

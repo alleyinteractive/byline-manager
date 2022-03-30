@@ -10,8 +10,8 @@ namespace Byline_Manager;
 use Byline_Manager\Models\Profile;
 use Byline_Manager\Models\TextProfile;
 
-const BUILD_URL  = URL . 'client/build/';
-const BUILD_PATH = PATH . 'client/build/';
+define( 'BYLINE_MANAGER_ASSET_MAP', read_asset_map( dirname( __DIR__ ) . '/client/build/assetMap.json' ) );
+define( 'BYLINE_MANAGER_ASSET_MODE', BYLINE_MANAGER_ASSET_MAP['mode'] ?? 'production' );
 
 /**
  * Enqueue basic UI admin scripts and styles.
@@ -26,7 +26,7 @@ function admin_enqueue_scripts( $hook ) {
 			|| PROFILE_POST_TYPE === get_post_type()
 		)
 	) {
-		wp_enqueue_style( 'byline-manager-css', get_asset_uri( 'main.css' ), [], '0.1.0' );
+		wp_enqueue_style( 'byline-manager-css', get_asset_path( 'main.css' ), [], '0.1.0' );
 
 		// Only load within the classic editor.
 		$current_screen = get_current_screen();
@@ -39,7 +39,13 @@ function admin_enqueue_scripts( $hook ) {
 			return;
 		}
 
-		wp_enqueue_script( 'byline-manager-js', get_asset_uri( 'main.js' ), [], '0.1.0', true );
+		wp_enqueue_script(
+			'byline-manager-js',
+			get_asset_path( 'main.js' ),
+			get_asset_dependencies( 'main.php' ),
+			get_asset_hash( 'main.js' ),
+			true
+		);
 
 		// Add Byline data for script.
 		localize_admin_script( 'byline-manager-js' );
@@ -59,7 +65,13 @@ function action_enqueue_block_editor_assets() {
 		return;
 	}
 
-	wp_enqueue_script( 'byline-manager-block-editor-js', get_asset_uri( 'blockEditor.js' ), [ 'wp-editor', 'wp-i18n', 'wp-blocks', 'wp-api-fetch', 'wp-components' ], '0.1.0', true );
+	wp_enqueue_script(
+		'byline-manager-block-editor-js',
+		get_asset_path( 'blockEditor.js' ),
+		get_asset_dependencies( 'blockEditor.php' ),
+		get_asset_hash( 'blockEditor.js' ),
+		true
+	);
 
 	// Add Byline data for script.
 	localize_admin_script( 'byline-manager-block-editor-js' );
@@ -109,7 +121,7 @@ function localize_admin_script( $handle ) {
 			'addAuthorLabel'         => __( 'Search for an author', 'byline-manager' ),
 			'addAuthorPlaceholder'   => __( 'Enter name', 'byline-manager' ),
 			'removeAuthorLabel'      => __( 'Remove author from byline', 'byline-manager' ),
-			'addFreeformlabel'       => __( 'Enter text to add to the byline', 'byline-manager' ),
+			'addFreeformLabel'       => __( 'Enter text to add to the byline', 'byline-manager' ),
 			'addFreeformPlaceholder' => __( 'Enter text', 'byline-manager' ),
 			'addFreeformButtonLabel' => __( 'Insert', 'byline-manager' ),
 			'linkUserPlaceholder'    => __( 'Search for a user account by name', 'byline-manager' ),
@@ -125,48 +137,103 @@ function localize_admin_script( $handle ) {
 }
 
 /**
- * Attempt to load a file at the specified path and parse its contents as JSON.
+ * Get the contentHash for a given asset.
  *
- * @param string $path The path to the JSON file to load.
- * @return array|null;
+ * @param string $asset Entry point and asset type separated by a '.'.
+ *
+ * @return string The asset's hash.
  */
-function load_asset_file( $path ) {
-	if ( ! file_exists( $path ) ) {
-		return null;
-	}
-	$contents = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-	if ( empty( $contents ) ) {
-		return null;
-	}
-	return json_decode( $contents, true );
+function get_asset_hash( string $asset ) : string {
+	return get_asset_property( $asset, 'hash' )
+		?? BYLINE_MANAGER_ASSET_MAP['hash']
+		?? '1.0.0';
 }
 
 /**
- * Load the build asset manifest file, and attempt to decode and return the
- * asset list JSON if found.
+ * Gets asset dependencies from the generated asset manifest.
  *
- * @return array
+ * @param string $asset Entry point and asset type separated by a '.'.
+ *
+ * @return array An array of dependencies for this asset.
  */
-function get_assets_list() {
-	static $assets;
-	if ( ! isset( $assets ) ) {
-		$assets = load_asset_file( BUILD_PATH . 'asset-manifest.json' );
-		if ( empty( $assets ) ) {
-			$assets = [];
-		}
+function get_asset_dependencies( string $asset ) : array {
+	// Get the path to the PHP file containing the dependencies.
+	$dependency_file = get_asset_path( $asset, true );
+	if ( empty( $dependency_file ) ) {
+		return [];
 	}
-	return $assets;
+
+	// Ensure the filepath is valid.
+	if ( ! file_exists( $dependency_file ) || 0 !== validate_file( $dependency_file ) ) {
+		return [];
+	}
+
+	// Try to load the dependencies.
+	// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+	$dependencies = require $dependency_file;
+	if ( empty( $dependencies['dependencies'] ) || ! is_array( $dependencies['dependencies'] ) ) {
+		return [];
+	}
+
+	return $dependencies['dependencies'];
 }
 
 /**
- * Return web URIs or convert relative filesystem paths to absolute paths.
+ * Get the URL for a given asset.
  *
- * @param string $file Name of the file in the asset manifest.
- * @return string
+ * @param string  $asset Entry point and asset type separated by a '.'.
+ * @param boolean $dir   Optional. Whether to return the directory path or the plugin URL path. Defaults to false (returns URL).
+ *
+ * @return string The asset URL.
  */
-function get_asset_uri( $file ) {
-	$assets_list = get_assets_list();
-	if ( ! empty( $assets_list[ $file ] ) ) {
-		return BUILD_URL . $assets_list[ $file ];
+function get_asset_path( string $asset, bool $dir = false ) : string {
+	// Try to get the relative path.
+	$relative_path = get_asset_property( $asset, 'path' );
+	if ( empty( $relative_path ) ) {
+		return '';
 	}
+
+	// Negotiate the base path.
+	$base_path = true === $dir
+		? dirname( __DIR__ ) . '/client/build'
+		: plugins_url( 'client/build', __DIR__ );
+
+	return trailingslashit( $base_path ) . $relative_path;
+}
+
+/**
+ * Get a property for a given asset.
+ *
+ * @param string $asset Entry point and asset type separated by a '.'.
+ * @param string $prop The property to get from the entry object.
+ *
+ * @return string|null The asset property based on entry and type.
+ */
+function get_asset_property( string $asset, string $prop ) : ?string {
+	/*
+	 * Appending a '.' ensures the explode() doesn't generate a notice while
+	 * allowing the variable names to be more readable via list().
+	 */
+	list( $entrypoint, $type ) = explode( '.', "$asset." );
+
+	$asset_property = BYLINE_MANAGER_ASSET_MAP[ $entrypoint ][ $type ][ $prop ] ?? null;
+
+	return $asset_property ? $asset_property : null;
+}
+
+/**
+ * Decode the asset map at the given file path.
+ *
+ * @param string $path File path.
+ *
+ * @return array The asset map.
+ */
+function read_asset_map( string $path ) : array {
+	if ( file_exists( $path ) && 0 === validate_file( $path ) ) {
+		ob_start();
+		include $path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.IncludingFile, WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+		return json_decode( ob_get_clean(), true );
+	}
+
+	return [];
 }

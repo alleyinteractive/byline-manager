@@ -4,7 +4,7 @@ import { Button } from '@wordpress/components';
 
 const BylineFreeform = (props) => {
   const {
-    addFreeformlabel,
+    addFreeformLabel,
     addFreeformPlaceholder,
     addFreeformButtonLabel,
     onUpdate,
@@ -33,7 +33,7 @@ const BylineFreeform = (props) => {
         className="components-base-control__label"
         htmlFor="byline_freeform"
       >
-        {addFreeformlabel}
+        {addFreeformLabel}
       </label>
       <div className="freeformInputGrp">
         <input
@@ -55,7 +55,6 @@ const BylineFreeform = (props) => {
           variant="secondary"
           isSmall
           onClick={onSubmit}
-          style={{ marginTop: 10 }}
         >
           {addFreeformButtonLabel}
         </Button>
@@ -66,7 +65,7 @@ const BylineFreeform = (props) => {
 
 BylineFreeform.propTypes = {
   bylineData: PropTypes.shape({}).isRequired,
-  addFreeformlabel: PropTypes.string.isRequired,
+  addFreeformLabel: PropTypes.string.isRequired,
   addFreeformPlaceholder: PropTypes.string.isRequired,
   addFreeformButtonLabel: PropTypes.string.isRequired,
   onUpdate: PropTypes.func.isRequired,
