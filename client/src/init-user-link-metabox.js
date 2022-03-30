@@ -22,11 +22,11 @@ const initUserLinkMetaBox = () => {
     <UserLinkMetaBox
       linkUserPlaceholder={linkUserPlaceholder}
       linkedToLabel={linkedToLabel}
-      postId={postId}
+      postId={+ postId}
       unlinkLabel={unlinkLabel}
       user={user}
       userAlreadyLinked={userAlreadyLinked}
-      usersApi={usersApiUrl}
+      usersApiUrl={usersApiUrl}
     />,
     userLinkEl
   );

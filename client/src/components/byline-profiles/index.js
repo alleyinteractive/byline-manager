@@ -78,7 +78,7 @@ const BylineProfiles = ({
   addAuthorLabel,
   addAuthorPlaceholder,
   addFreeformButtonLabel,
-  addFreeformlabel,
+  addFreeformLabel,
   addFreeformPlaceholder,
   profiles: profilesRaw,
   profilesApiUrl,
@@ -99,12 +99,10 @@ const BylineProfiles = ({
   const removeItem = (id) => {
     const index = profiles.findIndex((item) => item.id === id);
     if (0 <= index) {
-      this.setState({
-        profiles: [
-          ...profiles.slice(0, index),
-          ...profiles.slice(index + 1),
-        ],
-      });
+      setProfiles([
+        ...profiles.slice(0, index),
+        ...profiles.slice(index + 1),
+      ]);
     }
   };
 
@@ -118,7 +116,7 @@ const BylineProfiles = ({
         const newSearchResults = rawResults.filter(
           (result) => 0 > currentIds.indexOf(result.id),
         );
-        setSearchResults({ newSearchResults });
+        setSearchResults(newSearchResults);
       });
   };
 
@@ -193,7 +191,7 @@ const BylineProfiles = ({
             className="components-base-control__label"
             htmlFor="byline_freeform"
           >
-            {addFreeformlabel}
+            {addFreeformLabel}
           </label>
           <div className="freeformInputGrp">
             <input
@@ -226,7 +224,6 @@ const BylineProfiles = ({
                 ]);
                 setValue('');
               }}
-              style={{ marginTop: 10 }}
             >
               {addFreeformButtonLabel}
             </Button>
@@ -250,7 +247,7 @@ BylineProfiles.propTypes = {
   addAuthorLabel: PropTypes.string.isRequired,
   addAuthorPlaceholder: PropTypes.string.isRequired,
   addFreeformButtonLabel: PropTypes.string.isRequired,
-  addFreeformlabel: PropTypes.string.isRequired,
+  addFreeformLabel: PropTypes.string.isRequired,
   addFreeformPlaceholder: PropTypes.string.isRequired,
   profilesApiUrl: PropTypes.string.isRequired,
   removeAuthorLabel: PropTypes.string.isRequired,

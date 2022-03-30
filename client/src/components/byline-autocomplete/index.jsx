@@ -75,27 +75,14 @@ const BylineAutocomplete = ({
         }}
         onChange={(event, next) => setSearch(next)}
         renderMenu={(children) => (
-          <div
-            className="menu"
-            style={{
-              border: '1px solid black',
-              borderBottom: 0,
-              borderTop: 0,
-              padding: 0,
-            }}
-          >
+          <div className="menu">
             {children}
           </div>
         )}
         renderItem={(item, isHighlighted) => (
           <div
-            className={`item ${isHighlighted ?
-              'item-highlighted' : ''}`}
+            className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
             key={item.id}
-            style={{
-              borderBottom: '1px solid black',
-              padding: '10px',
-            }}
           >
             {item.name}
           </div>

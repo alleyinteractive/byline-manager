@@ -16,7 +16,7 @@ const BylineSlotFill = () => (
   <PluginPostStatusInfo>
     <div style={{ width: '100%' }}>
       <p>
-        <strong>{__('Author Bylines', 'byline-manager')}</strong>
+        <strong>{__('Byline', 'byline-manager')}</strong>
       </p>
       <BylineSlot />
     </div>

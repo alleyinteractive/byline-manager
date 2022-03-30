@@ -14,7 +14,7 @@ const BylineSlot = () => {
     addAuthorLabel,
     addAuthorPlaceholder,
     removeAuthorLabel,
-    addFreeformlabel,
+    addFreeformLabel,
     addFreeformPlaceholder,
     addFreeformButtonLabel,
     profilesApiUrl,
@@ -47,7 +47,7 @@ const BylineSlot = () => {
       />
       <BylineFreeform
         onUpdate={addProfile}
-        addFreeformlabel={addFreeformlabel}
+        addFreeformLabel={addFreeformLabel}
         addFreeformPlaceholder={addFreeformPlaceholder}
         addFreeformButtonLabel={addFreeformButtonLabel}
       />

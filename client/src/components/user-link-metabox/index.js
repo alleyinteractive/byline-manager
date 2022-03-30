@@ -112,6 +112,9 @@ const UserLinkMetaBox = ({
               <em>{userAlreadyLinked}</em>}
           </div>
         )}
+        wrapperStyle={{
+          display: 'block',
+        }}
       />
     </div>
   );
@@ -127,7 +130,7 @@ UserLinkMetaBox.propTypes = {
     name: PropTypes.string,
     linked: PropTypes.bool,
   }),
-  userAlreadyLinked: PropTypes.bool.isRequired,
+  userAlreadyLinked: PropTypes.string.isRequired,
   usersApiUrl: PropTypes.string.isRequired,
 };
 
