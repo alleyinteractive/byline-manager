@@ -83,20 +83,13 @@ function register_byline_types() {
 					'resolve'     => function( WPGraphQL\Model\Post $post, array $args ) {
 						switch ( $args['format'] ) {
 							case 'links':
-								$byline = get_the_byline_links( $post->ID );
-								break;
+								return get_the_byline_links( $post->ID );
 
 							case 'post_links':
-								$byline = get_the_byline_posts_links( $post->ID );
-								break;
-
-							case 'text':
-							default:
-								$byline = get_the_byline( $post->ID );
-								break;
+								return get_the_byline_posts_links( $post->ID );
 						}
 
-						return $byline;
+						return get_the_byline( $post->ID );
 					},
 				],
 				'profiles'   => [
