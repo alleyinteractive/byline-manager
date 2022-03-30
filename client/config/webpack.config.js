@@ -13,7 +13,7 @@ module.exports = (env, argv) => {
     optimization: {
       moduleIds: 'named',
       noEmitOnErrors: true,
-      minimize: mode === 'production',
+      minimize: 'production' === mode,
     },
     output: getOutput(mode),
     plugins: getPlugins(mode),

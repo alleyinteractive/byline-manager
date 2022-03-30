@@ -6,7 +6,7 @@
   "scripts": {
     "preinstall": "npx check-node-version --package",
     "build": "webpack --config client/config/webpack.config.js --mode production",
-    "watch": "webpack --config client/config/webpack.config.js --watch --output-pathinfo --mode development",
+    "dev": "webpack --config client/config/webpack.config.js --watch --output-pathinfo --mode development",
     "lint": "eslint --color . ",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -18,7 +18,8 @@
   "jest": {
     "moduleNameMapper": {
       "\\.(css|scss)$": "<rootDir>/client/src/mocks/styleMock.js"
-    }
+    },
+    "modulePathIgnorePatterns": ["<rootDir>/vendor/"]
   },
   "devDependencies": {
     "autoprefixer": "^8.6.0",
@@ -69,10 +70,18 @@
     "webpack-manifest-plugin": "^4.1.1"
   },
   "dependencies": {
+    "@wordpress/components": "^19.4.0",
+    "@wordpress/compose": "^5.1.1",
+    "@wordpress/data": "^6.2.1",
+    "@wordpress/dependency-extraction-webpack-plugin": "^3.3.1",
+    "@wordpress/edit-post": "^6.0.0",
+    "@wordpress/i18n": "^4.3.1",
+    "@wordpress/icons": "^6.3.0",
+    "@wordpress/plugins": "^4.1.1",
     "array-move": "^3.0.1",
     "babel-polyfill": "^6.26.0",
     "babel-runtime": "^6.26.0",
-    "classnames": "^2.2.5",
+    "classnames": "^2.3.1",
     "prop-types": "^15.6.1",
     "react": "^17.0.1",
     "react-autocomplete": "^1.8.1",

@@ -14,7 +14,7 @@ module.exports = function getEntry(mode) {
           path.join(appRoot, 'index.js'),
         ],
         blockEditor: [
-          path.join(appRoot, 'blockEditor.js'),
+          path.join(appRoot, 'block-editor.js'),
         ],
       };
 
@@ -24,7 +24,7 @@ module.exports = function getEntry(mode) {
           path.join(appRoot, 'index.js'),
         ],
         blockEditor: [
-          path.join(appRoot, 'blockEditor.js'),
+          path.join(appRoot, 'block-editor.js'),
         ],
       };
 

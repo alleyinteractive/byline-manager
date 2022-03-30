@@ -75,6 +75,13 @@
       "components": [ "Link" ],
       "specialLink": [ "to" ]
     }],
+    "jsx-a11y/label-has-for": [
+      2,
+      {
+        "required": {
+        "every": [ "id" ]
+      }
+    }],
     "import/newline-after-import": [0],
     "react/jsx-filename-extension": [0],
     "react/react-in-jsx-scope": [0],

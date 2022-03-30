@@ -1,6 +1,8 @@
 {
-  "main.css": "main.e3b82b94.min.css",
-  "main.js": "main.e3b82b94.bundle.js",
-  "blockEditor.css": "blockEditor.8486a367.min.css",
-  "blockEditor.js": "blockEditor.8486a367.bundle.js"
+  "main.css": "main.fd9dd703.min.css",
+  "main.js": "main.fd9dd703.bundle.js",
+  "main.php": "main.fd9dd703.bundle.asset.php",
+  "blockEditor.css": "blockEditor.e9c94054.min.css",
+  "blockEditor.js": "blockEditor.e9c94054.bundle.js",
+  "blockEditor.php": "blockEditor.e9c94054.bundle.asset.php"
 }

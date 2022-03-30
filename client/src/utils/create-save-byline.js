@@ -1,4 +1,4 @@
-import transformHydratedProfiles from './transformHydratedProfiles';
+import transformHydratedProfiles from './transform-hydrate-profiles';
 
 /**
  * Create a function to save bylines to meta.
