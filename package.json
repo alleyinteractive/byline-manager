@@ -18,7 +18,8 @@
   "jest": {
     "moduleNameMapper": {
       "\\.(css|scss)$": "<rootDir>/client/src/mocks/styleMock.js"
-    }
+    },
+    "modulePathIgnorePatterns": ["<rootDir>/vendor/"]
   },
   "devDependencies": {
     "autoprefixer": "^8.6.0",
