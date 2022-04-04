@@ -10,6 +10,7 @@ namespace Byline_Manager;
 use WPGraphQL;
 
 add_action( 'graphql_register_types', __NAMESPACE__ . '\register_byline_types' );
+add_action( 'graphql_register_types', __NAMESPACE__ . '\register_byline_post_connection' );
 
 /**
  * Register data types and field for supporting bylines on posts.
@@ -130,6 +131,37 @@ function register_byline_types() {
 			'description' => __( 'Byline profiles.', 'byline-manager' ),
 			'resolve'     => function ( WPGraphQL\Model\Post $post ) {
 				return $post;
+			},
+		]
+	);
+}
+
+/**
+ * Register a connection between profiles and their associated posts.
+ */
+function register_byline_post_connection() {
+	register_graphql_connection(
+		[
+			'fromType'           => 'Profile',
+			'toType'             => 'Post',
+			'fromFieldName'      => 'profilePosts',
+			'connectionTypeName' => 'PostsFromProfileConnection',
+			'resolve'            => function ( $source, $args, $context, $info ) {
+				$profile   = Models\Profile::get_by_post( $source->data );
+				$byline_id = $profile->term_id;
+				$resolver  = new WPGraphQL\Data\Connection\PostObjectConnectionResolver( $source, $args, $context, $info );
+
+				$resolver->set_query_arg(
+					'tax_query',
+					[
+						[
+							'taxonomy' => BYLINE_TAXONOMY,
+							'terms'    => $byline_id,
+						],
+					],
+				);
+
+				return $resolver->get_connection();
 			},
 		]
 	);
