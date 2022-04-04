@@ -74,6 +74,7 @@ function register_profile() {
 			'menu_icon'           => 'dashicons-id',
 			'menu_position'       => 71,
 			'supports'            => [ 'title', 'editor', 'revisions', 'thumbnail' ],
+			'show_in_rest'        => true,
 			// Include Profiles in GraphQL.
 			'show_in_graphql'     => true,
 			'graphql_single_name' => 'profile',
