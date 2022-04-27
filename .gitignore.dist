@@ -1,0 +1,13 @@
+.DS_Store
+.vscode
+Thumbs.db
+phpcs.xml
+phpunit.xml
+wp-cli.local.yml
+node_modules/
+*.sql
+*.tar.gz
+*.zip
+
+# Client build files
+/vendor
