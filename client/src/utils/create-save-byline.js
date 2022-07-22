@@ -4,10 +4,6 @@ import transformHydratedProfiles from './transform-hydrate-profiles';
  * Create a function to save bylines to meta.
  */
 const createSaveByline = (dispatch) => (profiles) => {
-  if (! profiles.length) {
-    return profiles;
-  }
-
   const preparedProfiles = transformHydratedProfiles(profiles);
 
   // Save byline tax term relationships.
