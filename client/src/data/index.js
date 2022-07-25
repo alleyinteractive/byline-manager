@@ -41,6 +41,7 @@ const store = {
           byline: {
             profiles: modifyReducer(state.byline.profiles, action),
           },
+          profilesHydrated: state.profilesHydrated,
         };
 
       default:

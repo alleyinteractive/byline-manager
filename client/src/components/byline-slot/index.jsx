@@ -1,7 +1,9 @@
 /* global bylineData */
 
 import React, { useEffect } from 'react';
+import { Spinner } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
+import { Fragment } from '@wordpress/element';
 
 // Components.
 import createSaveByline from '../../utils/create-save-byline';
@@ -33,32 +35,42 @@ const BylineSlot = () => {
   const saveByline = createSaveByline(dispatch);
 
   useEffect(() => {
-    saveByline(profiles);
+    if (null !== profiles) {
+      saveByline(profiles);
+    }
   }, [profiles]);
 
   return (
     <div className="components-base-control">
-      <BylineAutocomplete
-        profiles={profiles}
-        onUpdate={addProfile}
-        profilesApiUrl={profilesApiUrl}
-        addAuthorPlaceholder={addAuthorPlaceholder}
-        addAuthorLabel={addAuthorLabel}
-      />
-      <BylineFreeform
-        onUpdate={addProfile}
-        addFreeformLabel={addFreeformLabel}
-        addFreeformPlaceholder={addFreeformPlaceholder}
-        addFreeformButtonLabel={addFreeformButtonLabel}
-      />
-      <BylineList
-        profiles={profiles}
-        onSortEnd={reorderProfile}
-        lockAxis="y"
-        helperClass="byline-list-item"
-        removeItem={removeProfile}
-        removeAuthorLabel={removeAuthorLabel}
-      />
+      {null === profiles ? (
+        <div style={{ textAlign: 'center' }}>
+          <Spinner />
+        </div>
+      ) : (
+        <Fragment>
+          <BylineAutocomplete
+            profiles={profiles}
+            onUpdate={addProfile}
+            profilesApiUrl={profilesApiUrl}
+            addAuthorPlaceholder={addAuthorPlaceholder}
+            addAuthorLabel={addAuthorLabel}
+          />
+          <BylineFreeform
+            onUpdate={addProfile}
+            addFreeformLabel={addFreeformLabel}
+            addFreeformPlaceholder={addFreeformPlaceholder}
+            addFreeformButtonLabel={addFreeformButtonLabel}
+          />
+          <BylineList
+            profiles={profiles}
+            onSortEnd={reorderProfile}
+            lockAxis="y"
+            helperClass="byline-list-item"
+            removeItem={removeProfile}
+            removeAuthorLabel={removeAuthorLabel}
+          />
+        </Fragment>
+      )}
     </div>
   );
 };

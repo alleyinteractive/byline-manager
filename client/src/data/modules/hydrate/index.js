@@ -39,7 +39,7 @@ export const actionReceiveHydratedProfiles = (profiles) => ({
 });
 
 export const getProfiles = (state) => (
-  state.byline.profiles || []
+  state.profilesHydrated ? state.byline.profiles || [] : null
 );
 
 export function* resolveProfiles() {
