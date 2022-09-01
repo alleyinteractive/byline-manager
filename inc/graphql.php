@@ -100,6 +100,7 @@ function register_byline_types() {
 					'description' => __( 'Byline profiles.', 'byline-manager' ),
 					'resolve'     => function ( WPGraphQL\Model\Post $post ) {
 						$byline_data = get_post_meta( $post->ID, 'byline', true );
+
 						if ( ! $byline_data ) {
 							return null;
 						}
