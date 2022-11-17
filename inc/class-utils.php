@@ -130,7 +130,7 @@ class Utils {
 	 * @param int   $post_id     ID for the post to modify.
 	 * @param array $byline_meta {
 	 *     Metadata about the byline to store.
-	 *     Example array for $byline meta:
+	 *     Example array for $byline_meta:
 	 *
 	 *     [
 	 *         'byline_entries' => [
