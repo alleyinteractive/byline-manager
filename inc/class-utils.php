@@ -128,7 +128,7 @@ class Utils {
 	 * Set the byline for a post given raw meta information.
 	 *
 	 * @param int   $post_id     ID for the post to modify.
-	 * @param array $byline_meta {
+	 * @param array $byline_meta.
 	 *     Metadata about the byline to store.
 	 *     Example array for $byline_meta:
 	 *
