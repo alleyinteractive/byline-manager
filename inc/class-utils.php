@@ -128,16 +128,32 @@ class Utils {
 	 * Set the byline for a post given raw meta information.
 	 *
 	 * @param int   $post_id     ID for the post to modify.
-	 * @param array $byline_meta {
-	 *     Metadata about the byline to store.
+	 * @param array $byline_meta Metadata about the byline to store.
 	 *
-	 *     @type string $source     Optional. One of 'profiles' or 'override'.
-	 *                              defaults to 'profiles'.
-	 *     @type string $override   Optional. Byline override text. Defaults to
-	 *                              empty string.
-	 *     @type array  $byline_ids Optional. Byline term ids. Defaults to empty
-	 *                              array.
-	 * }
+	 * Example array for $byline_meta:
+	 *
+	 * [
+	 *     'byline_entries' => [
+	 *         [
+	 *             'type' => 'byline_id',
+	 *             'atts' => [
+	 *                 'byline_id' => 123, // Term ID, int.
+	 *             ],
+	 *         ],
+	 *         [
+	 *             'type' => 'byline_id',
+	 *             'atts' => [
+	 *                 'byline_id' => 456, // Term ID, int.
+	 *             ],
+	 *         ],
+	 *         [
+	 *             'type' => 'text',
+	 *             'atts' => [
+	 *                 'text' => 'A Text-only Author', // A text profile, string.
+	 *             ],
+	 *         ],
+	 *     ],
+	 * ].
 	 */
 	public static function set_post_byline( int $post_id, array $byline_meta ) {
 		$default_args = [
