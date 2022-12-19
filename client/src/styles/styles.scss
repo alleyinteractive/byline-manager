@@ -73,7 +73,7 @@
     width: 100%;
     z-index: 100;
 
-    #side-sortables & {
+    .components-panel #side-sortables & {
       max-width: calc(100% - 48px);
     }
 
@@ -188,8 +188,8 @@
   #side-sortables {
 
     .menu {
-      left: rem(24px);
-      width: rem(232px);
+      right: rem(10px);
+      width: rem(440px);
     }
   }
 }
