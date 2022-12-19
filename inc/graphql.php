@@ -101,6 +101,10 @@ function register_byline_types() {
 					'resolve'     => function ( WPGraphQL\Model\Post $post ) {
 						$byline_data = get_post_meta( $post->ID, 'byline', true );
 
+						if ( ! $byline_data ) {
+							return null;
+						}
+
 						$bylines = array_map(
 							function( $profile ) {
 								if ( 'byline_id' === $profile['type'] ) {

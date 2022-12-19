@@ -13,7 +13,7 @@
     docker_image_name: "library/node"
     docker_image_tag: "16"
     execute_commands:
-    - "npm ci --cache .npm"
+    - "npm ci --legacy-peer-deps --cache .npm" # Use old behavior to allow our use of Webpack 5 until babel-loader is updated to 8+.
     volume_mappings:
     - "/:/buddy/byline-manager"
     cache_base_image: true

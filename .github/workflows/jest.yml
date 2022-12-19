@@ -11,5 +11,5 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16'
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps # Use old behavior to allow our use of Webpack 5 until babel-loader is updated to 8+.
       - run: npm test
