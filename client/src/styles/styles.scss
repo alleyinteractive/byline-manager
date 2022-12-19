@@ -73,6 +73,10 @@
     width: 100%;
     z-index: 100;
 
+    .components-panel #side-sortables & {
+      max-width: calc(100% - 48px);
+    }
+
     .block-editor-page & {
       background: transparent;
       border: 0;
