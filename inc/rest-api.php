@@ -165,6 +165,24 @@ function rest_user_search( \WP_REST_Request $request ) {
 	return rest_ensure_response( $data );
 }
 
+/**
+ * Filter REST API dispath request to skip ES integration. Disables VIP
+ * Enterprise Search for Profiles to support Byline Manager's byline and user
+ * selectors in Gutenberg.
+ *
+ * @param mixed            $result Response to replace the requested version with.
+ * @param \WP_REST_Server  $server Server instance.
+ * @param \WP_REST_Request $request Request used to generate the response.
+ * @return mixed Filtered response.
+ */
+function filter_rest_pre_dispatch( $result, $server, $request ) {
+	if ( '/byline-manager/v1/authors' === $request->get_route() ) {
+		add_filter( 'ep_skip_query_integration', '__return_true' );
+	}
+	return $result;
+}
+add_filter( 'rest_pre_dispatch', __NAMESPACE__ . '\filter_rest_pre_dispatch', 10, 3 );
+
 register_post_meta(
 	'',
 	'byline',
