@@ -28,17 +28,6 @@ function admin_enqueue_scripts( $hook ) {
 	) {
 		wp_enqueue_style( 'byline-manager-css', get_asset_path( 'main.css' ), [], '0.1.0' );
 
-		// Only load within the classic editor.
-		$current_screen = get_current_screen();
-
-		if (
-			$current_screen instanceof \WP_Screen
-			&& post_type_supports( $current_screen->post_type, 'custom-fields' )
-			&& $current_screen->is_block_editor()
-		) {
-			return;
-		}
-
 		wp_enqueue_script(
 			'byline-manager-js',
 			get_asset_path( 'main.js' ),
