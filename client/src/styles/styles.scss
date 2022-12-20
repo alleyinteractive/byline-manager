@@ -192,8 +192,8 @@
       width: rem(440px);
 
       .components-panel & {
-        max-width: rem(232px);
         left: rem(24px);
+        max-width: rem(232px);
         right: auto;
       }
     }
