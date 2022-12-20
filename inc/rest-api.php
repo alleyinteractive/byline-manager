@@ -140,31 +140,6 @@ function rest_hydrate_profiles( \WP_REST_Request $request ) {
 	return rest_ensure_response( $profiles );
 }
 
-/**
- * Send API response for REST endpoint.
- *
- * @param \WP_REST_Request $request REST request data.
- * @return \WP_REST_Response REST API response.
- */
-function rest_user_search( \WP_REST_Request $request ) {
-	$users = get_users(
-		[
-			'search'  => $request->get_param( 's' ) . '*',
-			'orderby' => 'display_name',
-		]
-	);
-
-	// Build the REST response data.
-	$data = array_map(
-		__NAMESPACE__ . '\get_user_data_for_meta_box',
-		$users,
-		array_fill( 0, count( $users ), absint( $request->get_param( 'post' ) ) )
-	);
-
-	// Send the response.
-	return rest_ensure_response( $data );
-}
-
 register_post_meta(
 	'',
 	'byline',
