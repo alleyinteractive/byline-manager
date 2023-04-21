@@ -10,6 +10,7 @@ node_modules/
 *.tar.gz
 *.zip
 .phpcs/*.json
+.phpunit.result.cache
 
 # Client build files
 client/build/
