@@ -8,34 +8,40 @@
 namespace Byline_Manager;
 
 use Byline_Manager\Models\Profile;
+use Mantle\Testing\Concerns\Refresh_Database;
+use Mantle\Testkit\Test_Case;
 
 /**
  * Test integration of core filters.
  */
-class Test_Core_Filters extends \WP_UnitTestCase {
+class Test_Core_Filters extends Test_Case {
+	use Refresh_Database;
+
 	protected $b1, $b2;
 
-	public function setUp() {
+	protected function setUp(): void {
 		global $post;
 
 		parent::setUp();
 
+		\Mantle\Testing\Utils::delete_all_posts();
+
 		$user_id           = $this->factory->user->create(
 			[
 				'role' => 'editor',
-			] 
+			]
 		);
 		$this->b1          = Profile::create(
 			[
 				'post_name'  => 'b1',
 				'post_title' => 'Byline 1',
-			] 
+			]
 		);
 		$this->b2          = Profile::create(
 			[
 				'post_name'  => 'b2',
 				'post_title' => 'Byline 2',
-			] 
+			]
 		);
 		$this->byline_meta = [
 			'byline_entries' => [

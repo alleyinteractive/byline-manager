@@ -9,6 +9,7 @@ node_modules/
 *.sql
 *.tar.gz
 *.zip
+.phpcs/*.json
 
 # Client build files
 client/build/

@@ -18,7 +18,8 @@ const BYLINE_TAXONOMY = 'byline';
  */
 function register_profile() {
 	global $wp_rewrite;
-	register_post_type(
+
+	register_post_type( // phpcs:ignore WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral
 		PROFILE_POST_TYPE,
 		[
 			'labels'              => [

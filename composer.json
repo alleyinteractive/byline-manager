@@ -2,29 +2,30 @@
   "authors": [
     {
       "name": "Alley Interactive",
-      "email": "noreply@alleyinteractive.com"
+      "email": "info@alley.com"
     }
   ],
   "description": "Byline Manager",
   "license": "GPL-2.0-or-later",
   "name": "alleyinteractive/byline-manager",
   "require-dev": {
-    "alleyinteractive/alley-coding-standards": "^0.3.0",
-    "phpunit/phpunit": "7.5.*",
-    "yoast/phpunit-polyfills": "^1.0"
-  },
-  "autoload": {
-    "classmap": ["inc/"]
+    "alleyinteractive/alley-coding-standards": "^1.0",
+    "mantle-framework/testkit": "^0.10"
   },
   "scripts": {
     "phpcbf": "phpcbf .",
     "phpcs": "phpcs . --runtime-set text_domain byline-manager",
-    "phpunit": "phpunit"
+    "phpunit": "phpunit",
+    "test": [
+      "@phpcs",
+      "@phpunit"
+    ]
   },
   "type": "wordpress-plugin",
   "config": {
     "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "alleyinteractive/composer-wordpress-autoloader": true
     }
   }
 }
