@@ -1,30 +1,31 @@
 {
-  "authors": [
-    {
-      "name": "Alley Interactive",
-      "email": "noreply@alleyinteractive.com"
+    "name": "alleyinteractive/byline-manager",
+    "description": "Byline Manager",
+    "license": "GPL-2.0-or-later",
+    "type": "wordpress-plugin",
+    "authors": [
+        {
+            "name": "Alley Interactive",
+            "email": "info@alley.com"
+        }
+    ],
+    "require-dev": {
+        "alleyinteractive/alley-coding-standards": "^1.0",
+        "mantle-framework/testkit": "^0.10"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "alleyinteractive/composer-wordpress-autoloader": true
+        }
+    },
+    "scripts": {
+        "phpcbf": "phpcbf .",
+        "phpcs": "phpcs .",
+        "phpunit": "phpunit",
+        "test": [
+            "@phpcs",
+            "@phpunit"
+        ]
     }
-  ],
-  "description": "Byline Manager",
-  "license": "GPL-2.0-or-later",
-  "name": "alleyinteractive/byline-manager",
-  "require-dev": {
-    "alleyinteractive/alley-coding-standards": "^0.3.0",
-    "phpunit/phpunit": "7.5.*",
-    "yoast/phpunit-polyfills": "^1.0"
-  },
-  "autoload": {
-    "classmap": ["inc/"]
-  },
-  "scripts": {
-    "phpcbf": "phpcbf .",
-    "phpcs": "phpcs . --runtime-set text_domain byline-manager",
-    "phpunit": "phpunit"
-  },
-  "type": "wordpress-plugin",
-  "config": {
-    "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
-    }
-  }
 }

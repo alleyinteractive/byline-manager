@@ -2,13 +2,13 @@
 .vscode
 .npm
 Thumbs.db
-phpcs.xml
-phpunit.xml
 wp-cli.local.yml
 node_modules/
 *.sql
 *.tar.gz
 *.zip
+.phpcs/*.json
+.phpunit.result.cache
 
 # Client build files
 client/build/

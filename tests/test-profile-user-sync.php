@@ -8,14 +8,18 @@
 namespace Byline_Manager;
 
 use Byline_Manager\Models\Profile;
+use Mantle\Testing\Concerns\Refresh_Database;
+use Mantle\Testkit\Test_Case;
 
 /**
  * Test profile -> user sync functionality.
  */
-class Test_Profile_User_Sync extends \WP_UnitTestCase {
+class Test_Profile_User_Sync extends Test_Case {
+	use Refresh_Database;
+
 	protected $profile_id;
 
-	public function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->profile_id = self::factory()->post->create( [ 'post_type' => PROFILE_POST_TYPE ] );
 	}

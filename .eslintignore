@@ -1,5 +1,7 @@
 # Ignore built files
 client/build/*
+client/config/*
+vendor/*
 
 # Ignore data files
 data/*

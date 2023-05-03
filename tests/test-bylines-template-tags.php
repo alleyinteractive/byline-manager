@@ -8,11 +8,12 @@
 namespace Byline_Manager;
 
 use Byline_Manager\Models\Profile;
+use Mantle\Testkit\Test_Case;
 
 /**
  * Test functionality related to the Profile object.
  */
-class Test_Bylines_Template_Tags extends \WP_UnitTestCase {
+class Test_Bylines_Template_Tags extends Test_Case {
 
 	/**
 	 * Getting bylines generically

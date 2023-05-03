@@ -7,6 +7,8 @@
  * Text Domain:     byline-manager
  * Domain Path:     /languages
  * Version:         0.2.0
+ * Requires PHP:    7.4
+ * Tested up to:    4.9
  *
  * @package         Byline_Manager
  */

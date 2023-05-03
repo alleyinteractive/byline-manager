@@ -7,20 +7,19 @@
 
 namespace Byline_Manager;
 
+use Mantle\Testing\Concerns\Refresh_Database;
+use Mantle\Testkit\Test_Case;
 /**
  * Test profile -> byline sync functionality.
  */
-class Test_Profile_Byline_Sync extends \WP_UnitTestCase {
+class Test_Profile_Byline_Sync extends Test_Case {
+	use Refresh_Database;
+
 	protected $profile_id;
 
-	public function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->profile_id = self::factory()->post->create( [ 'post_type' => PROFILE_POST_TYPE ] );
-	}
-
-	public function tearDown() {
-		$this->reset_post_types();
-		parent::tearDown();
 	}
 
 	public function test_profile_creates_byline() {
@@ -50,7 +49,7 @@ class Test_Profile_Byline_Sync extends \WP_UnitTestCase {
 			[
 				'public'   => true,
 				'supports' => [ 'title', 'editor' ],
-			] 
+			]
 		);
 
 		$post_type_with_author = 'test-with-author';
@@ -59,7 +58,7 @@ class Test_Profile_Byline_Sync extends \WP_UnitTestCase {
 			[
 				'public'   => true,
 				'supports' => [ 'title', 'editor', 'author' ],
-			] 
+			]
 		);
 
 		unregister_taxonomy( BYLINE_TAXONOMY );
