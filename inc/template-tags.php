@@ -73,7 +73,7 @@ function get_the_byline_posts_links( $post = null ) {
 			 * @param array  $args   Arguments determining the rendering of the profile.
 			 * @param Byline $entry The profile or text profile to be rendered.
 			 */
-			$args = apply_filters( 'bylines_posts_links', $args, $entry );
+			$args = apply_filters( 'bylines_posts_links', $args, $entry ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			if ( empty( $args['href'] ) ) {
 				$single_item = $args['text'];
 			} else {
