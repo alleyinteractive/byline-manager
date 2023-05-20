@@ -91,7 +91,7 @@
     "reduce-reducers": "^0.3.0",
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
-    "webpack-stats-plugin": "^1.0.3"
+    "webpack-stats-plugin": "^1.1.1"
   },
   "browserslist": [
     "> 0.5% in US",
