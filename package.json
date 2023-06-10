@@ -86,7 +86,7 @@
     "react-autocomplete": "^1.8.1",
     "react-dom": "^18.2.0",
     "react-hot-loader": "^4.13.1",
-    "react-redux": "^8.0.5",
+    "react-redux": "^8.0.7",
     "react-sortable-hoc": "^2.0.0",
     "reduce-reducers": "^1.0.4",
     "redux": "^3.7.2",
