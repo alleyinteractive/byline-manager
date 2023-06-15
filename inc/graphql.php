@@ -85,8 +85,8 @@ function register_byline_types() {
 					'resolve'     => function( WPGraphQL\Model\Post $profile, array $args ) {
 						$post_id = $profile->ID;
 
-						if ( $profile->isPreview ) {
-							$post_id = $profile->parentDatabaseId;
+						if ( $profile->isPreview ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							$post_id = $profile->parentDatabaseId; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 						}
 
 						$format = $args['format'] ?? 'text';
@@ -110,8 +110,8 @@ function register_byline_types() {
 					'resolve'     => function ( WPGraphQL\Model\Post $profile ) {
 						$post_id = $profile->ID;
 
-						if ( $profile->isPreview ) {
-							$post_id = $profile->parentDatabaseId;
+						if ( $profile->isPreview ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							$post_id = $profile->parentDatabaseId; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 						}
 
 						$byline_data = get_post_meta( $post_id, 'byline', true );
