@@ -82,26 +82,41 @@ function register_byline_types() {
 					],
 					'type'        => 'String',
 					'description' => __( 'Byline text.', 'byline-manager' ),
-					'resolve'     => function( WPGraphQL\Model\Post $post, array $args ) {
-						switch ( $args['format'] ) {
-							case 'links':
-								return get_the_byline_links( $post->ID );
+					'resolve'     => function( WPGraphQL\Model\Post $profile, array $args ) {
+						$post_id = $profile->ID;
 
-							case 'post_links':
-								return get_the_byline_posts_links( $post->ID );
+						if ( $profile->isPreview ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							$post_id = $profile->parentDatabaseId; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 						}
 
-						// Default handling of 'text' formats.
-						return get_the_byline( $post->ID );
+						$format = $args['format'] ?? 'text';
+
+						switch ( $format ) {
+							case 'links':
+								return get_the_byline_links( $post_id );
+
+							case 'post_links':
+								return get_the_byline_posts_links( $post_id );
+
+							case 'text':
+							default:
+								return get_the_byline( $post_id );
+						}
 					},
 				],
 				'profiles'   => [
 					'type'        => [ 'list_of' => 'ProfileTypes' ],
 					'description' => __( 'Byline profiles.', 'byline-manager' ),
-					'resolve'     => function ( WPGraphQL\Model\Post $post ) {
-						$byline_data = get_post_meta( $post->ID, 'byline', true );
+					'resolve'     => function ( WPGraphQL\Model\Post $profile ) {
+						$post_id = $profile->ID;
 
-						if ( ! $byline_data ) {
+						if ( $profile->isPreview ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							$post_id = $profile->parentDatabaseId; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						}
+
+						$byline_data = get_post_meta( $post_id, 'byline', true );
+
+						if ( empty( $byline_data ) ) {
 							return null;
 						}
 
@@ -150,10 +165,10 @@ function register_byline_post_connection() {
 			'toType'             => 'Post',
 			'fromFieldName'      => 'profilePosts',
 			'connectionTypeName' => 'PostsFromProfileConnection',
-			'resolve'            => function ( $source, $args, $context, $info ) {
-				$profile   = Models\Profile::get_by_post( $source->data );
+			'resolve'            => function ( WPGraphQL\Model\Post $profile, $args, $context, $info ) {
+				$profile   = Models\Profile::get_by_post( $profile->data );
 				$byline_id = $profile->term_id;
-				$resolver  = new WPGraphQL\Data\Connection\PostObjectConnectionResolver( $source, $args, $context, $info );
+				$resolver  = new WPGraphQL\Data\Connection\PostObjectConnectionResolver( $profile, $args, $context, $info );
 
 				$resolver->set_query_arg(
 					'tax_query',
