@@ -1,8 +1,7 @@
-Byline Manager
-==============
+# Byline Manager
 
 [![Testing Suite](https://github.com/alleyinteractive/byline-manager/actions/workflows/unit-test.yml/badge.svg)](https://github.com/alleyinteractive/byline-manager/actions/workflows/unit-test.yml)
-[![PHPCS](https://github.com/alleyinteractive/byline-manager/actions/workflows/phpcs.yml/badge.svg)](https://github.com/alleyinteractive/byline-manager/actions/workflows/phpcs.yml)
+[![PHPCS](https://github.com/alleyinteractive/byline-manager/actions/workflows/coding-standards.yml/badge.svg)](https://github.com/alleyinteractive/byline-manager/actions/workflows/coding-standards.yml)
 [![Node Tests](https://github.com/alleyinteractive/byline-manager/actions/workflows/node-tests.yml/badge.svg)](https://github.com/alleyinteractive/byline-manager/actions/workflows/node-tests.yml)
 
 Manage an article's byline and author profiles.
