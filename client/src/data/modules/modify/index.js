@@ -1,4 +1,4 @@
-import arrayMove from 'array-move';
+import { arrayMoveImmutable as arrayMove } from 'array-move';
 
 export const modifyActions = {
   ADD_PROFILE: 'byline-manager/modify/ADD_PROFILE',
