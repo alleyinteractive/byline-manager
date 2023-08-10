@@ -35,6 +35,13 @@ class TextProfile {
 	public $link = '';
 
 	/**
+	 * Attributes for the text profile.
+	 *
+	 * @var array
+	 */
+	public $atts;
+
+	/**
 	 * Instantiate a new Text Profile object
 	 *
 	 * Text Profiles are always fetched by static fetchers.

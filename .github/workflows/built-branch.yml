@@ -3,9 +3,7 @@ name: Create a -built branch
 on:
   push:
     branches:
-      - main
       - production
-      - develop
 
 jobs:
   built-branch:

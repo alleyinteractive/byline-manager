@@ -103,7 +103,19 @@ function register_byline() {
 				'delete_terms' => 'do_not_allow',
 				'assign_terms' => 'edit_posts',
 			],
-		]
+			'labels'       => [
+				'name'          => _x( 'Bylines', 'byline-manager' ),
+				'singular_name' => _x( 'Byline', 'byline-manager' ),
+				'search_items'  => __( 'Search Byline', 'byline-manager' ),
+				'popular_items' => __( 'Popular Bylines', 'byline-manager' ),
+				'all_items'     => __( 'All Bylines', 'byline-manager' ),
+				'edit_item'     => __( 'Edit Byline', 'byline-manager' ),
+				'view_item'     => __( 'View Byline', 'byline-manager' ),
+				'update_item'   => __( 'Update Byline', 'byline-manager' ),
+				'add_new_item'  => __( 'Add New Byline', 'byline-manager' ),
+				'new_item_name' => __( 'New Byline Name', 'byline-manager' ),
+			],
+		],
 	);
 }
 add_action( 'init', __NAMESPACE__ . '\register_byline', 10000 );

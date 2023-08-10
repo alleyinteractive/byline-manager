@@ -1,8 +1,9 @@
+// External dependencies.
 import { SortableElement } from 'react-sortable-hoc';
 import { __experimentalItem as Item, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-export default SortableElement(({
+const BylineListItem = SortableElement(({
   name,
   image,
   removeItem,
@@ -13,7 +14,6 @@ export default SortableElement(({
     <span>{name}</span>
     <Button
       label={removeAuthorLabel}
-      isLink
       isDestructive
       variant="secondary"
       isSmall
@@ -26,3 +26,5 @@ export default SortableElement(({
     </Button>
   </Item>
 ));
+
+export default BylineListItem;

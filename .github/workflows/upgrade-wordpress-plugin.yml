@@ -15,5 +15,4 @@ jobs:
     - uses: actions/checkout@v3
     - uses: alleyinteractive/action-update-wordpress-plugin@v1.2.1
       with:
-        plugin-file: 'plugin.php'
-        upgrade-npm-dependencies: "true"
+        plugin-file: 'byline-manager.php'

@@ -6,9 +6,9 @@
  * Author:          Alley Interactive
  * Text Domain:     byline-manager
  * Domain Path:     /languages
- * Version:         0.2.0
+ * Version:         0.2.1
  * Requires PHP:    7.4
- * Tested up to:    4.9
+ * Tested up to:    6.2.2
  *
  * @package         Byline_Manager
  */

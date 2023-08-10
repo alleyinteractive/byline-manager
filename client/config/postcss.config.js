@@ -1,5 +1,4 @@
 // Plugins.
-// const lost = require('lost');
 const autoprefixer = require('autoprefixer');
 const calc = require('postcss-calc');
 const cssImport = require('postcss-import');

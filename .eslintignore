@@ -3,8 +3,5 @@ client/build/*
 client/config/*
 vendor/*
 
-# Ignore data files
-data/*
-
 # Ignore asset files
 assets/*

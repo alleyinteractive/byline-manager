@@ -1,0 +1,6 @@
+const HYDRATE_ACTION_TYPES = {
+  HYDRATE_PROFILES: 'byline-manager/hydrate/HYDRATE_PROFILES',
+  RECEIVE_HYDRATED_PROFILES: 'byline-manager/hydrate/RECEIVE_HYDRATED_PROFILES',
+};
+
+export default HYDRATE_ACTION_TYPES;

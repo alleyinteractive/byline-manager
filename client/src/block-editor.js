@@ -1,28 +1,32 @@
+// External dependencies.
 import React from 'react';
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
-import { PluginPostStatusInfo } from '@wordpress/edit-post';
-import { __experimentalDivider as Divider } from '@wordpress/components';
 
-// Components.
+// Internal dependencies.
 import BylineSlot from 'components/byline-slot';
+import {
+  BylineManagerPanelInfoProvider,
+  BylineManagerPanelInfo,
+} from 'containers/byline-panel-info-container';
 
-// Data.
-import './data';
+// Register our store.
+import './store';
 
 // Styles.
 import './styles/styles.scss';
 
-const BylineSlotFill = () => (
-  <PluginPostStatusInfo>
-    <div style={{ width: '100%' }}>
-      <Divider />
-      <p>
-        <strong>{__('Byline', 'byline-manager')}</strong>
-      </p>
-      <BylineSlot />
-    </div>
-  </PluginPostStatusInfo>
+const BylineManagerSlotFill = () => (
+  <BylineManagerPanelInfo>
+    <p>
+      <strong>{__('Byline', 'byline-manager')}</strong>
+    </p>
+    <BylineSlot />
+  </BylineManagerPanelInfo>
 );
 
-registerPlugin('byline-manager', { render: BylineSlotFill });
+// Register our SlotFill provider.
+registerPlugin('byline-manager-panel-info-provider', { render: BylineManagerPanelInfoProvider });
+
+// Register core slot fill.
+registerPlugin('byline-manager', { render: BylineManagerSlotFill });

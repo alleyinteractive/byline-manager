@@ -58,7 +58,7 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_routes' );
  * @return \WP_REST_Response REST API response.
  */
 function rest_profile_search( \WP_REST_Request $request ) {
-	$posts    = get_posts( // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
+	$posts = get_posts( // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
 		[
 			'post_type'        => PROFILE_POST_TYPE,
 			's'                => $request->get_param( 's' ),
@@ -67,6 +67,7 @@ function rest_profile_search( \WP_REST_Request $request ) {
 			'order'            => 'asc',
 		]
 	);
+
 	$profiles = array_filter(
 		array_map(
 			[ 'Byline_Manager\Models\Profile', 'get_by_post' ],
@@ -165,6 +166,47 @@ function rest_user_search( \WP_REST_Request $request ) {
 	return rest_ensure_response( $data );
 }
 
+/**
+ * Meta schema for byline meta.
+ *
+ * This function is useful for third party developers
+ * creating custom slotfills using our redux store.
+ *
+ * @return array
+ */
+function byline_meta_schema() {
+	return [
+		'type'       => 'object',
+		'properties' => [
+			'profiles' => [
+				'type'  => 'array',
+				'items' => [
+					'type'       => 'object',
+					'properties' => [
+						'type' => [
+							'type' => 'string',
+						],
+						'atts' => [
+							'type'       => 'object',
+							'properties' => [
+								'term_id' => [
+									'type' => 'integer',
+								],
+								'post_id' => [
+									'type' => 'integer',
+								],
+								'text'    => [
+									'type' => 'string',
+								],
+							],
+						],
+					],
+				],
+			],
+		],
+	];
+}
+
 register_post_meta(
 	'',
 	'byline',
@@ -172,36 +214,7 @@ register_post_meta(
 		'single'       => true,
 		'type'         => 'object',
 		'show_in_rest' => [
-			'schema' => [
-				'type'       => 'object',
-				'properties' => [
-					'profiles' => [
-						'type'  => 'array',
-						'items' => [
-							'type'       => 'object',
-							'properties' => [
-								'type' => [
-									'type' => 'string',
-								],
-								'atts' => [
-									'type'       => 'object',
-									'properties' => [
-										'term_id' => [
-											'type' => 'integer',
-										],
-										'post_id' => [
-											'type' => 'integer',
-										],
-										'text'    => [
-											'type' => 'string',
-										],
-									],
-								],
-							],
-						],
-					],
-				],
-			],
+			'schema' => byline_meta_schema(),
 		],
 	]
 );
