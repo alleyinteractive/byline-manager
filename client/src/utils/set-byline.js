@@ -8,7 +8,7 @@ import transformHydratedProfiles from './transform-hydrate-profiles';
  * @param {string} metaKey Meta key to save bylines to.
  * @return {Function} Function to save bylines to meta.
  */
-const setBylineMeta = (dispatch, metaKey = 'byline') => (profiles) => {
+const setBylineMeta = (dispatch, metaKey) => (profiles) => {
   const preparedProfiles = transformHydratedProfiles(profiles);
 
   // Save byline tax term relationships.

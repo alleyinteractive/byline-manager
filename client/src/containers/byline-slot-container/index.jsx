@@ -10,7 +10,7 @@ import BylineSlotWrapper from '../../components/byline-slot-wrapper';
 
 const BylineSlotContainer = ({
   store,
-  metakey,
+  metaKey,
 }) => {
   const profiles = useSelect(
     (select) => select(store).getProfiles()
@@ -22,13 +22,13 @@ const BylineSlotContainer = ({
     actionReorderProfile: reorderProfile,
   } = useDispatch(store);
 
-  const saveByline = setBylineMeta(dispatch, metakey);
+  const saveByline = setBylineMeta(dispatch, metaKey);
 
   /**
    * Save ALL bylines to meta in the expected schema.
    *
-   * This is a more efficient way to save bylines to theh post meta with the right schema.
-   * Since the redux store schema and the meta schema are different.
+   * This is an efficient way to save bylines to the post meta in the "right" schema.
+   * The redux store schema and the meta schema are different.
    */
   useEffect(() => {
     if (null !== profiles) {
@@ -47,11 +47,11 @@ const BylineSlotContainer = ({
 };
 
 BylineSlotContainer.defaultProps = {
-  metakey: 'byline',
+  metaKey: 'byline',
 };
 
 BylineSlotContainer.propTypes = {
-  metakey: PropTypes.string,
+  metaKey: PropTypes.string,
   store: PropTypes.string.isRequired,
 };
 
