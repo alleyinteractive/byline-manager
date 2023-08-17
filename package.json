@@ -19,7 +19,9 @@
     "moduleNameMapper": {
       "\\.(css|scss)$": "<rootDir>/client/src/mocks/styleMock.js"
     },
-    "modulePathIgnorePatterns": ["<rootDir>/vendor/"]
+    "modulePathIgnorePatterns": [
+      "<rootDir>/vendor/"
+    ]
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
@@ -69,6 +71,7 @@
     "webpack-dev-server": "^4.7.3"
   },
   "dependencies": {
+    "@uidotdev/usehooks": "^2.0.1",
     "@wordpress/components": "^19.4.0",
     "@wordpress/compose": "^5.1.1",
     "@wordpress/data": "^6.2.1",

@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+// External dependencies.
+import React from 'react';
+import { useState, useEffect } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import Autocomplete from 'react-autocomplete';
 
 // Hooks.
-import useDebounce from '../../services/use-debounce';
+import { useDebounce } from '@uidotdev/usehooks';
 
 const BylineAutocomplete = ({
   profiles,
@@ -96,9 +98,18 @@ const BylineAutocomplete = ({
 };
 
 BylineAutocomplete.propTypes = {
-  profiles: PropTypes.arrayOf({
-    id: PropTypes.string,
-  }).isRequired,
+  profiles: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+    byline_id: PropTypes.number,
+    name: PropTypes.string,
+    image: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.string,
+    ]),
+  })).isRequired,
   onUpdate: PropTypes.func.isRequired,
   profilesApiUrl: PropTypes.string.isRequired,
   addAuthorPlaceholder: PropTypes.string.isRequired,

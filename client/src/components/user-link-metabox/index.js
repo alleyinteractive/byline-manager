@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import Autocomplete from 'react-autocomplete';
+// External dependencies.
+import React from 'react';
 import PropTypes from 'prop-types';
+import { useState, useEffect } from '@wordpress/element';
+import Autocomplete from 'react-autocomplete';
 import { Button } from '@wordpress/components';
 
 // Hooks.
-import useDebounce from '../../services/use-debounce';
+import { useDebounce } from '@uidotdev/usehooks';
 
 const UserLinkMetaBox = ({
   linkUserPlaceholder,
@@ -68,7 +70,6 @@ const UserLinkMetaBox = ({
           {' '}
           <Button
             className="button button-link-delete button-small"
-            isSecondary
             variant="secondary"
             isDestructive
             isSmall
@@ -120,6 +121,10 @@ const UserLinkMetaBox = ({
   );
 };
 
+UserLinkMetaBox.defaultProps = {
+  user: {},
+};
+
 UserLinkMetaBox.propTypes = {
   linkUserPlaceholder: PropTypes.string.isRequired,
   linkedToLabel: PropTypes.string.isRequired,
@@ -132,10 +137,6 @@ UserLinkMetaBox.propTypes = {
   }),
   userAlreadyLinked: PropTypes.string.isRequired,
   usersApiUrl: PropTypes.string.isRequired,
-};
-
-UserLinkMetaBox.defaultProps = {
-  user: {},
 };
 
 export default UserLinkMetaBox;

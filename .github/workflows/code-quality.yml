@@ -1,0 +1,17 @@
+name: Code Quality
+
+on:
+  push:
+    branches:
+      - production
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  coding-quality:
+    uses: alleyinteractive/.github/.github/workflows/php-composer-command.yml@main
+    with:
+      php: 8.1
+      command: |
+        phpcs

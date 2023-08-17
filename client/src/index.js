@@ -1,4 +1,3 @@
-// Entry point for all shared JS.
 import initBylineMetaBox from './init-byline-metabox';
 import initUserLinkMetaBox from './init-user-link-metabox';
 

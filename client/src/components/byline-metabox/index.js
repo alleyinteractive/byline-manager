@@ -1,9 +1,10 @@
 /* global bylineData */
 
+// External dependencies.
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// Components.
+// Internal dependencies.
 import BylineProfiles from '../byline-profiles';
 
 const BylineMetaBox = ({
@@ -37,7 +38,6 @@ const BylineMetaBox = ({
         profilesApiUrl={profilesApiUrl}
         removeAuthorLabel={removeAuthorLabel}
         profiles={profiles}
-
       />
     </div>
   );

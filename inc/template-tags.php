@@ -7,8 +7,6 @@
 
 namespace Byline_Manager;
 
-use Models\Profile;
-
 /**
  * Renders the bylines display names, without links to their posts, or the
  * byline override if present.
@@ -30,7 +28,7 @@ function the_byline() {
 function get_the_byline( $post = null ) {
 	return byline_render(
 		Utils::get_byline_entries_for_post( $post ),
-		function( $entry ) {
+		static function( $entry ) {
 			return wp_strip_all_tags( $entry->display_name );
 		}
 	);
@@ -55,7 +53,7 @@ function the_byline_posts_links() {
 function get_the_byline_posts_links( $post = null ) {
 	return byline_render(
 		Utils::get_byline_entries_for_post( $post ),
-		function( $entry ) {
+		static function( $entry ) {
 			$args = [
 				'before_html' => '',
 				'href'        => $entry->link,
@@ -73,7 +71,8 @@ function get_the_byline_posts_links( $post = null ) {
 			 * @param array  $args   Arguments determining the rendering of the profile.
 			 * @param Byline $entry The profile or text profile to be rendered.
 			 */
-			$args = apply_filters( 'bylines_posts_links', $args, $entry ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+			$args = apply_filters( 'bylines_posts_links', $args, $entry );
+
 			if ( empty( $args['href'] ) ) {
 				$single_item = $args['text'];
 			} else {
@@ -110,7 +109,7 @@ function the_byline_links() {
 function get_the_byline_links( $post = null ) {
 	return byline_render(
 		Utils::get_byline_entries_for_post( $post ),
-		function( $entry ) {
+		static function( $entry ) {
 			if ( $entry instanceof Models\Profile && $entry->user_url ) {
 				return sprintf(
 					'<a href="%s" title="%s" rel="external">%s</a>',

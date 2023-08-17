@@ -2,9 +2,14 @@ name: Testing Suite
 
 on:
   pull_request:
-  schedule:
-    - cron: '0 0 * * *'
 
 jobs:
   unit-tests:
+    strategy:
+      matrix:
+        php: [8.0, 8.1]
+        wordpress: [5.9, "latest"]
     uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
+    with:
+      php: ${{ matrix.php }}
+      wordpress: ${{ matrix.wordpress }}

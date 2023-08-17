@@ -1,10 +1,11 @@
+// External dependencies.
 import { SortableContainer } from 'react-sortable-hoc';
 import { __experimentalItemGroup as ItemGroup } from '@wordpress/components';
 
-// Components.
+// Internal dependencies.
 import BylineListItem from '../byline-list-item';
 
-export default SortableContainer(({
+const BylineList = SortableContainer(({
   profiles,
   removeItem,
   removeAuthorLabel,
@@ -15,7 +16,7 @@ export default SortableContainer(({
         key={`item-${profile.id}`}
         index={index}
         count={index}
-        bylineId={profile.byline_id}
+        bylineId={profile.byline_id || 0}
         name={profile.name || ''}
         image={profile.image || ''}
         removeItem={() => removeItem(profile.id)}
@@ -24,3 +25,5 @@ export default SortableContainer(({
     ))}
   </ItemGroup>
 ));
+
+export default BylineList;
