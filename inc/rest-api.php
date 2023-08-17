@@ -61,10 +61,10 @@ function rest_profile_search( \WP_REST_Request $request ) {
 	$posts    = get_posts( // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
 		[
 			'post_type'        => PROFILE_POST_TYPE,
+			'numberposts'      => 10,
 			's'                => $request->get_param( 's' ),
 			'suppress_filters' => false,
-			'orderby'          => 'title',
-			'order'            => 'asc',
+			'orderby'          => 'relevance',
 		]
 	);
 	$profiles = array_filter(
