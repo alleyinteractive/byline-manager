@@ -1,14 +1,14 @@
 # Byline Manager
 
 [![Testing Suite](https://github.com/alleyinteractive/byline-manager/actions/workflows/unit-test.yml/badge.svg)](https://github.com/alleyinteractive/byline-manager/actions/workflows/unit-test.yml)
-[![PHPCS](https://github.com/alleyinteractive/byline-manager/actions/workflows/coding-standards.yml/badge.svg)](https://github.com/alleyinteractive/byline-manager/actions/workflows/coding-standards.yml)
+[![PHPCS](https://github.com/alleyinteractive/byline-manager/actions/workflows/code-quality.yml/badge.svg)](https://github.com/alleyinteractive/byline-manager/actions/workflows/code-quality.yml)
 [![Node Tests](https://github.com/alleyinteractive/byline-manager/actions/workflows/node-tests.yml/badge.svg)](https://github.com/alleyinteractive/byline-manager/actions/workflows/node-tests.yml)
 
 Manage an article's byline and author profiles.
 
 ## Requirements
 
-Byline Manager requires PHP 7.4. It is developed for use on WordPress 4.9+,
+Byline Manager requires PHP 8.0+. It is developed for use on WordPress 4.9+,
 though it may also work on earlier versions.
 
 ## License
