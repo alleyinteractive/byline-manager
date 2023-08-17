@@ -2,13 +2,15 @@
 /**
  * Plugin Name:     Byline Manager
  * Plugin URI:      https://github.com/alleyinteractive/byline-manager
- * Description:     Manage an article's byline and author profiles
+ * Description:     Manage an article's byline and author profiles.
  * Author:          Alley Interactive
+ * Author URI:      https://alley.com
  * Text Domain:     byline-manager
  * Domain Path:     /languages
  * Version:         0.2.1
- * Requires PHP:    7.4
- * Tested up to:    6.2.2
+ * Requires WP:     5.9
+ * Requires PHP:    8.0
+ * Tested up to:    6.3
  *
  * @package         Byline_Manager
  */
