@@ -21,7 +21,8 @@
     "phpstan/extension-installer": "^1.1",
     "phpstan/phpstan": "^1.10",
     "wp-coding-standards/wpcs": "dev-php-8-1 as 2.3.x-dev",
-    "szepeviktor/phpstan-wordpress": "^1.1.6"
+    "szepeviktor/phpstan-wordpress": "^1.1.6",
+    "yoast/phpunit-polyfills": "^1.0"
   },
   "config": {
     "allow-plugins": {
