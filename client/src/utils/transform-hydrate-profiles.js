@@ -1,6 +1,9 @@
 /**
  * Transforms hydrated profiles to a format that can be saved to post meta.
  *
+ * The schema of the post meta is not the same as the Redux store. This function
+ * transforms the profiles so that they can be saved to post meta schema.
+ *
  * @param {Array} items Hydrated profiles.
  * @return {Array} Array of profiles ready to be saved to post meta.
  */
@@ -21,6 +24,7 @@ const transformHydratedProfiles = (items) => {
       };
     }
 
+    // Text profile.
     return {
       type: 'text',
       atts: {

@@ -1,8 +1,7 @@
-/*
- * Byline Profiles UI.
- */
-
-import React, { useState, useEffect } from 'react';
+// External dependencies.
+import React from 'react';
+import PropTypes from 'prop-types';
+import { useState, useEffect } from '@wordpress/element';
 import classNames from 'classnames';
 import {
   SortableContainer,
@@ -10,11 +9,10 @@ import {
   arrayMove,
 } from 'react-sortable-hoc';
 import Autocomplete from 'react-autocomplete';
-import PropTypes from 'prop-types';
 import { Button } from '@wordpress/components';
 
 // Hooks.
-import useDebounce from '../../services/use-debounce';
+import { useDebounce } from '@uidotdev/usehooks';
 
 const SortableItem = SortableElement(({
   count,
@@ -39,7 +37,6 @@ const SortableItem = SortableElement(({
     <span>{name}</span>
     <Button
       label={removeAuthorLabel}
-      isSecondary
       isDestructive
       isSmall
       variant="secondary"
@@ -209,7 +206,6 @@ const BylineProfiles = ({
               label={addFreeformButtonLabel}
               className="button"
               disabled={! value}
-              isSecondary
               variant="secondary"
               isSmall
               onClick={(e) => {
