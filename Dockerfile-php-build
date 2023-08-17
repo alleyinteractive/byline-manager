@@ -1,0 +1,2 @@
+FROM php:8.0-cli-alpine
+RUN apk add --update --no-cache zip git bash openssh
