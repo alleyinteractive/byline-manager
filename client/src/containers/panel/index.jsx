@@ -1,7 +1,7 @@
 // External dependencies.
+import PropTypes from 'prop-types';
 import { PluginPostStatusInfo } from '@wordpress/edit-post';
 import { createSlotFill, __experimentalDivider as Divider } from '@wordpress/components';
-import PropTypes from 'prop-types';
 
 const { Fill, Slot } = createSlotFill('BylineManagerPanelInfo');
 

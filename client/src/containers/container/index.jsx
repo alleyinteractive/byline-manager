@@ -12,9 +12,7 @@ const BylineSlotContainer = ({
   store,
   metaKey,
 }) => {
-  const profiles = useSelect(
-    (select) => select(store).getProfiles()
-  );
+  const profiles = useSelect((select) => select(store).getProfiles());
 
   const {
     actionAddProfile: addProfile,
@@ -25,7 +23,7 @@ const BylineSlotContainer = ({
   const saveByline = setBylineMeta(dispatch, metaKey);
 
   /**
-   * Save ALL bylines to meta in the expected schema.
+   * Save ALL bylines to the post meta in the expected schema.
    *
    * This is an efficient way to save bylines to the post meta in the "right" schema.
    * The redux store schema and the meta schema are different.

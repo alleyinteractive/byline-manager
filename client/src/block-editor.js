@@ -4,14 +4,14 @@ import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
 
 // Internal dependencies.
-import BylineSlot from 'components/byline-slot';
 import {
   BylineManagerPanelInfoProvider,
   BylineManagerPanelInfo,
-} from 'containers/byline-panel-info-container';
+  BylineSlotContainer,
+} from 'containers';
 
 // Register our store.
-import './store';
+import { store } from './store';
 
 // Styles.
 import './styles/styles.scss';
@@ -21,7 +21,7 @@ const BylineManagerSlotFill = () => (
     <p>
       <strong>{__('Byline', 'byline-manager')}</strong>
     </p>
-    <BylineSlot />
+    <BylineSlotContainer store={store} />
   </BylineManagerPanelInfo>
 );
 

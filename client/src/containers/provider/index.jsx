@@ -2,7 +2,7 @@
 import { Fragment } from '@wordpress/element';
 
 // Internal dependencies.
-import BylineManagerPanelInfo from './provider';
+import BylineManagerPanelInfo from '../panel/index';
 
 const BylineManagerPanelInfoProvider = () => (
   <BylineManagerPanelInfo.Slot>
@@ -14,7 +14,4 @@ const BylineManagerPanelInfoProvider = () => (
   </BylineManagerPanelInfo.Slot>
 );
 
-export {
-  BylineManagerPanelInfoProvider,
-  BylineManagerPanelInfo,
-};
+export default BylineManagerPanelInfoProvider;
