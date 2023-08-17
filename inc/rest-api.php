@@ -64,7 +64,6 @@ function rest_profile_search( \WP_REST_Request $request ) {
 			'numberposts'      => 10,
 			's'                => $request->get_param( 's' ),
 			'suppress_filters' => false,
-			// Ensure autocomplete returns with the most relevant results.
 			'orderby'          => 'relevance',
 		]
 	);
