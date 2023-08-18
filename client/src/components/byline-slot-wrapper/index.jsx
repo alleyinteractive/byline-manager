@@ -44,14 +44,16 @@ const BylineSlotWrapper = ({
           addFreeformPlaceholder={addFreeformPlaceholder || bylineData.addFreeformPlaceholder}
           addFreeformButtonLabel={addFreeformButtonLabel || bylineData.addFreeformButtonLabel}
         />
-        <BylineList
-          profiles={profiles}
-          onSortEnd={reorderProfile}
-          lockAxis="y"
-          helperClass="byline-list-item"
-          removeItem={removeProfile}
-          removeAuthorLabel={removeAuthorLabel || bylineData.removeAuthorLabel}
-        />
+        {0 !== profiles.length ? (
+          <BylineList
+            profiles={profiles}
+            onSortEnd={reorderProfile}
+            lockAxis="y"
+            helperClass="byline-list-item"
+            removeItem={removeProfile}
+            removeAuthorLabel={removeAuthorLabel || bylineData.removeAuthorLabel}
+          />
+        ) : null}
       </Fragment>
     )}
   </div>
