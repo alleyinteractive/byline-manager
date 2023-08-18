@@ -74,7 +74,7 @@ function register_profile() {
 			'map_meta_cap'        => null,
 			'menu_icon'           => 'dashicons-id',
 			'menu_position'       => 71,
-			'supports'            => [ 'title', 'editor', 'revisions', 'thumbnail' ],
+			'supports'            => [ 'title', 'editor', 'revisions', 'thumbnail', 'custom-fields' ],
 			'show_in_rest'        => true,
 			// Include Profiles in GraphQL.
 			'show_in_graphql'     => true,
