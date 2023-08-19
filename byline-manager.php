@@ -12,7 +12,7 @@
  * Requires PHP:    8.0
  * Tested up to:    6.3
  *
- * @package         Byline_Manager
+ * @package Byline_Manager
  */
 
 namespace Byline_Manager;
@@ -22,29 +22,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( __NAMESPACE__ . '\PATH', __DIR__ . '/' );
-define( __NAMESPACE__ . '\URL', trailingslashit( plugins_url( '', __FILE__ ) ) );
+define( 'BYLINE_MANAGER_PATH', __DIR__ . '/' );
 
 // Autoloader.
-require_once PATH . 'inc/autoload.php';
+require_once BYLINE_MANAGER_PATH . 'inc/autoload.php';
 
 // Template Tags.
-require_once PATH . 'inc/template-tags.php';
+require_once BYLINE_MANAGER_PATH . 'inc/template-tags.php';
 
 // Asset loader.
-require_once PATH . 'inc/assets.php';
+require_once BYLINE_MANAGER_PATH . 'inc/assets.php';
 
 // Data structures.
-require_once PATH . 'inc/data-structures.php';
+require_once BYLINE_MANAGER_PATH . 'inc/data-structures.php';
 
 // Admin interfaces.
-require_once PATH . 'inc/admin-ui.php';
+require_once BYLINE_MANAGER_PATH . 'inc/admin-ui.php';
 
 // REST API interfaces.
-require_once PATH . 'inc/rest-api.php';
+require_once BYLINE_MANAGER_PATH . 'inc/rest-api.php';
 
 // GraphQL interfaces.
-require_once PATH . 'inc/graphql.php';
+require_once BYLINE_MANAGER_PATH . 'inc/graphql.php';
 
 // Hook into core filters to output byline.
-require_once PATH . 'inc/core-filters.php';
+require_once BYLINE_MANAGER_PATH . 'inc/core-filters.php';

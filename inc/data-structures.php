@@ -5,7 +5,11 @@
  * @package Byline_Manager
  */
 
+declare(strict_types=1);
+
 namespace Byline_Manager;
+
+use WP_Post;
 
 // The profile post type slug.
 const PROFILE_POST_TYPE = 'profile';
@@ -16,7 +20,7 @@ const BYLINE_TAXONOMY = 'byline';
 /**
  * Create the profile post type.
  */
-function register_profile() {
+function register_profile(): void {
 	global $wp_rewrite;
 
 	register_post_type( // phpcs:ignore WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral
@@ -71,7 +75,7 @@ function register_profile() {
 				'ep_mask' => EP_AUTHORS,
 			],
 			'capability_type'     => 'post',
-			'map_meta_cap'        => null,
+			'map_meta_cap'        => false,
 			'menu_icon'           => 'dashicons-id',
 			'menu_position'       => 71,
 			'supports'            => [ 'title', 'editor', 'revisions', 'thumbnail', 'custom-fields' ],
@@ -88,7 +92,7 @@ add_action( 'init', __NAMESPACE__ . '\register_profile' );
 /**
  * Create the hidden byline taxonomy.
  */
-function register_byline() {
+function register_byline(): void {
 	register_taxonomy(
 		BYLINE_TAXONOMY,
 		Utils::get_supported_post_types(),
@@ -127,7 +131,7 @@ add_action( 'init', __NAMESPACE__ . '\register_byline', 10000 );
  * @param WP_Post $post    Post object.
  * @param bool    $update  Whether this is an existing post being updated or not.
  */
-function sync_profiles_and_bylines( $post_id, $post, $update ) {
+function sync_profiles_and_bylines( $post_id, $post, $update ): void {
 	if ( PROFILE_POST_TYPE !== $post->post_type ) {
 		return;
 	}
@@ -151,7 +155,7 @@ add_action( 'save_post', __NAMESPACE__ . '\sync_profiles_and_bylines', 100, 3 );
  *
  * @param int $post_id Post ID.
  */
-function delete_byline_by_profile_id( $post_id ) {
+function delete_byline_by_profile_id( $post_id ): void {
 	if ( PROFILE_POST_TYPE !== get_post_type( $post_id ) ) {
 		return;
 	}
@@ -167,11 +171,11 @@ add_action( 'before_delete_post', __NAMESPACE__ . '\delete_byline_by_profile_id'
 /**
  * Set the title field placeholder text on profile posts.
  *
- * @param string   $title Placeholder text.
- * @param \WP_Post $post  Post object.
+ * @param string  $title Placeholder text.
+ * @param WP_Post $post  Post object.
  * @return string If $post is a profile, the new placeholder text. Else $text.
  */
-function profile_post_title_placeholder( $title, $post ) {
+function profile_post_title_placeholder( $title, $post ): string {
 	if ( PROFILE_POST_TYPE === $post->post_type ) {
 		return __( 'Display Name', 'byline-manager' );
 	}

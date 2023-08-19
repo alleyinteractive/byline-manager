@@ -5,10 +5,14 @@
  * @package Byline_Manager
  */
 
+declare(strict_types=1);
+
 namespace Byline_Manager;
 
 use Byline_Manager\Models\Profile;
 use Byline_Manager\Models\TextProfile;
+use WP_Term;
+use WP_Post;
 
 /**
  * Utility methods for managing profiles and posts' bylines.
@@ -16,11 +20,11 @@ use Byline_Manager\Models\TextProfile;
 class Utils {
 
 	/**
-	 * Get an array of post types that use this plugin to manage bylines.
+	 * Get an array of post types that support authors.
 	 *
-	 * @return array Post types.
+	 * @return string[] Post types with author support.
 	 */
-	public static function get_supported_post_types() {
+	public static function get_supported_post_types(): array {
 		$post_types = get_post_types_by_support( 'author' );
 
 		/**
@@ -37,19 +41,16 @@ class Utils {
 	 *
 	 * @param string|null $post_type Optional. Post type slug. Defaults to
 	 *                               current global post type.
-	 * @return bool True if yes, false if no.
+	 * @return bool
 	 */
-	public static function is_post_type_supported( $post_type = null ) {
-		if ( ! $post_type ) {
-			$post_type = get_post_type();
-		}
-		return in_array( $post_type, self::get_supported_post_types(), true );
+	public static function is_post_type_supported( $post_type = null ): bool {
+		return in_array( $post_type ?? get_post_type(), self::get_supported_post_types(), true );
 	}
 
 	/**
 	 * Get the byline post meta for a post.
 	 *
-	 * @param \WP_Post|int $post Optional. Post object or ID. Defaults to
+	 * @param WP_Post|int $post Optional. Post object or ID. Defaults to
 	 *                           current global post.
 	 * @return array {
 	 *     Metadata about the byline for the post.
@@ -60,7 +61,7 @@ class Utils {
 	 *                            for each profile.
 	 * }
 	 */
-	public static function get_byline_meta_for_post( $post = null ) {
+	public static function get_byline_meta_for_post( $post = null ): array {
 		$defaults = [
 			'profiles' => [],
 		];
@@ -80,16 +81,14 @@ class Utils {
 	 * Given a post, get the profile and text profile objects that build
 	 * up its byline, if applicable.
 	 *
-	 * @param \WP_Post|int $post Optional. Post object or ID. Defaults to
+	 * @param WP_Post|int $post Optional. Post object or ID. Defaults to
 	 *                           current global post.
 	 * @return array Profile and TextProfile objects.
 	 */
-	public static function get_byline_entries_for_post( $post = null ) {
+	public static function get_byline_entries_for_post( $post = null ): array {
 		$byline = self::get_byline_meta_for_post( $post );
-		if (
-			empty( $byline['profiles'] )
-			|| ! is_array( $byline['profiles'] )
-		) {
+
+		if ( empty( $byline['profiles'] ) || ! is_array( $byline['profiles'] ) ) {
 			return [];
 		}
 
@@ -115,9 +114,9 @@ class Utils {
 	 * @return int|false Post ID on success, false if the term is invalid, 0 if
 	 *                   the post ID was not found.
 	 */
-	public static function get_profile_id_by_byline_id( int $byline_id ) {
+	public static function get_profile_id_by_byline_id( int $byline_id ): int|false {
 		$term = get_term( $byline_id, BYLINE_TAXONOMY );
-		if ( ! $term instanceof \WP_Term ) {
+		if ( ! $term instanceof WP_Term ) {
 			return false;
 		}
 		list( , $post_id ) = explode( '-', $term->name );
@@ -155,7 +154,7 @@ class Utils {
 	 *     ],
 	 * ].
 	 */
-	public static function set_post_byline( int $post_id, array $byline_meta ) {
+	public static function set_post_byline( int $post_id, array $byline_meta ): void {
 		$default_args = [
 			'byline_entries' => [],
 		];
@@ -211,10 +210,11 @@ class Utils {
 		 * Filter the meta associated with a byline, allowing plugins to store
 		 * additional information about the post's byline.
 		 *
-		 * @param array    $byline  Byline metadata.
-		 * @param \WP_Post $post_id ID of post getting the byline.
+		 * @param array $byline  Byline metadata.
+		 * @param int   $post_id ID of post getting the byline.
 		 */
 		$byline = apply_filters( 'byline_manager_post_byline_meta', $byline, $post_id );
+
 		update_post_meta( $post_id, 'byline', $byline );
 	}
 
@@ -226,7 +226,7 @@ class Utils {
 	 * @param string $content Byline post content. Optional.
 	 * @return Profile Byline profile object.
 	 */
-	public static function get_or_create_byline( $byline_slug, $byline_title, $content = '' ) {
+	public static function get_or_create_byline( $byline_slug, $byline_title, $content = '' ): Profile {
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
 		$byline_query = get_posts(
 			[
@@ -244,7 +244,7 @@ class Utils {
 
 		return Profile::create(
 			[
-				'post_title'   => $byline_title ?? ' ',
+				'post_title'   => $byline_title,
 				'post_name'    => $byline_slug,
 				'post_content' => $content,
 			]
@@ -257,7 +257,7 @@ class Utils {
 	 * @param int   $post_id    Post ID.
 	 * @param array $byline_ids Array of byline IDs.
 	 */
-	public static function assign_bylines_to_post( $post_id, $byline_ids ) {
+	public static function assign_bylines_to_post( $post_id, $byline_ids ): void {
 		$meta = [
 			'byline_entries' => [],
 		];

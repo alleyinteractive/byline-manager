@@ -3,3 +3,6 @@ parameters:
 	paths:
 		- byline-manager.php
 		- inc/
+
+	scanFiles:
+		- vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php

@@ -12,7 +12,7 @@ namespace Byline_Manager;
  *
  * @param  string $cls Class name.
  */
-function autoload( $cls ) {
+function autoload( $cls ): void {
 	$cls = ltrim( $cls, '\\' );
 	if ( strpos( $cls, 'Byline_Manager\\' ) !== 0 ) {
 		return;
@@ -22,6 +22,6 @@ function autoload( $cls ) {
 	$dirs = explode( '\\', $cls );
 	$cls  = array_pop( $dirs );
 
-	require_once PATH . rtrim( '/inc/' . implode( '/', $dirs ), '/' ) . '/class-' . $cls . '.php';
+	require_once BYLINE_MANAGER_PATH . rtrim( '/inc/' . implode( '/', $dirs ), '/' ) . '/class-' . $cls . '.php';
 }
 spl_autoload_register( '\Byline_Manager\autoload' );

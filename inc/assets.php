@@ -5,6 +5,8 @@
  * @package Byline_Manager
  */
 
+declare(strict_types=1);
+
 namespace Byline_Manager;
 
 use Byline_Manager\Models\Profile;
@@ -195,7 +197,6 @@ function get_asset_path( string $asset, bool $dir = false ) : string {
  *
  * @param string $asset Entry point and asset type separated by a '.'.
  * @param string $prop The property to get from the entry object.
- *
  * @return string|null The asset property based on entry and type.
  */
 function get_asset_property( string $asset, string $prop ) : ?string {
@@ -214,7 +215,6 @@ function get_asset_property( string $asset, string $prop ) : ?string {
  * Decode the asset map at the given file path.
  *
  * @param string $path File path.
- *
  * @return array The asset map.
  */
 function read_asset_map( string $path ) : array {
