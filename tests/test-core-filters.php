@@ -17,7 +17,7 @@ use Mantle\Testkit\Test_Case;
 class Test_Core_Filters extends Test_Case {
 	use Refresh_Database;
 
-	protected $b1, $b2;
+	protected $b1, $b2, $byline_meta;
 
 	protected function setUp(): void {
 		global $post;
@@ -26,7 +26,7 @@ class Test_Core_Filters extends Test_Case {
 
 		\Mantle\Testing\Utils::delete_all_posts();
 
-		$user_id           = $this->factory->user->create(
+		$user_id           = static::factory()->user->create(
 			[
 				'role' => 'editor',
 			]
@@ -59,7 +59,7 @@ class Test_Core_Filters extends Test_Case {
 				],
 			],
 		];
-		$post              = $this->factory->post->create_and_get( [ 'post_author' => $user_id ] );
+		$post              = static::factory()->post->create_and_get( [ 'post_author' => $user_id ] );
 		setup_postdata( $post );
 	}
 

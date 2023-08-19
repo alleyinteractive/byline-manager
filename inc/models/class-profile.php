@@ -16,6 +16,13 @@ use WP_User;
 
 /**
  * Representation of an individual profile.
+ *
+ * Dynamic properties.
+ *
+ * @property int    $post_id Post ID for the profile.
+ * @property int    $term_id Term ID for the profile.
+ * @property string $display_name Display name for the profile.
+ * @property string $user_url User url.
  */
 class Profile {
 	/**
@@ -26,40 +33,12 @@ class Profile {
 	public $post;
 
 	/**
-	 * Profile ID.
-	 *
-	 * @var int
-	 */
-	public $post_id;
-
-	/**
-	 * ID for the correlated byline term.
-	 *
-	 * @var int
-	 */
-	public $term_id;
-
-	/**
-	 * Display name for the profile.
-	 *
-	 * @var string
-	 */
-	public $display_name;
-
-	/**
-	 * User nicename for the profile.
-	 *
-	 * @var string
-	 */
-	public $user_url;
-
-	/**
 	 * Create a new Profile object.
 	 *
 	 * @param array $args Arguments with which to create the new object.
 	 * @return Profile|WP_Error
 	 */
-	public static function create( $args ): Profile|WP_Error {
+	public static function create( array $args ): Profile|WP_Error {
 		if ( empty( $args['post_title'] ) ) {
 			return new WP_Error( 'missing-post_title', __( "'post_title' (user's display name) is a required argument", 'byline-manager' ) );
 		}
@@ -137,10 +116,10 @@ class Profile {
 	 * @param int|WP_Post $post Post ID or object of a profile.
 	 * @return Profile|false
 	 */
-	public static function get_by_post( $post ): Profile|false {
+	public static function get_by_post( $post ) {
 		$post = get_post( $post );
 		if ( $post && PROFILE_POST_TYPE === $post->post_type ) {
-			return new Profile( $post );
+			return new self( $post );
 		}
 		return false;
 	}
@@ -151,7 +130,7 @@ class Profile {
 	 * @param int $term_id ID for the profile term.
 	 * @return Profile|false Profile on success, false on failure.
 	 */
-	public static function get_by_term_id( $term_id ) {
+	public static function get_by_term_id( $term_id ): Profile|false {
 		return false;
 	}
 
@@ -161,7 +140,7 @@ class Profile {
 	 * @param string $slug Slug for the profile term.
 	 * @return Profile|false Profile on success, false on failure.
 	 */
-	public static function get_by_slug( $slug ) {
+	public static function get_by_slug( $slug ): Profile|false {
 		return false;
 	}
 
@@ -171,7 +150,7 @@ class Profile {
 	 * @param int $user_id ID for the profile's user.
 	 * @return Profile|false Profile on success, false on failure.
 	 */
-	public static function get_by_user_id( $user_id ) {
+	public static function get_by_user_id( $user_id ): Profile|false {
 		return false;
 	}
 
@@ -208,30 +187,32 @@ class Profile {
 			return $this->$attribute;
 		}
 
-		// 'link' should use the profile link.
-		if ( 'link' === $attribute ) {
-			return get_permalink( $this->post_id );
-		}
+		$post = $this->get_post();
 
-		// These fields are actually on the Post object.
-		switch ( $attribute ) {
-			case 'display_name':
-				return $this->get_post()->post_title;
-			case 'user_nicename':
-				return $this->get_post()->post_name;
-			case 'description':
-				return $this->get_post()->post_content;
-			case 'post_id':
-				return $this->get_post()->ID;
-		}
+		return match ( $attribute ) {
+			// Uses the profile link.
+			'link'          => get_permalink( $this->post_id ),
+			// These fields are actually on the Post object.
+			'display_name'  => $post->post_title,
+			'user_nicename' => $post->post_name,
+			'description'   => $post->post_content,
+			'post_id'       => $post->ID,
+			'term_id'       => $this->get_term_id(),
+			default         => get_post_meta( $this->post_id, $attribute, true ),
+		};
+	}
 
-		// Term ID (and byline ID) can get cached in the object.
-		if ( 'term_id' === $attribute ) {
+	/**
+	 * Get the term ID for the profile.
+	 *
+	 * @return int
+	 */
+	private function get_term_id(): int {
+		if ( ! isset( $this->term_id ) ) {
 			$this->term_id = absint( get_post_meta( $this->post_id, 'byline_id', true ) );
-			return $this->term_id;
 		}
 
-		return get_post_meta( $this->post_id, $attribute, true );
+		return absint( $this->term_id );
 	}
 
 	/**

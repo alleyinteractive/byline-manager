@@ -13,6 +13,7 @@ use Byline_Manager\Models\Profile;
 use Byline_Manager\Models\TextProfile;
 use WP_Term;
 use WP_Post;
+use WP_Error;
 
 /**
  * Utility methods for managing profiles and posts' bylines.
@@ -224,9 +225,9 @@ class Utils {
 	 * @param string $byline_slug Byline slug.
 	 * @param string $byline_title Byline title.
 	 * @param string $content Byline post content. Optional.
-	 * @return Profile Byline profile object.
+	 * @return Profile|WP_Error|false Byline profile object.
 	 */
-	public static function get_or_create_byline( $byline_slug, $byline_title, $content = '' ): Profile {
+	public static function get_or_create_byline( $byline_slug, $byline_title, $content = '' ) {
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
 		$byline_query = get_posts(
 			[
