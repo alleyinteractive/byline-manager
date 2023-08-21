@@ -5,9 +5,12 @@
  * @package Byline_Manager
  */
 
+declare(strict_types=1);
+
 namespace Byline_Manager;
 
-use WPGraphQL;
+use WPGraphQL\Model\Post;
+use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 
 add_action( 'graphql_register_types', __NAMESPACE__ . '\register_byline_types' );
 add_action( 'graphql_register_types', __NAMESPACE__ . '\register_byline_post_connection' );
@@ -15,7 +18,7 @@ add_action( 'graphql_register_types', __NAMESPACE__ . '\register_byline_post_con
 /**
  * Register data types and field for supporting bylines on posts.
  */
-function register_byline_types() {
+function register_byline_types(): void {
 	// Register a text profile.
 	register_graphql_object_type(
 		'TextProfile',
@@ -37,7 +40,7 @@ function register_byline_types() {
 			'typeNames'   => [ 'Profile', 'TextProfile' ],
 			'resolveType' => function ( $profile ) {
 				if (
-					$profile instanceof WPGraphQL\Model\Post
+					$profile instanceof Post
 					&& PROFILE_POST_TYPE === $profile->post_type
 				) {
 					return 'Profile';
@@ -82,7 +85,7 @@ function register_byline_types() {
 					],
 					'type'        => 'String',
 					'description' => __( 'Byline text.', 'byline-manager' ),
-					'resolve'     => function( WPGraphQL\Model\Post $profile, array $args ) {
+					'resolve'     => function( Post $profile, array $args ) {
 						$post_id = $profile->ID;
 
 						if ( $profile->isPreview ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -107,7 +110,7 @@ function register_byline_types() {
 				'profiles'   => [
 					'type'        => [ 'list_of' => 'ProfileTypes' ],
 					'description' => __( 'Byline profiles.', 'byline-manager' ),
-					'resolve'     => function ( WPGraphQL\Model\Post $profile ) {
+					'resolve'     => function ( Post $profile ) {
 						$post_id = $profile->ID;
 
 						if ( $profile->isPreview ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -123,7 +126,7 @@ function register_byline_types() {
 						$bylines = array_map(
 							function( $profile ) {
 								if ( 'byline_id' === $profile['type'] ) {
-									return new WPGraphQL\Model\Post( get_post( $profile['atts']['post_id'] ) );
+									return new Post( get_post( $profile['atts']['post_id'] ) );
 								}
 
 								return $profile['atts'];
@@ -148,7 +151,7 @@ function register_byline_types() {
 		[
 			'type'        => 'Byline',
 			'description' => __( 'Byline profiles.', 'byline-manager' ),
-			'resolve'     => function ( WPGraphQL\Model\Post $post ) {
+			'resolve'     => function ( Post $post ) {
 				return $post;
 			},
 		]
@@ -158,17 +161,17 @@ function register_byline_types() {
 /**
  * Register a connection between profiles and their associated posts.
  */
-function register_byline_post_connection() {
+function register_byline_post_connection(): void {
 	register_graphql_connection(
 		[
 			'fromType'           => 'Profile',
 			'toType'             => 'Post',
 			'fromFieldName'      => 'profilePosts',
 			'connectionTypeName' => 'PostsFromProfileConnection',
-			'resolve'            => function ( WPGraphQL\Model\Post $profile, $args, $context, $info ) {
-				$profile   = Models\Profile::get_by_post( $profile->data );
+			'resolve'            => function ( Post $profile, $args, $context, $info ) {
+				$profile   = Models\Profile::get_by_post( $profile->ID );
 				$byline_id = $profile->term_id;
-				$resolver  = new WPGraphQL\Data\Connection\PostObjectConnectionResolver( $profile, $args, $context, $info );
+				$resolver  = new PostObjectConnectionResolver( $profile, $args, $context, $info );
 
 				$resolver->set_query_arg(
 					'tax_query',

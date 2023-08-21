@@ -6,6 +6,8 @@
  * @since 0.2.0
  */
 
+declare(strict_types=1);
+
 namespace Byline_Manager\Models;
 
 /**
@@ -60,7 +62,7 @@ class TextProfile {
 	 * @param array $atts Attributes for a text profile.
 	 * @return TextProfile|false
 	 */
-	public static function create( $atts ) {
+	public static function create( $atts ): TextProfile|false {
 		// Require at least a text attribute.
 		if ( ! empty( $atts['text'] ) ) {
 			return new TextProfile( $atts );
@@ -75,7 +77,7 @@ class TextProfile {
 	 *
 	 * @return string
 	 */
-	private function generate_id() {
+	private function generate_id(): string {
 		static $counter = 1;
 		return 'text-' . ( $counter++ );
 	}
