@@ -17,7 +17,7 @@ use Mantle\Testkit\Test_Case;
 class Test_Core_Filters extends Test_Case {
 	use Refresh_Database;
 
-	protected $b1, $b2;
+	protected $b1, $b2, $byline_meta;
 
 	protected function setUp(): void {
 		global $post;
@@ -26,7 +26,7 @@ class Test_Core_Filters extends Test_Case {
 
 		\Mantle\Testing\Utils::delete_all_posts();
 
-		$user_id           = $this->factory->user->create(
+		$user_id           = static::factory()->user->create(
 			[
 				'role' => 'editor',
 			]
@@ -59,7 +59,7 @@ class Test_Core_Filters extends Test_Case {
 				],
 			],
 		];
-		$post              = $this->factory->post->create_and_get( [ 'post_author' => $user_id ] );
+		$post              = static::factory()->post->create_and_get( [ 'post_author' => $user_id ] );
 		setup_postdata( $post );
 	}
 
@@ -148,14 +148,15 @@ class Test_Core_Filters extends Test_Case {
 
 	/**
 	 * This is a bit of a hack used to buffer feed content.
+	 *
+	 * @return string
 	 */
-	public function do_rss2() {
+	public function do_rss2(): string {
 		ob_start();
-		global $post;
 		try {
 			@require ABSPATH . 'wp-includes/feed-rss2.php';
 			$out = ob_get_clean();
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			$out = ob_get_clean();
 			throw($e);
 		}
@@ -172,7 +173,7 @@ class Test_Core_Filters extends Test_Case {
 		$byline_meta['byline_entries'] = array_reverse( $byline_meta['byline_entries'] );
 		Utils::set_post_byline( $post->ID, $byline_meta );
 
-		$this->go_to( '/?feed=rss2' );
+		$this->get( '/?feed=rss2' );
 		$feed = $this->do_rss2();
 		$xml  = xml_to_array( $feed );
 
@@ -209,7 +210,7 @@ class Test_Core_Filters extends Test_Case {
 			]
 		);
 
-		$this->go_to( '/?feed=rss2' );
+		$this->get( '/?feed=rss2' );
 		$feed = $this->do_rss2();
 		$xml  = xml_to_array( $feed );
 

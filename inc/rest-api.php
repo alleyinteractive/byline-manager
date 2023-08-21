@@ -5,10 +5,15 @@
  * @package Byline_Manager
  */
 
+declare(strict_types=1);
+
 namespace Byline_Manager;
 
 use Byline_Manager\Models\Profile;
 use Byline_Manager\Models\TextProfile;
+use WP_REST_Response;
+use WP_REST_Request;
+use WP_REST_Server;
 
 /**
  * REST API namespace.
@@ -20,12 +25,12 @@ const REST_NAMESPACE = 'byline-manager/v1';
 /**
  * Register the REST API routes.
  */
-function register_rest_routes() {
+function register_rest_routes(): void {
 	register_rest_route(
 		REST_NAMESPACE,
 		'/authors',
 		[
-			'methods'             => \WP_REST_Server::READABLE,
+			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => __NAMESPACE__ . '\rest_profile_search',
 			'permission_callback' => '__return_true',
 		]
@@ -34,7 +39,7 @@ function register_rest_routes() {
 		REST_NAMESPACE,
 		'/hydrateProfiles',
 		[
-			'methods'             => \WP_REST_Server::CREATABLE,
+			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => __NAMESPACE__ . '\rest_hydrate_profiles',
 			'permission_callback' => '__return_true',
 		]
@@ -43,7 +48,7 @@ function register_rest_routes() {
 		REST_NAMESPACE,
 		'/users',
 		[
-			'methods'             => \WP_REST_Server::READABLE,
+			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => __NAMESPACE__ . '\rest_user_search',
 			'permission_callback' => '__return_true',
 		]
@@ -54,10 +59,10 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_routes' );
 /**
  * Send API response for REST endpoint.
  *
- * @param \WP_REST_Request $request REST request data.
- * @return \WP_REST_Response REST API response.
+ * @param WP_REST_Request $request REST request data.
+ * @return WP_REST_Response REST API response.
  */
-function rest_profile_search( \WP_REST_Request $request ) {
+function rest_profile_search( WP_REST_Request $request ): WP_REST_Response {
 	$posts = get_posts( // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
 		[
 			'post_type'        => PROFILE_POST_TYPE,
@@ -85,10 +90,10 @@ function rest_profile_search( \WP_REST_Request $request ) {
 /**
  * Hydrate profiles ids.
  *
- * @param \WP_REST_Request $request REST request data.
- * @return \WP_REST_Response REST API response.
+ * @param WP_REST_Request $request REST request data.
+ * @return WP_REST_Response REST API response.
  */
-function rest_hydrate_profiles( \WP_REST_Request $request ) {
+function rest_hydrate_profiles( WP_REST_Request $request ): WP_REST_Response {
 	$byline_profiles = $request['profiles'] ?? [];
 	$profiles        = [];
 	// Check to see if the current user has profile associated with their user.
@@ -98,7 +103,7 @@ function rest_hydrate_profiles( \WP_REST_Request $request ) {
 	/**
 	 * Determine wether to auto set byline if a user object has a byline associated with it.
 	 *
-	 * @param boolean wether or not to auto set profile.
+	 * @param bool $value Whether or not to auto set profile.
 	 */
 	$auto_set_user_profile = apply_filters( 'byline_manager_auto_set_user_profile', true );
 
@@ -144,11 +149,12 @@ function rest_hydrate_profiles( \WP_REST_Request $request ) {
 /**
  * Send API response for REST endpoint.
  *
- * @param \WP_REST_Request $request REST request data.
- * @return \WP_REST_Response REST API response.
+ * @param WP_REST_Request $request REST request data.
+ * @return WP_REST_Response REST API response.
  */
-function rest_user_search( \WP_REST_Request $request ) {
-	$users = get_users(
+function rest_user_search( WP_REST_Request $request ): WP_REST_Response {
+	$post_id = absint( $request->get_param( 'post' ) );
+	$users   = get_users(
 		[
 			'search'  => $request->get_param( 's' ) . '*',
 			'orderby' => 'display_name',
@@ -157,9 +163,9 @@ function rest_user_search( \WP_REST_Request $request ) {
 
 	// Build the REST response data.
 	$data = array_map(
-		__NAMESPACE__ . '\get_user_data_for_meta_box',
+		fn ( $user ) => get_user_data_for_meta_box( $user, absint( $post_id ) ),
 		$users,
-		array_fill( 0, count( $users ), absint( $request->get_param( 'post' ) ) )
+		array_fill( 0, count( $users ), $post_id )
 	);
 
 	// Send the response.
@@ -174,7 +180,7 @@ function rest_user_search( \WP_REST_Request $request ) {
  *
  * @return array
  */
-function byline_meta_schema() {
+function byline_meta_schema(): array {
 	return [
 		'type'       => 'object',
 		'properties' => [

@@ -5,28 +5,32 @@
  * @package Byline_Manager
  */
 
+declare(strict_types=1);
+
 namespace Byline_Manager\Models;
 
 use const Byline_Manager\PROFILE_POST_TYPE;
+use WP_Error;
+use WP_Post;
+use WP_User;
 
 /**
  * Representation of an individual profile.
+ *
+ * Dynamic properties.
+ *
+ * @property int    $post_id Post ID for the profile.
+ * @property int    $term_id Term ID for the profile.
+ * @property string $display_name Display name for the profile.
+ * @property string $user_url User url.
  */
 class Profile {
-
 	/**
 	 * Profile post object.
 	 *
-	 * @var int
+	 * @var WP_Post
 	 */
-	protected $post;
-
-	/**
-	 * ID for the correlated byline term.
-	 *
-	 * @var int
-	 */
-	protected $term_id;
+	public $post;
 
 	/**
 	 * Create a new Profile object.
@@ -34,9 +38,9 @@ class Profile {
 	 * @param array $args Arguments with which to create the new object.
 	 * @return Profile|WP_Error
 	 */
-	public static function create( $args ) {
+	public static function create( array $args ): Profile|WP_Error {
 		if ( empty( $args['post_title'] ) ) {
-			return new \WP_Error( 'missing-post_title', __( "'post_title' (user's display name) is a required argument", 'byline-manager' ) );
+			return new WP_Error( 'missing-post_title', __( "'post_title' (user's display name) is a required argument", 'byline-manager' ) );
 		}
 
 		// Set profile defaults.
@@ -52,6 +56,7 @@ class Profile {
 		if ( is_wp_error( $post_id ) ) {
 			return $post_id;
 		}
+
 		return self::get_by_post( $post_id );
 	}
 
@@ -61,17 +66,20 @@ class Profile {
 	 * @param WP_User|int $user WordPress user to clone.
 	 * @return Profile|WP_Error
 	 */
-	public static function create_from_user( $user ) {
+	public static function create_from_user( $user ): Profile|WP_Error {
 		if ( is_int( $user ) ) {
 			$user = get_user_by( 'id', $user );
 		}
+
 		if ( ! is_a( $user, 'WP_User' ) ) {
-			return new \WP_Error( 'missing-user', __( "User doesn't exist", 'byline-manager' ) );
+			return new WP_Error( 'missing-user', __( "User doesn't exist", 'byline-manager' ) );
 		}
+
 		$existing = self::get_by_user_id( $user->ID );
 		if ( $existing ) {
-			return new \WP_Error( 'existing-profile', __( 'User already has a profile.', 'byline-manager' ) );
+			return new WP_Error( 'existing-profile', __( 'User already has a profile.', 'byline-manager' ) );
 		}
+
 		$profile = self::create(
 			[
 				'post_title'   => $user->display_name,
@@ -79,6 +87,7 @@ class Profile {
 				'post_content' => $user->description,
 			]
 		);
+
 		if ( is_wp_error( $profile ) ) {
 			return $profile;
 		}
@@ -91,23 +100,26 @@ class Profile {
 			'user_login',
 			'user_url',
 		];
+
 		update_post_meta( $profile->post->ID, 'user_id', $user->ID );
+
 		foreach ( $user_fields as $field ) {
 			update_post_meta( $profile->post->ID, $field, $user->$field );
 		}
+
 		return $profile;
 	}
 
 	/**
 	 * Get a profile object based on its profile post ID or object.
 	 *
-	 * @param int|\WP_Post $post Post ID or object of a profile.
+	 * @param int|WP_Post $post Post ID or object of a profile.
 	 * @return Profile|false
 	 */
 	public static function get_by_post( $post ) {
 		$post = get_post( $post );
 		if ( $post && PROFILE_POST_TYPE === $post->post_type ) {
-			return new Profile( $post );
+			return new self( $post );
 		}
 		return false;
 	}
@@ -118,7 +130,7 @@ class Profile {
 	 * @param int $term_id ID for the profile term.
 	 * @return Profile|false Profile on success, false on failure.
 	 */
-	public static function get_by_term_id( $term_id ) {
+	public static function get_by_term_id( $term_id ): Profile|false {
 		return false;
 	}
 
@@ -128,7 +140,7 @@ class Profile {
 	 * @param string $slug Slug for the profile term.
 	 * @return Profile|false Profile on success, false on failure.
 	 */
-	public static function get_by_slug( $slug ) {
+	public static function get_by_slug( $slug ): Profile|false {
 		return false;
 	}
 
@@ -138,7 +150,7 @@ class Profile {
 	 * @param int $user_id ID for the profile's user.
 	 * @return Profile|false Profile on success, false on failure.
 	 */
-	public static function get_by_user_id( $user_id ) {
+	public static function get_by_user_id( $user_id ): Profile|false {
 		return false;
 	}
 
@@ -147,9 +159,9 @@ class Profile {
 	 *
 	 * Profiles are always fetched by static fetchers.
 	 *
-	 * @param int|\WP_Post $post Post ID or object of a profile.
+	 * @param int|WP_Post $post Post ID or object of a profile.
 	 */
-	private function __construct( \WP_Post $post ) {
+	private function __construct( $post ) {
 		$this->post = $post;
 	}
 
@@ -175,39 +187,41 @@ class Profile {
 			return $this->$attribute;
 		}
 
-		// 'link' should use the profile link.
-		if ( 'link' === $attribute ) {
-			return get_permalink( $this->post_id );
-		}
+		$post = $this->get_post();
 
-		// These fields are actually on the Post object.
-		switch ( $attribute ) {
-			case 'display_name':
-				return $this->get_post()->post_title;
-			case 'user_nicename':
-				return $this->get_post()->post_name;
-			case 'description':
-				return $this->get_post()->post_content;
-			case 'post_id':
-				return $this->get_post()->ID;
-		}
+		return match ( $attribute ) {
+			// Uses the profile link.
+			'link'          => get_permalink( $this->post_id ),
+			// These fields are actually on the Post object.
+			'display_name'  => $post->post_title,
+			'user_nicename' => $post->post_name,
+			'description'   => $post->post_content,
+			'post_id'       => $post->ID,
+			'term_id'       => $this->get_term_id(),
+			default         => get_post_meta( $this->post_id, $attribute, true ),
+		};
+	}
 
-		// Term ID (and byline ID) can get cached in the object.
-		if ( 'term_id' === $attribute ) {
+	/**
+	 * Get the term ID for the profile.
+	 *
+	 * @return int
+	 */
+	private function get_term_id(): int {
+		if ( ! isset( $this->term_id ) ) {
 			$this->term_id = absint( get_post_meta( $this->post_id, 'byline_id', true ) );
-			return $this->term_id;
 		}
 
-		return get_post_meta( $this->post_id, $attribute, true );
+		return absint( $this->term_id );
 	}
 
 	/**
 	 * Get the post object forthe profile.
 	 *
-	 * @return \WP_Post
+	 * @return WP_Post|null
 	 */
-	public function get_post() {
-		if ( ! isset( $this->post ) ) {
+	public function get_post(): ?WP_Post {
+		if ( ! $this->post instanceof WP_Post ) {
 			$this->post = get_post( $this->post_id );
 		}
 
@@ -219,7 +233,7 @@ class Profile {
 	 *
 	 * @param int $new_user_id User ID to link. Set to 0 to unlink.
 	 */
-	public function update_user_link( $new_user_id ) {
+	public function update_user_link( $new_user_id ): void {
 		$post_id = $this->get_post()->ID;
 
 		// First, check to see if this profile is linked, for reciprocal updates.
@@ -241,7 +255,7 @@ class Profile {
 	 *
 	 * @return int User ID or 0 if this profile is not linked.
 	 */
-	public function get_linked_user_id() {
+	public function get_linked_user_id(): int {
 		return absint( get_post_meta( $this->get_post()->ID, 'user_id', true ) );
 	}
 }

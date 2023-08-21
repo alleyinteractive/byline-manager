@@ -31,7 +31,8 @@ class Test_Bylines_Template_Tags extends Test_Case {
 				'post_title' => 'Byline 2',
 			]
 		);
-		$post_id     = $this->factory->post->create();
+
+		$post_id     = static::factory()->post->create();
 		$byline_meta = [
 			'byline_entries' => [
 				[
@@ -50,7 +51,9 @@ class Test_Bylines_Template_Tags extends Test_Case {
 		];
 
 		Utils::set_post_byline( $post_id, $byline_meta );
+
 		$byline = Utils::get_byline_entries_for_post( $post_id );
+
 		$this->assertCount( 2, $byline );
 		$this->assertEquals( [ $b1->post_id, $b2->post_id ], wp_list_pluck( $byline, 'post_id' ) );
 
@@ -76,8 +79,8 @@ class Test_Bylines_Template_Tags extends Test_Case {
 	public function test_get_byline_entries_for_post_returns_wp_user() {
 		$this->markTestSkipped( 'TODO: how to handle posts without byline' );
 
-		$user_id = $this->factory->user->create();
-		$post_id = $this->factory->post->create(
+		$user_id = static::factory()->user->create();
+		$post_id = static::factory()->post->create(
 			[
 				'post_author' => $user_id,
 			]
@@ -109,7 +112,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 				'post_title' => 'Byline 1',
 			]
 		);
-		$post_id     = $this->factory->post->create();
+		$post_id     = static::factory()->post->create();
 		$post        = get_post( $post_id );
 		$byline_meta = [
 			'byline_entries' => [
@@ -160,7 +163,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 				],
 			],
 		];
-		$post_id     = $this->factory->post->create();
+		$post_id     = static::factory()->post->create();
 		$post        = get_post( $post_id );
 		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( 'Byline 2 and Byline 1' );
@@ -214,7 +217,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 			],
 		];
 
-		$post_id = $this->factory->post->create();
+		$post_id = static::factory()->post->create();
 		$post    = get_post( $post_id );
 		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( 'Byline 2, Byline 3, and Byline 1' );
@@ -280,7 +283,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 			],
 		];
 
-		$post_id = $this->factory->post->create();
+		$post_id = static::factory()->post->create();
 		$post    = get_post( $post_id );
 		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( 'Byline 2, Byline 4, Byline 3, and Byline 1' );
@@ -328,7 +331,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 			],
 		];
 
-		$post_id = $this->factory->post->create();
+		$post_id = static::factory()->post->create();
 		$post    = get_post( $post_id );
 		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( 'Byline 1, Text Item 1, and Byline 2' );
@@ -370,7 +373,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 			],
 		];
 
-		$post_id = $this->factory->post->create();
+		$post_id = static::factory()->post->create();
 		$post    = get_post( $post_id );
 		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( '<a href="' . $b2->link . '" title="Posts by Byline 2" class="author url fn" rel="author">Byline 2</a> and <a href="' . $b1->link . '" title="Posts by Byline 1" class="author url fn" rel="author">Byline 1</a>' );
@@ -406,7 +409,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 			],
 		];
 
-		$post_id = $this->factory->post->create();
+		$post_id = static::factory()->post->create();
 		$post    = get_post( $post_id );
 		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( '<a href="' . $b1->link . '" title="Posts by Byline 1" class="author url fn" rel="author">Byline 1</a> and Text Item 1' );
@@ -420,8 +423,8 @@ class Test_Bylines_Template_Tags extends Test_Case {
 		$this->markTestSkipped( 'TODO: how to handle posts without byline' );
 
 		global $post;
-		$user_id = $this->factory->user->create();
-		$post_id = $this->factory->post->create(
+		$user_id = static::factory()->user->create();
+		$post_id = static::factory()->post->create(
 			[
 				'post_author' => $user_id,
 			]
@@ -468,7 +471,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 			],
 		];
 
-		$post_id = $this->factory->post->create();
+		$post_id = static::factory()->post->create();
 		$post    = get_post( $post_id );
 		Utils::set_post_byline( $post_id, $byline_meta );
 		$this->expectOutputString( '<a href="https://apple.com" title="Visit Byline 2&#8217;s website" rel="external">Byline 2</a> and Byline 1' );
@@ -480,7 +483,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 	 */
 	public function test_get_override_for_post() {
 		global $post;
-		$post = $this->factory->post->create_and_get();
+		$post = static::factory()->post->create_and_get();
 		Utils::set_post_byline(
 			$post->ID,
 			[
@@ -502,7 +505,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 	 */
 	public function test_get_override_with_link_for_post() {
 		global $post;
-		$post = $this->factory->post->create_and_get();
+		$post = static::factory()->post->create_and_get();
 		Utils::set_post_byline(
 			$post->ID,
 			[
@@ -524,7 +527,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 	 */
 	public function test_template_tag_the_byline_posts_links_with_override() {
 		global $post;
-		$post = $this->factory->post->create_and_get();
+		$post = static::factory()->post->create_and_get();
 		Utils::set_post_byline(
 			$post->ID,
 			[
@@ -546,7 +549,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 	 */
 	public function test_template_tag_the_byline_posts_links_with_override_with_link() {
 		global $post;
-		$post = $this->factory->post->create_and_get();
+		$post = static::factory()->post->create_and_get();
 		Utils::set_post_byline(
 			$post->ID,
 			[
@@ -568,7 +571,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 	 */
 	public function test_template_tag_the_byline_links_with_override() {
 		global $post;
-		$post = $this->factory->post->create_and_get();
+		$post = static::factory()->post->create_and_get();
 		Utils::set_post_byline(
 			$post->ID,
 			[
@@ -590,7 +593,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 	 */
 	public function test_template_tag_the_byline_links_with_override_with_link() {
 		global $post;
-		$post = $this->factory->post->create_and_get();
+		$post = static::factory()->post->create_and_get();
 		Utils::set_post_byline(
 			$post->ID,
 			[

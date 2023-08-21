@@ -5,6 +5,8 @@
  * @package Byline_Manager
  */
 
+declare(strict_types=1);
+
 namespace Byline_Manager;
 
 /**
@@ -13,7 +15,7 @@ namespace Byline_Manager;
  * @param string $author_name Author display_name as provided by `the_author`.
  * @return string Byline if applicable, otherwise author name.
  */
-function auto_integrate_byline( $author_name ) {
+function auto_integrate_byline( $author_name ): string {
 	if ( ! Utils::is_post_type_supported() ) {
 		return $author_name;
 	}
@@ -35,7 +37,7 @@ add_filter( 'the_author', __NAMESPACE__ . '\auto_integrate_byline' );
  * @param string $link The HTML link to the author's posts archive.
  * @return string Updated link, if applicable.
  */
-function auto_integrate_byline_posts_links( $link ) {
+function auto_integrate_byline_posts_links( $link ): string {
 	if ( ! Utils::is_post_type_supported() ) {
 		return $link;
 	}
@@ -47,7 +49,7 @@ add_filter( 'the_author_posts_link', __NAMESPACE__ . '\auto_integrate_byline_pos
 /**
  * Add additional dc:creator nodes to RSS feeds for additional authors.
  */
-function rss_add_additional_authors() {
+function rss_add_additional_authors(): void {
 	$profiles = Utils::get_byline_entries_for_post();
 	if ( count( $profiles ) > 1 ) {
 		// The first author was already output in auto_integrate_byline().
@@ -67,7 +69,7 @@ add_action( 'rss2_item', __NAMESPACE__ . '\rss_add_additional_authors' );
  * @param int    $author_id The author's id.
  * @return string Author's posts URL.
  */
-function override_author_link( $link, $author_id ) {
+function override_author_link( $link, $author_id ): string {
 	$profile_id = absint( get_user_meta( $author_id, 'profile_id', true ) );
 	if ( $profile_id ) {
 		return get_permalink( $profile_id );
@@ -88,7 +90,7 @@ add_filter( 'author_rewrite_rules', '__return_empty_array' );
  * @param array $rules Existing rewrite rules to be filtered.
  * @return array $rules New rewrite rules.
  */
-function unset_rewrites( $rules ) {
+function unset_rewrites( $rules ): array {
 	$profile_post_type_data = get_post_type_object( PROFILE_POST_TYPE );
 	$profile_post_type_slug = $profile_post_type_data->rewrite['slug'];
 	foreach ( $rules as $rule => $rewrite ) {
