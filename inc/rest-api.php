@@ -103,7 +103,7 @@ function rest_hydrate_profiles( WP_REST_Request $request ): WP_REST_Response {
 	/**
 	 * Determine wether to auto set byline if a user object has a byline associated with it.
 	 *
-	 * @param bool $value Wether or not to auto set profile.
+	 * @param bool $value Whether or not to auto set profile.
 	 */
 	$auto_set_user_profile = apply_filters( 'byline_manager_auto_set_user_profile', true );
 
