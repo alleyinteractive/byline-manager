@@ -105,26 +105,31 @@ function localize_admin_script( $handle ) {
 		$byline_metabox_data['profiles'] = $profiles;
 	}
 
-	wp_localize_script(
-		$handle,
-		'bylineData',
-		[
-			'addAuthorLabel'         => __( 'Search for an author', 'byline-manager' ),
-			'addAuthorPlaceholder'   => __( 'Enter name', 'byline-manager' ),
-			'removeAuthorLabel'      => __( 'Remove author from byline', 'byline-manager' ),
-			'addFreeformLabel'       => __( 'Enter text to add to the byline', 'byline-manager' ),
-			'addFreeformPlaceholder' => __( 'Enter text', 'byline-manager' ),
-			'addFreeformButtonLabel' => __( 'Insert', 'byline-manager' ),
-			'linkUserPlaceholder'    => __( 'Search for a user account by name', 'byline-manager' ),
-			'userAlreadyLinked'      => __( 'This user is linked to another profile', 'byline-manager' ),
-			'linkedToLabel'          => __( 'Linked to:', 'byline-manager' ),
-			'unlinkLabel'            => __( 'Unlink', 'byline-manager' ),
-			'profilesApiUrl'         => rest_url( '/byline-manager/v1/authors' ),
-			'usersApiUrl'            => rest_url( '/byline-manager/v1/users' ),
-			'postId'                 => get_the_ID(),
-			'bylineMetaBox'          => $byline_metabox_data,
-		]
-	);
+	$byline_localized_data = [
+		'addAuthorLabel'         => __( 'Search for an author', 'byline-manager' ),
+		'addAuthorPlaceholder'   => __( 'Enter name', 'byline-manager' ),
+		'removeAuthorLabel'      => __( 'Remove author from byline', 'byline-manager' ),
+		'addFreeformLabel'       => __( 'Enter text to add to the byline', 'byline-manager' ),
+		'addFreeformPlaceholder' => __( 'Enter text', 'byline-manager' ),
+		'addFreeformButtonLabel' => __( 'Insert', 'byline-manager' ),
+		'linkUserPlaceholder'    => __( 'Search for a user account by name', 'byline-manager' ),
+		'userAlreadyLinked'      => __( 'This user is linked to another profile', 'byline-manager' ),
+		'linkedToLabel'          => __( 'Linked to:', 'byline-manager' ),
+		'unlinkLabel'            => __( 'Unlink', 'byline-manager' ),
+		'profilesApiUrl'         => rest_url( '/byline-manager/v1/authors' ),
+		'usersApiUrl'            => rest_url( '/byline-manager/v1/users' ),
+		'postId'                 => get_the_ID(),
+		'bylineMetaBox'          => $byline_metabox_data,
+	];
+
+	/**
+	 * Filters the localized data for Byline Manager.
+	 *
+	 * @param array $byline_metabox_data Byline Manager localized data.
+	 */
+	$byline_localized_data = apply_filters( 'byline_manager_localized_data', $byline_localized_data );
+
+	wp_localize_script( $handle, 'bylineData', $byline_localized_data );
 }
 
 /**
