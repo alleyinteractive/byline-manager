@@ -24,7 +24,7 @@ class Test_Profile_User_Sync extends Test_Case {
 		$this->profile_id = self::factory()->post->create( [ 'post_type' => PROFILE_POST_TYPE ] );
 	}
 
-	public function test_update_link() {
+	public function test_update_link(): void {
 		$profile = Profile::get_by_post( $this->profile_id );
 		$user1   = self::factory()->user->create( [ 'role' => 'author' ] );
 		$user2   = self::factory()->user->create( [ 'role' => 'editor' ] );
@@ -42,10 +42,10 @@ class Test_Profile_User_Sync extends Test_Case {
 		$this->assertSame( $this->profile_id, absint( get_user_meta( $user2, 'profile_id', true ) ) );
 
 		// user1 should now have no profile_id meta.
-		$this->assertSame( '', get_user_meta( $user1, 'profile_id', true ) );
+		$this->assertEmpty( get_user_meta( $user1, 'profile_id', true ) );
 	}
 
-	public function test_unlink() {
+	public function test_unlink(): void {
 		$profile = Profile::get_by_post( $this->profile_id );
 		$user    = self::factory()->user->create( [ 'role' => 'author' ] );
 
@@ -56,7 +56,41 @@ class Test_Profile_User_Sync extends Test_Case {
 
 		// Unlink user 2 and confirm that all data got unset properly.
 		$profile->update_user_link( 0 );
-		$this->assertSame( 0, $profile->get_linked_user_id() );
-		$this->assertSame( '', get_user_meta( $user, 'profile_id', true ) );
+		$this->assertEmpty( $profile->get_linked_user_id() );
+		$this->assertEmpty( get_user_meta( $user, 'profile_id', true ) );
+	}
+
+	public function test_profile_from_associated_user(): void {
+		$profile = Profile::get_by_post( $this->profile_id );
+		$user    = self::factory()->user->create( [ 'role' => 'author' ] );
+
+		// Link user and confirm that all data got set properly.
+		$profile->update_user_link( $user );
+		$this->assertSame( $user, $profile->get_linked_user_id() );
+		$this->assertSame( $this->profile_id, absint( get_user_meta( $user, 'profile_id', true ) ) );
+
+		// Delete profile post.
+		wp_delete_post( $this->profile_id, true );
+
+		// Confirm the associated user meta was deleted.
+		$this->assertEmpty( $profile->get_linked_user_id() );
+		$this->assertEmpty( get_user_meta( $user, 'profile_id', true ) );
+	}
+
+	public function test_profile_from_deleted_user(): void {
+		$profile = Profile::get_by_post( $this->profile_id );
+		$user    = self::factory()->user->create( [ 'role' => 'author' ] );
+
+		// Link user and confirm that all data got set properly.
+		$profile->update_user_link( $user );
+		$this->assertSame( $user, $profile->get_linked_user_id() );
+		$this->assertSame( $this->profile_id, absint( get_user_meta( $user, 'profile_id', true ) ) );
+
+		// Delete user.
+		require_once(ABSPATH . 'wp-admin/includes/user.php');
+		wp_delete_user( $user );
+
+		// Confirm the profile associated user meta was deleted.
+		$this->assertEmpty( $profile->get_linked_user_id() );
 	}
 }
