@@ -1,7 +1,6 @@
 /* global bylineData */
 
 // External dependencies.
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Spinner } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';

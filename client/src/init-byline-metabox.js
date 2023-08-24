@@ -1,6 +1,5 @@
 /* global bylineData */
 
-import React from 'react';
 import ReactDOM from 'react-dom';
 import BylineMetaBox from 'components/byline-metabox';
 
