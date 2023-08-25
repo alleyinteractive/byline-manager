@@ -9,17 +9,17 @@ import reducer from './reducer';
 import controls from './controls';
 
 /**
- * Byline Manager store registration.
+ * Byline Manager Redux store registration.
  *
  * @example
  * ```js
- * import { storeCreator } from 'path/to/byline/manager/store';
+ * import storeCreator from 'path/to/byline/manager/creator';
  *
  * storeCreator(MY_STORE_CUSTOM_KEY, 'meta_key');
  * ```
  *
- * @param {String} storeKey Redux store key.
- * @param {String} metaKey Meta key.
+ * @param {string} storeKey Redux store key.
+ * @param {string} metaKey Meta key. Default: 'byline'.
  */
 const creator = (storeKey, metaKey = 'byline') => {
   const store = createReduxStore(
@@ -34,7 +34,7 @@ const creator = (storeKey, metaKey = 'byline') => {
       resolvers: {
         getProfiles: () => resolveProfiles(storeKey, metaKey),
       },
-    }
+    },
   );
 
   register(store);

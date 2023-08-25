@@ -20,7 +20,7 @@ define( 'BYLINE_MANAGER_ASSET_MODE', BYLINE_MANAGER_ASSET_MAP['mode'] ?? 'produc
  *
  * @param string $hook Page suffix.
  */
-function admin_enqueue_scripts( $hook ) {
+function admin_enqueue_scripts( $hook ): void {
 	if (
 		in_array( $hook, [ 'post-new.php', 'post.php' ], true )
 		&& (
@@ -50,7 +50,7 @@ add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\admin_enqueue_scripts' );
  *
  * @since 1.0.0
  */
-function action_enqueue_block_editor_assets() {
+function action_enqueue_block_editor_assets(): void {
 	// Only enqueue the script to register the scripts if supported.
 	if ( ! Utils::is_post_type_supported() ) {
 		return;
@@ -72,9 +72,9 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\action_enqueue_bloc
 /**
  * Localizes an admin script with Byline data.
  *
- * @param  string $handle The script handle.
+ * @param string $handle The script handle.
  */
-function localize_admin_script( $handle ) {
+function localize_admin_script( $handle ): void {
 	// Build the byline metabox data.
 	$byline_metabox_data = Utils::get_byline_meta_for_post();
 	if ( ! empty( $byline_metabox_data['profiles'] ) ) {
