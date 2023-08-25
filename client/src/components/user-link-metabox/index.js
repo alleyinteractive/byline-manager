@@ -1,9 +1,8 @@
 // External dependencies.
-import React from 'react';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from '@wordpress/element';
-import Autocomplete from 'react-autocomplete';
 import { Button } from '@wordpress/components';
+import Autocomplete from 'react-autocomplete';
 
 // Hooks.
 import { useDebounce } from '@uidotdev/usehooks';
@@ -72,7 +71,7 @@ const UserLinkMetaBox = ({
             className="button button-link-delete button-small"
             variant="secondary"
             isDestructive
-            isSmall
+            size="small"
             onClick={(e) => {
               e.preventDefault();
               setUser({});
@@ -87,12 +86,12 @@ const UserLinkMetaBox = ({
         items={searchResults}
         value={search}
         getItemValue={(item) => item.name}
-        onSelect={(event, next) => {
+        onSelect={(__, next) => {
           setUser(next);
           setSearch('');
           setSearchResults([]);
         }}
-        onChange={(event, next) => setSearch(next)}
+        onChange={(__, next) => setSearch(next)}
         isItemSelectable={(item) => ! item.linked}
         renderMenu={(children) => (
           <div className="menu">

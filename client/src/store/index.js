@@ -8,7 +8,4 @@ const store = STORE_KEY;
 // Create the default Byline Manager Redux store.
 creator(store);
 
-export {
-  store,
-  creator as storeCreator,
-};
+export default store;

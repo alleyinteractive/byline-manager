@@ -96,12 +96,13 @@ function rest_profile_search( WP_REST_Request $request ): WP_REST_Response {
 function rest_hydrate_profiles( WP_REST_Request $request ): WP_REST_Response {
 	$byline_profiles = $request['profiles'] ?? [];
 	$profiles        = [];
+
 	// Check to see if the current user has profile associated with their user.
 	$current_user_profile_id = get_user_meta( get_current_user_id(), 'profile_id', true );
 	$current_user_profile    = Profile::get_by_post( $current_user_profile_id );
 
 	/**
-	 * Determine wether to auto set byline if a user object has a byline associated with it.
+	 * Determine whether to auto set byline if a user object has a byline associated with it.
 	 *
 	 * @param bool $value Whether or not to auto set profile.
 	 */
@@ -112,8 +113,6 @@ function rest_hydrate_profiles( WP_REST_Request $request ): WP_REST_Response {
 	 * Else return the user's associated profile if one was found and $auto_set_user_profile === true.
 	 */
 	if ( ! empty( $byline_profiles ) ) {
-		$index = 0;
-
 		foreach ( $byline_profiles as $entry ) {
 			if (
 				! empty( $entry['type'] )
@@ -134,10 +133,7 @@ function rest_hydrate_profiles( WP_REST_Request $request ): WP_REST_Response {
 					'name' => $text_profile->display_name,
 				];
 			}
-			$index++;
 		}
-
-		$byline_profiles = $profiles;
 	} elseif ( $current_user_profile instanceof Profile && $auto_set_user_profile ) {
 		$profiles[] = get_profile_data_for_meta_box( $current_user_profile );
 	}

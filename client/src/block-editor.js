@@ -1,5 +1,4 @@
 // External dependencies.
-import React from 'react';
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
 
@@ -8,10 +7,10 @@ import {
   BylineManagerPanelInfoProvider,
   BylineManagerPanelInfo,
   BylineSlotContainer,
-} from 'containers';
+} from './containers';
 
-// Register our store.
-import { store } from './store';
+// Get and register our store.
+import store from './store';
 
 // Styles.
 import './styles/styles.scss';

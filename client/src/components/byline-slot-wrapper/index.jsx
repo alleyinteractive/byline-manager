@@ -1,7 +1,6 @@
 /* global bylineData */
 
 // External dependencies.
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Spinner } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
@@ -12,17 +11,19 @@ import BylineFreeform from '../byline-freeform';
 import BylineList from '../byline-list';
 
 const BylineSlotWrapper = ({
-  profiles,
-  addProfile,
-  removeProfile,
-  reorderProfile,
   addAuthorLabel,
   addAuthorPlaceholder,
-  removeAuthorLabel,
+  addFreeformButtonLabel,
   addFreeformLabel,
   addFreeformPlaceholder,
-  addFreeformButtonLabel,
+  addProfile,
+  autocompleteInputId,
+  freeformInputId,
+  profiles,
   profilesApiUrl,
+  removeAuthorLabel,
+  removeProfile,
+  reorderProfile,
 }) => (
   <div className="components-base-control">
     {null === profiles ? (
@@ -32,6 +33,7 @@ const BylineSlotWrapper = ({
     ) : (
       <Fragment>
         <BylineAutocomplete
+          id={autocompleteInputId}
           profiles={profiles}
           onUpdate={addProfile}
           profilesApiUrl={profilesApiUrl || bylineData.profilesApiUrl}
@@ -39,6 +41,7 @@ const BylineSlotWrapper = ({
           addAuthorLabel={addAuthorLabel || bylineData.addAuthorLabel}
         />
         <BylineFreeform
+          id={freeformInputId}
           onUpdate={addProfile}
           addFreeformLabel={addFreeformLabel || bylineData.addFreeformLabel}
           addFreeformPlaceholder={addFreeformPlaceholder || bylineData.addFreeformPlaceholder}
@@ -60,17 +63,27 @@ const BylineSlotWrapper = ({
 );
 
 BylineSlotWrapper.defaultProps = {
-  profiles: [],
   addAuthorLabel: null,
   addAuthorPlaceholder: null,
-  removeAuthorLabel: null,
+  addFreeformButtonLabel: null,
   addFreeformLabel: null,
   addFreeformPlaceholder: null,
-  addFreeformButtonLabel: null,
+  autocompleteInputId: 'profiles_autocomplete',
+  freeformInputId: 'byline_freeform',
+  profiles: [],
   profilesApiUrl: null,
+  removeAuthorLabel: null,
 };
 
 BylineSlotWrapper.propTypes = {
+  addAuthorLabel: PropTypes.string,
+  addAuthorPlaceholder: PropTypes.string,
+  addFreeformButtonLabel: PropTypes.string,
+  addFreeformLabel: PropTypes.string,
+  addFreeformPlaceholder: PropTypes.string,
+  addProfile: PropTypes.func.isRequired,
+  autocompleteInputId: PropTypes.string,
+  freeformInputId: PropTypes.string,
   profiles: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.oneOfType([
       PropTypes.number,
@@ -83,16 +96,10 @@ BylineSlotWrapper.propTypes = {
       PropTypes.string,
     ]),
   })),
-  addProfile: PropTypes.func.isRequired,
+  profilesApiUrl: PropTypes.string,
+  removeAuthorLabel: PropTypes.string,
   removeProfile: PropTypes.func.isRequired,
   reorderProfile: PropTypes.func.isRequired,
-  addAuthorLabel: PropTypes.string,
-  addAuthorPlaceholder: PropTypes.string,
-  removeAuthorLabel: PropTypes.string,
-  addFreeformLabel: PropTypes.string,
-  addFreeformPlaceholder: PropTypes.string,
-  addFreeformButtonLabel: PropTypes.string,
-  profilesApiUrl: PropTypes.string,
 };
 
 export default BylineSlotWrapper;

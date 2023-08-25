@@ -1,6 +1,6 @@
 // External dependencies.
-import React from 'react';
 import { useState, useEffect } from '@wordpress/element';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Autocomplete from 'react-autocomplete';
 
@@ -8,6 +8,7 @@ import Autocomplete from 'react-autocomplete';
 import { useDebounce } from '@uidotdev/usehooks';
 
 const BylineAutocomplete = ({
+  id,
   profiles,
   onUpdate,
   profilesApiUrl,
@@ -40,7 +41,7 @@ const BylineAutocomplete = ({
     className: 'components-text-control__input',
     type: 'text',
     placeholder: addAuthorPlaceholder,
-    id: 'profiles_autocomplete',
+    id,
     onKeyDown: (e) => {
       // If the user hits 'enter', stop the parent form from submitting.
       if (13 === e.keyCode) {
@@ -59,7 +60,7 @@ const BylineAutocomplete = ({
     <div className="profile-controls components-base-control__field">
       <label
         className="components-base-control__label"
-        htmlFor="profiles_autocomplete"
+        htmlFor={id}
       >
         {addAuthorLabel}
       </label>
@@ -69,13 +70,13 @@ const BylineAutocomplete = ({
         value={search}
         getItemValue={(item) => item.name}
         wrapperStyle={{ position: 'relative', display: 'block' }}
-        onSelect={(value, item) => {
+        onSelect={(__, item) => {
           setSearch('');
           setSearchResults([]);
 
           onUpdate(item);
         }}
-        onChange={(event, next) => setSearch(next)}
+        onChange={(__, next) => setSearch(next)}
         renderMenu={(children) => (
           <div className="menu">
             {children}
@@ -83,8 +84,15 @@ const BylineAutocomplete = ({
         )}
         renderItem={(item, isHighlighted) => (
           <div
-            className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
             key={item.id}
+            className={
+              classNames(
+                'item',
+                {
+                  'item-highlighted': isHighlighted,
+                }
+              )
+            }
           >
             {item.name}
           </div>
@@ -97,7 +105,12 @@ const BylineAutocomplete = ({
   );
 };
 
+BylineAutocomplete.defaultProps = {
+  id: 'profiles_autocomplete',
+};
+
 BylineAutocomplete.propTypes = {
+  id: PropTypes.string,
   profiles: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.oneOfType([
       PropTypes.number,

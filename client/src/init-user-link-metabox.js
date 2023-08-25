@@ -1,6 +1,5 @@
 /* global bylineData */
 
-import React from 'react';
 import ReactDOM from 'react-dom';
 import UserLinkMetaBox from 'components/user-link-metabox';
 

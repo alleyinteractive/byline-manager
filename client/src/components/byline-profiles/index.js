@@ -1,5 +1,4 @@
 // External dependencies.
-import React from 'react';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from '@wordpress/element';
 import classNames from 'classnames';
@@ -38,7 +37,7 @@ const SortableItem = SortableElement(({
     <Button
       label={removeAuthorLabel}
       isDestructive
-      isSmall
+      size="small"
       variant="secondary"
       onClick={(e) => {
         e.preventDefault();
@@ -72,6 +71,8 @@ const BylineList = SortableContainer(({
 ));
 
 const BylineProfiles = ({
+  autocompleteInputId,
+  freeformInputId,
   addAuthorLabel,
   addAuthorPlaceholder,
   addFreeformButtonLabel,
@@ -123,7 +124,7 @@ const BylineProfiles = ({
     className: 'components-text-control__input',
     type: 'text',
     placeholder: addAuthorPlaceholder,
-    id: 'profiles_autocomplete',
+    id: autocompleteInputId,
     onKeyDown: (e) => {
       // If the user hits 'enter', stop the parent form from submitting.
       if (13 === e.keyCode) {
@@ -145,7 +146,7 @@ const BylineProfiles = ({
           {/* eslint-disable jsx-a11y/label-has-for */}
           <label
             className="components-base-control__label"
-            htmlFor="profiles_autocomplete"
+            htmlFor={autocompleteInputId}
           >
             {addAuthorLabel}
           </label>
@@ -155,12 +156,12 @@ const BylineProfiles = ({
             value={search}
             getItemValue={(item) => item.name}
             wrapperStyle={{ position: 'relative', display: 'block' }}
-            onSelect={(item, next) => {
+            onSelect={(__, next) => {
               setSearch('');
               setSearchResults([]);
               setProfiles([...profiles, next]);
             }}
-            onChange={(event, next) => setSearch(next)}
+            onChange={(__, next) => setSearch(next)}
             renderMenu={(children) => (
               <div className="menu">
                 {children}
@@ -186,15 +187,15 @@ const BylineProfiles = ({
         <div className="freeform-controls components-base-control__field">
           <label
             className="components-base-control__label"
-            htmlFor="byline_freeform"
+            htmlFor={freeformInputId}
           >
             {addFreeformLabel}
           </label>
           <div className="freeformInputGrp">
             <input
               className="components-text-control__input"
-              id="byline_freeform"
-              name="byline_freeform"
+              id={freeformInputId}
+              name={freeformInputId}
               onChange={(e) => {
                 setValue(e.target.value);
               }}
@@ -206,8 +207,8 @@ const BylineProfiles = ({
               label={addFreeformButtonLabel}
               className="button"
               disabled={! value}
+              size="small"
               variant="secondary"
-              isSmall
               onClick={(e) => {
                 e.preventDefault();
                 const newItem = {
@@ -239,7 +240,14 @@ const BylineProfiles = ({
   );
 };
 
+BylineProfiles.defaultProps = {
+  autocompleteInputId: 'profiles_autocomplete',
+  freeformInputId: 'byline_freeform',
+};
+
 BylineProfiles.propTypes = {
+  autocompleteInputId: PropTypes.string,
+  freeformInputId: PropTypes.string,
   addAuthorLabel: PropTypes.string.isRequired,
   addAuthorPlaceholder: PropTypes.string.isRequired,
   addFreeformButtonLabel: PropTypes.string.isRequired,

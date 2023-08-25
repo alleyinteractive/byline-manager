@@ -16,7 +16,7 @@ const BylineListItem = SortableElement(({
       label={removeAuthorLabel}
       isDestructive
       variant="secondary"
-      isSmall
+      size="small"
       onClick={(e) => {
         e.preventDefault();
         removeItem();

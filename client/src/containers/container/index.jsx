@@ -1,5 +1,4 @@
 // External dependencies.
-import React from 'react';
 import PropTypes from 'prop-types';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
@@ -9,10 +8,10 @@ import setBylineMeta from '../../utils/set-byline';
 import BylineSlotWrapper from '../../components/byline-slot-wrapper';
 
 const BylineSlotContainer = ({
-  store,
   metaKey,
+  store,
 }) => {
-  const profiles = useSelect((select) => select(store).getProfiles());
+  const profiles = useSelect((select) => select(store).getProfiles(), []);
 
   const {
     actionAddProfile: addProfile,
