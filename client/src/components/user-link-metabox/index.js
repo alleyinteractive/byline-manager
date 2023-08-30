@@ -1,6 +1,8 @@
 // External dependencies.
 import PropTypes from 'prop-types';
 import { useState, useEffect } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import { Button } from '@wordpress/components';
 import Autocomplete from 'react-autocomplete';
 
@@ -24,13 +26,8 @@ const UserLinkMetaBox = ({
   const debouncedSearchString = useDebounce(search, 750);
 
   const doUserSearch = (fragment) => {
-    fetch(
-      `${usersApiUrl}?s=${fragment}&post=${postId}`,
-    )
-      .then((res) => res.json())
-      .then((results) => {
-        setSearchResults(results);
-      });
+    apiFetch({ url: addQueryArgs(usersApiUrl, { s: fragment, post: postId }) })
+      .then((results) => setSearchResults(results));
   };
 
   const inputProps = {
