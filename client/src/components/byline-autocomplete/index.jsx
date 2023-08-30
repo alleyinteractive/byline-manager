@@ -1,4 +1,6 @@
 // External dependencies.
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import { useState, useEffect } from '@wordpress/element';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -22,14 +24,9 @@ const BylineAutocomplete = ({
   const debouncedSearchString = useDebounce(search, 750);
 
   const doProfileSearch = (fragment) => {
-    fetch(
-      `${profilesApiUrl}?s=${fragment}`,
-    )
-      .then((res) => res.json())
+    apiFetch({ url: addQueryArgs(profilesApiUrl, { s: fragment }) })
       .then((rawResults) => {
-        const currentIds = profiles.map(
-          (profile) => profile.id,
-        );
+        const currentIds = profiles.map((profile) => profile.id);
         const newSearchResults = rawResults.filter(
           (result) => 0 > currentIds.indexOf(result.id),
         );

@@ -1,6 +1,8 @@
 // External dependencies.
 import PropTypes from 'prop-types';
 import { useState, useEffect } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import classNames from 'classnames';
 import {
   SortableContainer,
@@ -105,10 +107,7 @@ const BylineProfiles = ({
   };
 
   const doProfileSearch = (fragment) => {
-    fetch(
-      `${profilesApiUrl}?s=${fragment}`,
-    )
-      .then((res) => res.json())
+    apiFetch({ url: addQueryArgs(profilesApiUrl, { s: fragment }) })
       .then((rawResults) => {
         const currentIds = profiles.map((profile) => profile.id);
         const newSearchResults = rawResults.filter(

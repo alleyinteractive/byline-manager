@@ -32,16 +32,7 @@ function register_rest_routes(): void {
 		[
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => __NAMESPACE__ . '\rest_profile_search',
-			'permission_callback' => '__return_true',
-		]
-	);
-	register_rest_route(
-		REST_NAMESPACE,
-		'/hydrateProfiles',
-		[
-			'methods'             => WP_REST_Server::CREATABLE,
-			'callback'            => __NAMESPACE__ . '\rest_hydrate_profiles',
-			'permission_callback' => '__return_true',
+			'permission_callback' => 'is_user_logged_in',
 		]
 	);
 	register_rest_route(
@@ -50,7 +41,16 @@ function register_rest_routes(): void {
 		[
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => __NAMESPACE__ . '\rest_user_search',
-			'permission_callback' => '__return_true',
+			'permission_callback' => 'is_user_logged_in',
+		]
+	);
+	register_rest_route(
+		REST_NAMESPACE,
+		'/hydrateProfiles',
+		[
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => __NAMESPACE__ . '\rest_hydrate_profiles',
+			'permission_callback' => 'is_user_logged_in',
 		]
 	);
 }
