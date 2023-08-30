@@ -8,6 +8,12 @@
  */
 \Mantle\Testing\manager()
 	->maybe_rsync_plugin()
+	->before(
+		function() {
+			// Load the testcases.
+			require_once __DIR__ . '/testcases/class-test-controller.php';
+		}
+	)
 	->loaded( fn () => require_once __DIR__ . '/../byline-manager.php' )
 	->install();
 
