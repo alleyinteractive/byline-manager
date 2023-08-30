@@ -72,7 +72,7 @@ add_action( 'rss2_item', __NAMESPACE__ . '\rss_add_additional_authors' );
 function override_author_link( $link, $author_id ): string {
 	$profile_id = absint( get_user_meta( $author_id, 'profile_id', true ) );
 	if ( $profile_id ) {
-		return get_permalink( $profile_id );
+		return get_permalink( $profile_id ) ?: '';
 	} else {
 		return '';
 	}
