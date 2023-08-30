@@ -23,7 +23,7 @@ class Test_Users_Controller extends Test_Controller {
 	}
 
 	public function test_get_authors(): void {
-		$user = self::factory()->user->create( [ 'role' => 'contributor' ] );
+		$user = self::factory()->user->create();
 
 		wp_set_current_user( $user );
 
@@ -35,18 +35,6 @@ class Test_Users_Controller extends Test_Controller {
 	}
 
 	public function test_get_authors_without_permission(): void {
-		$request = new WP_REST_Request( WP_REST_Server::READABLE, $this->endpoint );
-
-		$response = rest_get_server()->dispatch( $request );
-
-		$this->assertErrorResponse( 'rest_forbidden', $response, rest_authorization_required_code() );
-	}
-
-	public function test_get_authors_with_subscriber(): void {
-		$user = self::factory()->user->create();
-
-		wp_set_current_user( $user );
-
 		$request = new WP_REST_Request( WP_REST_Server::READABLE, $this->endpoint );
 
 		$response = rest_get_server()->dispatch( $request );
