@@ -2,13 +2,19 @@ name: Testing Suite
 
 on:
   pull_request:
+    branches:
+      - production
+    types: [opened, synchronize, reopened, ready_for_review]
+  schedule:
+    - cron: '0 8 * * 0' # Run once per week at 8:00am UTC on Sundays.
 
 jobs:
   unit-tests:
+    if: github.event.pull_request.draft == false
     strategy:
       matrix:
-        php: [8.0, 8.1]
-        wordpress: [5.9, "latest"]
+        php: [8.0, 8.1, 8.2]
+        wordpress: ["latest"]
     uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
     with:
       php: ${{ matrix.php }}
