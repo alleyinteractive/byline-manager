@@ -1,7 +1,2 @@
-# Ignore built files
-client/build/*
-client/config/*
-vendor/*
-
-# Ignore asset files
-assets/*
+build
+vendor
