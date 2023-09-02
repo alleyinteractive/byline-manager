@@ -85,7 +85,7 @@
     "babel-runtime": "^6.26.0",
     "classnames": "^2.3.2",
     "prop-types": "^15.6.1",
-    "react": "^17.0.1",
+    "react": "^18.2.0",
     "react-autocomplete": "^1.8.1",
     "react-dom": "^18.2.0",
     "react-hot-loader": "^4.13.1",
