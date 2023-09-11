@@ -75,7 +75,6 @@ function register_profile(): void {
 				'ep_mask' => EP_AUTHORS,
 			],
 			'capability_type'     => 'post',
-			'map_meta_cap'        => false,
 			'menu_icon'           => 'dashicons-id',
 			'menu_position'       => 71,
 			'supports'            => [ 'title', 'editor', 'revisions', 'thumbnail', 'custom-fields' ],
