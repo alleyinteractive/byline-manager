@@ -1,4 +1,4 @@
-name: Automatically push built assets to a branch
+name: Built Assets
 
 on:
   pull_request:
@@ -12,4 +12,6 @@ jobs:
     uses: alleyinteractive/.github/.github/workflows/built-assets.yml@built-assets
     with:
       branch: ${{ github.ref_name }}
+      paths: |
+        client/build
       node: 16
