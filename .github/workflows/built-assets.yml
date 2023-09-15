@@ -12,7 +12,4 @@ jobs:
     uses: alleyinteractive/.github/.github/workflows/built-assets.yml@built-assets
     with:
       branch: ${{ github.ref_name }}
-      paths: |
-        build
-        client/build
       node: 16
