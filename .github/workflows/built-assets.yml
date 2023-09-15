@@ -1,0 +1,15 @@
+name: Automatically push built assets to a branch
+
+on:
+  pull_request:
+  push:
+    branches:
+      # - built-assets
+      - production
+
+jobs:
+  built-branch:
+    uses: alleyinteractive/.github/.github/workflows/built-assets.yml@built-assets
+    with:
+      branch: ${{ github.ref_name }}
+      node: 16

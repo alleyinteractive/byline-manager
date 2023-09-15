@@ -10,7 +10,4 @@ composer.lock
 *.zip
 .phpcs/*.json
 .phpunit.result.cache
-
-# Client build files
-client/build/
 /vendor
