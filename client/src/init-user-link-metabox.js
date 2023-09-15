@@ -1,6 +1,6 @@
 /* global bylineData */
 
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 import UserLinkMetaBox from 'components/user-link-metabox';
 
 const initUserLinkMetaBox = () => {
@@ -17,7 +17,7 @@ const initUserLinkMetaBox = () => {
     usersApiUrl,
   } = bylineData;
 
-  ReactDOM.render(
+  render(
     <UserLinkMetaBox
       linkUserPlaceholder={linkUserPlaceholder}
       linkedToLabel={linkedToLabel}
