@@ -3,6 +3,7 @@
   "description": "Byline Manager",
   "license": "GPL-2.0-or-later",
   "type": "wordpress-plugin",
+  "version": "0.2.1",
   "authors": [
     {
       "name": "Alley Interactive",

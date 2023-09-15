@@ -1,0 +1,14 @@
+name: Built Release
+
+on:
+  push:
+    branches:
+      - built-release
+      - production
+
+jobs:
+  built-asset:
+    uses: alleyinteractive/.github/.github/workflows/built-release.yml@composer-release
+    with:
+      branch: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      node: 16
