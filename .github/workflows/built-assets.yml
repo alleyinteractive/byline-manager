@@ -13,5 +13,6 @@ jobs:
     with:
       branch: ${{ github.ref_name }}
       paths: |
+        build
         client/build
       node: 16
