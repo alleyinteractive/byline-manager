@@ -50,7 +50,7 @@
     "jest": "^23.1.0",
     "mini-css-extract-plugin": "^2.7.6",
     "node-libs-browser": "1.0.0",
-    "postcss": "^8.4.24",
+    "postcss": "^8.4.29",
     "postcss-calc": "^9.0.1",
     "postcss-custom-media": "^10.0.0",
     "postcss-custom-properties": "^7.0.0",
