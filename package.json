@@ -8,6 +8,8 @@
     "build": "webpack --config client/config/webpack.config.js --mode production",
     "dev": "webpack --config client/config/webpack.config.js --watch --output-pathinfo --mode development",
     "lint": "eslint --color . ",
+    "prerelease": "npx check-node-version --package",
+    "release": "npx @alleyinteractive/create-release@latest",
     "test": "jest",
     "test:watch": "jest --watch"
   },

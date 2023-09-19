@@ -3,10 +3,12 @@ name: Built Release
 on:
   push:
     branches:
+      - develop
+      - main
       - production
 
 jobs:
-  built-asset:
+  built-release:
     uses: alleyinteractive/.github/.github/workflows/built-release.yml@main
     with:
       node: 16
