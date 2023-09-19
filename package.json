@@ -1,6 +1,5 @@
 {
   "name": "byline-manager",
-  "version": "1.0.0",
   "description": "Manage an article's byline and author profiles",
   "main": "client/src/index.js",
   "scripts": {
