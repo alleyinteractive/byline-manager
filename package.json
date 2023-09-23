@@ -57,7 +57,7 @@
     "postcss-custom-properties": "^7.0.0",
     "postcss-focus": "^3.0.0",
     "postcss-import": "^15.1.0",
-    "postcss-loader": "^7.3.0",
+    "postcss-loader": "^7.3.3",
     "postcss-nested": "^6.0.1",
     "postcss-units": "^1.2.1",
     "sass": "^1.66.1",
