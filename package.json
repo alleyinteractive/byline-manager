@@ -72,7 +72,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "@uidotdev/usehooks": "^2.2.0",
+    "@uidotdev/usehooks": "^2.3.1",
     "@wordpress/components": "^19.4.0",
     "@wordpress/compose": "^5.1.1",
     "@wordpress/data": "^6.2.1",
