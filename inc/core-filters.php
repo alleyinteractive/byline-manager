@@ -30,6 +30,7 @@ function auto_integrate_byline( $author_name ): string {
 	return get_the_byline();
 }
 add_filter( 'the_author', __NAMESPACE__ . '\auto_integrate_byline' );
+add_filter( 'get_the_author_display_name', __NAMESPACE__ . '\auto_integrate_byline' );
 
 /**
  * Automatically integrate the byline into the `the_author_posts_link` filter.
