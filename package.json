@@ -62,7 +62,7 @@
     "postcss-units": "^1.2.1",
     "sass": "^1.66.1",
     "sass-loader": "^13.3.2",
-    "style-loader": "^3.3.2",
+    "style-loader": "^3.3.3",
     "stylelint": "^15.6.2",
     "stylelint-order": "^6.0.3",
     "stylelint-webpack-plugin": "^4.1.1",
