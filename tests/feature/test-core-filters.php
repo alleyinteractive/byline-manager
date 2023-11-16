@@ -241,20 +241,6 @@ class Test_Core_Filters extends Test_Case {
 		);
 	}
 
-	public function test_get_author_display_name_from_global_post(): void {
-		$author_name = 'Dumas Davy de la Pailleterie';
-		$user        = static::factory()->user->create_and_get(
-			[ 'display_name' => $author_name ]
-		);
-
-		$display_name = get_the_author_meta( 'display_name', $user->ID );
-
-		$this->assertSame( $author_name, $display_name );
-		$this->assertNotSame( 'Byline 1', $display_name );
-		$this->assertNotSame( 'Byline 2', $display_name );
-		$this->assertNotSame( 'Byline 1 and Byline 2', $display_name );
-	}
-
 	public function test_get_author_display_name_from_user(): void {
 		$author_name = 'Dumas Davy de la Pailleterie';
 		$user        = static::factory()->user->create_and_get(
