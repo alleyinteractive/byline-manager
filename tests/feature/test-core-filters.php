@@ -243,14 +243,13 @@ class Test_Core_Filters extends Test_Case {
 
 	public function test_get_author_display_name_from_global_post(): void {
 		$author_name = 'Dumas Davy de la Pailleterie';
-
-		$user = static::factory()->user->create_and_get(
+		$user        = static::factory()->user->create_and_get(
 			[ 'display_name' => $author_name ]
 		);
 
 		remove_filter( 'get_the_author_display_name', 'Byline_Manager\auto_integrate_byline', 10, 2 );
 
-		$display_name    = get_the_author_meta( 'display_name', $user->ID );
+		$display_name = get_the_author_meta( 'display_name', $user->ID );
 
 		add_filter( 'get_the_author_display_name', 'Byline_Manager\auto_integrate_byline', 10, 2 );
 
@@ -270,13 +269,11 @@ class Test_Core_Filters extends Test_Case {
 			]
 		);
 
-		static::factory()->post->create_and_get(
-			[ 'post_author' => $user->ID ]
-		);
+		static::factory()->post->create_and_get( [ 'post_author' => $user->ID ] );
 
 		$display_name = get_the_author_meta( 'display_name', $user->ID );
 
 		$this->assertNotSame( '', $display_name );
-		$this->assertSame( $display_name, $display_name );
+		$this->assertSame( $author_name, $display_name );
 	}
 }
