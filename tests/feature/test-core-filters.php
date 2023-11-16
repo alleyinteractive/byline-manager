@@ -247,11 +247,7 @@ class Test_Core_Filters extends Test_Case {
 			[ 'display_name' => $author_name ]
 		);
 
-		remove_filter( 'get_the_author_display_name', 'Byline_Manager\auto_integrate_byline', 10, 2 );
-
 		$display_name = get_the_author_meta( 'display_name', $user->ID );
-
-		add_filter( 'get_the_author_display_name', 'Byline_Manager\auto_integrate_byline', 10, 2 );
 
 		$this->assertSame( $author_name, $display_name );
 		$this->assertNotSame( 'Byline 1', $display_name );
