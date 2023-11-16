@@ -240,4 +240,43 @@ class Test_Core_Filters extends Test_Case {
 			get_author_posts_url( $post->post_author )
 		);
 	}
+
+	public function test_get_author_display_name_from_global_post(): void {
+		$author_name = 'Dumas Davy de la Pailleterie';
+
+		$user = static::factory()->user->create_and_get(
+			[ 'display_name' => $author_name ]
+		);
+
+		remove_filter( 'get_the_author_display_name', 'Byline_Manager\auto_integrate_byline', 10, 2 );
+
+		$display_name    = get_the_author_meta( 'display_name', $user->ID );
+
+		add_filter( 'get_the_author_display_name', 'Byline_Manager\auto_integrate_byline', 10, 2 );
+
+		$this->assertSame( $author_name, $display_name );
+		$this->assertNotSame( 'Byline 1', $display_name );
+		$this->assertNotSame( 'Byline 2', $display_name );
+		$this->assertNotSame( 'Byline 1 and Byline 2', $display_name );
+	}
+
+	public function test_get_author_display_name_from_user(): void {
+		$author_name = 'Dumas Davy de la Pailleterie';
+		$user        = static::factory()->user->create_and_get(
+			[
+				'display_name' => $author_name,
+				'first_name'   => 'Dumas',
+				'last_name'    => 'Davy de la Pailleterie',
+			]
+		);
+
+		static::factory()->post->create_and_get(
+			[ 'post_author' => $user->ID ]
+		);
+
+		$display_name = get_the_author_meta( 'display_name', $user->ID );
+
+		$this->assertNotSame( '', $display_name );
+		$this->assertSame( $display_name, $display_name );
+	}
 }
