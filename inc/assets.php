@@ -160,7 +160,7 @@ function get_asset_dependencies( string $asset ) : array {
 	}
 
 	// Ensure the filepath is valid.
-	if ( ! file_exists( $dependency_file ) || 0 !== validate_file( $dependency_file ) ) {
+	if ( validate_path( $dependency_file ) ) {
 		return [];
 	}
 
@@ -223,7 +223,7 @@ function get_asset_property( string $asset, string $prop ) : ?string {
  * @return array The asset map.
  */
 function read_asset_map( string $path ) : array {
-	if ( file_exists( $path ) && 0 === validate_file( $path ) ) {
+	if ( validate_path( $path ) ) {
 		ob_start();
 		include $path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.IncludingFile, WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 		return json_decode( ob_get_clean(), true );
