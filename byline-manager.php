@@ -24,6 +24,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'BYLINE_MANAGER_PATH', __DIR__ . '/' );
 
+/**
+ * Helper function to validate a path before doing something with it.
+ *
+ * @param string $path The path to validate.
+ *
+ * @return bool True if the path is valid, false otherwise.
+ */
+function validate_path( string $path ) : bool {
+	return in_array( validate_file( $path ), [ 0, 2 ], true ) && file_exists( $path );
+}
+
 // Autoloader.
 require_once BYLINE_MANAGER_PATH . 'inc/autoload.php';
 
