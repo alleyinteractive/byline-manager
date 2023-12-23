@@ -53,7 +53,7 @@
     "node-libs-browser": "1.0.0",
     "postcss": "^8.4.31",
     "postcss-calc": "^9.0.1",
-    "postcss-custom-media": "^10.0.0",
+    "postcss-custom-media": "^10.0.2",
     "postcss-custom-properties": "^13.3.3",
     "postcss-focus": "^3.0.0",
     "postcss-import": "^15.1.0",
