@@ -16,12 +16,6 @@ module.exports = function getLoaders(mode) {
   const isProd = 'production' === mode;
   return [
     {
-      enforce: 'pre',
-      test: /\.jsx?$/,
-      exclude,
-      use: 'eslint-loader',
-    },
-    {
       test: /\.jsx?$/,
       exclude,
       use: 'babel-loader',

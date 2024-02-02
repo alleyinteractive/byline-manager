@@ -5,7 +5,6 @@ const cssImport = require('postcss-import');
 const customProps = require('postcss-custom-properties');
 const customMedia = require('postcss-custom-media');
 const nested = require('postcss-nested');
-const units = require('postcss-units');
 const focus = require('postcss-focus');
 
 // Other imports.
@@ -25,7 +24,6 @@ module.exports = () => ({
       preserve: false,
       variables: flatten(cssVars),
     }),
-    units(), // Compute rem() function
     customMedia({
       extensions: cssVars.breakpoints,
     }),
