@@ -1,29 +1,6 @@
 {
   "root": true,
   "extends": ["@alleyinteractive/eslint-config"],
-  "parser": "@babel/eslint-parser",
-  "parserOptions": {
-    "ecmaVersion": 2017,
-    "ecmaFeatures": {
-      "globalReturn": true,
-      "impliedStrict": true,
-      "jsx": true
-    },
-    "sourceType": "module"
-  },
-  "plugins": [
-    "react",
-    "jest",
-    "jasmine"
-  ],
-  "env": {
-    "es6": true,
-    "browser": true,
-    "node": true,
-    "jquery": false,
-    "jasmine": true,
-    "jest/globals": true
-  },
   "settings": {
     "import/resolver": {
       "babel-module": {}
@@ -31,10 +8,6 @@
     "webpack": {
       "config": "./client/config/webpack.config.js"
     }
-  },
-  "globals": {
-    "jQuery": false,
-    "wp": true
   },
   "rules": {
     "react/jsx-filename-extension": [0]
