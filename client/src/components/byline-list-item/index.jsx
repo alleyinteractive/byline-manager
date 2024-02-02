@@ -10,7 +10,7 @@ const BylineListItem = SortableElement(({
   removeAuthorLabel,
 }) => (
   <Item className="byline-list-item">
-    { image && <img src={image} alt={name} /> }
+    { image ? <img src={image} alt={name} /> : null }
     <span>{name}</span>
     <Button
       label={removeAuthorLabel}

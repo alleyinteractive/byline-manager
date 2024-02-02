@@ -9,14 +9,14 @@ import Autocomplete from 'react-autocomplete';
 // Hooks.
 import { useDebounce } from '@uidotdev/usehooks';
 
-const BylineAutocomplete = ({
+function BylineAutocomplete({
   id,
   profiles,
   onUpdate,
   profilesApiUrl,
   addAuthorPlaceholder,
   addAuthorLabel,
-}) => {
+}) {
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
@@ -28,7 +28,7 @@ const BylineAutocomplete = ({
       .then((rawResults) => {
         const currentIds = profiles.map((profile) => profile.id);
         const newSearchResults = rawResults.filter(
-          (result) => 0 > currentIds.indexOf(result.id),
+          (result) => currentIds.indexOf(result.id) < 0,
         );
         setSearchResults(newSearchResults);
       });
@@ -41,17 +41,17 @@ const BylineAutocomplete = ({
     id,
     onKeyDown: (e) => {
       // If the user hits 'enter', stop the parent form from submitting.
-      if (13 === e.keyCode) {
+      if (e.keyCode === 13) {
         e.preventDefault();
       }
     },
   };
 
   useEffect(() => {
-    if ('' !== debouncedSearchString) {
+    if (debouncedSearchString !== '') {
       doProfileSearch(debouncedSearchString);
     }
-  }, [debouncedSearchString]);
+  }, [debouncedSearchString]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="profile-controls components-base-control__field">
@@ -87,20 +87,18 @@ const BylineAutocomplete = ({
                 'item',
                 {
                   'item-highlighted': isHighlighted,
-                }
+                },
               )
             }
           >
             {item.name}
           </div>
         )}
-        renderInput={(props) =>
-          <input {...props} style={{ width: '100%' }} />
-        }
+        renderInput={(props) => <input {...props} style={{ width: '100%' }} />}
       />
     </div>
   );
-};
+}
 
 BylineAutocomplete.defaultProps = {
   id: 'profiles_autocomplete',

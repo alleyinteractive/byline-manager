@@ -13,12 +13,12 @@ const setBylineMeta = (dispatch, metaKey) => (profiles) => {
 
   // Save byline tax term relationships.
   const termBylines = preparedProfiles.filter(
-    (value) => (value.type && 'byline_id' === value.type)
+    (value) => (value.type && value.type === 'byline_id'),
   );
 
-  const bylineTerm = termBylines.length ?
-    [...termBylines.map((item) => item.atts.term_id)] :
-    [];
+  const bylineTerm = termBylines.length
+    ? [...termBylines.map((item) => item.atts.term_id)]
+    : [];
 
   // Save profile metadata.
   return dispatch('core/editor').editPost({

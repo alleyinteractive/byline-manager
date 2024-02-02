@@ -6,9 +6,9 @@ import BylineMetaBox from 'components/byline-metabox';
 const initBylineMetaBox = () => {
   const { bylineMetaBox } = bylineData;
 
-  ReactDOM.render(
+  ReactDOM.createRoot(
     <BylineMetaBox bylineMetaBox={bylineMetaBox} />,
-    document.getElementById('byline-manager-metabox-root')
+    document.getElementById('byline-manager-metabox-root'),
   );
 };
 

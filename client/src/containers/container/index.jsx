@@ -7,10 +7,10 @@ import { useEffect } from '@wordpress/element';
 import setBylineMeta from '../../utils/set-byline';
 import BylineSlotWrapper from '../../components/byline-slot-wrapper';
 
-const BylineSlotContainer = ({
+function BylineSlotContainer({
   metaKey,
   store,
-}) => {
+}) {
   const profiles = useSelect((select) => select(store).getProfiles(), []);
 
   const {
@@ -28,10 +28,10 @@ const BylineSlotContainer = ({
    * The redux store schema and the meta schema are different.
    */
   useEffect(() => {
-    if (null !== profiles) {
+    if (profiles !== null) {
       saveByline(profiles);
     }
-  }, [profiles]);
+  }, [profiles]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <BylineSlotWrapper
@@ -41,7 +41,7 @@ const BylineSlotContainer = ({
       reorderProfile={reorderProfile}
     />
   );
-};
+}
 
 BylineSlotContainer.defaultProps = {
   metaKey: 'byline',

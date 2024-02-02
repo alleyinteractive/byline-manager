@@ -9,7 +9,7 @@ import Autocomplete from 'react-autocomplete';
 // Hooks.
 import { useDebounce } from '@uidotdev/usehooks';
 
-const UserLinkMetaBox = ({
+function UserLinkMetaBox({
   linkUserPlaceholder,
   linkedToLabel,
   postId,
@@ -17,7 +17,7 @@ const UserLinkMetaBox = ({
   user: rawUser,
   userAlreadyLinked,
   usersApiUrl,
-}) => {
+}) {
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [user, setUser] = useState({});
@@ -34,21 +34,21 @@ const UserLinkMetaBox = ({
     placeholder: linkUserPlaceholder,
     onKeyDown: (e) => {
       // If the user hits 'enter', stop the parent form from submitting.
-      if (13 === e.keyCode) {
+      if (e.keyCode === 13) {
         e.preventDefault();
       }
     },
   };
 
   useEffect(() => {
-    if ('' !== debouncedSearchString) {
+    if (debouncedSearchString !== '') {
       doUserSearch(debouncedSearchString);
     }
-  }, [debouncedSearchString]);
+  }, [debouncedSearchString]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setUser(rawUser);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="profile-user-link byline-manager-meta-box">
@@ -89,7 +89,7 @@ const UserLinkMetaBox = ({
           setSearchResults([]);
         }}
         onChange={(__, next) => setSearch(next)}
-        isItemSelectable={(item) => ! item.linked}
+        isItemSelectable={(item) => !item.linked}
         renderMenu={(children) => (
           <div className="menu">
             {children}
@@ -105,8 +105,9 @@ const UserLinkMetaBox = ({
             key={item.id}
           >
             {item.name}
-            {item.linked &&
-              <em>{userAlreadyLinked}</em>}
+            {item.linked
+              ? <em>{userAlreadyLinked}</em>
+              : null}
           </div>
         )}
         wrapperStyle={{
@@ -115,7 +116,7 @@ const UserLinkMetaBox = ({
       />
     </div>
   );
-};
+}
 
 UserLinkMetaBox.defaultProps = {
   user: {},
