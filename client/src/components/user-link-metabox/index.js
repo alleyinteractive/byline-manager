@@ -1,6 +1,6 @@
 // External dependencies.
 import PropTypes from 'prop-types';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useCallback } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import { Button } from '@wordpress/components';
@@ -25,10 +25,10 @@ function UserLinkMetaBox({
   // Debounce search string from input.
   const debouncedSearchString = useDebounce(search, 750);
 
-  const doUserSearch = (fragment) => {
+  const doUserSearch = useCallback((fragment) => {
     apiFetch({ url: addQueryArgs(usersApiUrl, { s: fragment, post: postId }) })
       .then((results) => setSearchResults(results));
-  };
+  }, [postId, usersApiUrl]);
 
   const inputProps = {
     placeholder: linkUserPlaceholder,
@@ -44,11 +44,11 @@ function UserLinkMetaBox({
     if (debouncedSearchString !== '') {
       doUserSearch(debouncedSearchString);
     }
-  }, [debouncedSearchString]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [debouncedSearchString, doUserSearch]);
 
   useEffect(() => {
     setUser(rawUser);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [rawUser]);
 
   return (
     <div className="profile-user-link byline-manager-meta-box">

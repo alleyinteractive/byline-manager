@@ -1,7 +1,7 @@
 // External dependencies.
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useCallback } from '@wordpress/element';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Autocomplete from 'react-autocomplete';
@@ -23,7 +23,7 @@ function BylineAutocomplete({
   // Debounce search string from input.
   const debouncedSearchString = useDebounce(search, 750);
 
-  const doProfileSearch = (fragment) => {
+  const doProfileSearch = useCallback((fragment) => {
     apiFetch({ url: addQueryArgs(profilesApiUrl, { s: fragment }) })
       .then((rawResults) => {
         const currentIds = profiles.map((profile) => profile.id);
@@ -32,7 +32,7 @@ function BylineAutocomplete({
         );
         setSearchResults(newSearchResults);
       });
-  };
+  }, [profilesApiUrl, profiles]);
 
   const inputProps = {
     className: 'components-text-control__input',
@@ -51,7 +51,7 @@ function BylineAutocomplete({
     if (debouncedSearchString !== '') {
       doProfileSearch(debouncedSearchString);
     }
-  }, [debouncedSearchString]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [debouncedSearchString, doProfileSearch]);
 
   return (
     <div className="profile-controls components-base-control__field">

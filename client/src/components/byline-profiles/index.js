@@ -1,6 +1,6 @@
 // External dependencies.
 import PropTypes from 'prop-types';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useCallback } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import classNames from 'classnames';
@@ -106,7 +106,7 @@ function BylineProfiles({
     }
   };
 
-  const doProfileSearch = (fragment) => {
+  const doProfileSearch = useCallback((fragment) => {
     apiFetch({ url: addQueryArgs(profilesApiUrl, { s: fragment }) })
       .then((rawResults) => {
         const currentIds = profiles.map((profile) => profile.id);
@@ -115,7 +115,7 @@ function BylineProfiles({
         );
         setSearchResults(newSearchResults);
       });
-  };
+  }, [profiles, profilesApiUrl]);
 
   const generateKey = (pre) => `${pre}-${new Date().getTime()}`;
 
@@ -136,7 +136,7 @@ function BylineProfiles({
     if (debouncedSearchString !== '') {
       doProfileSearch(debouncedSearchString);
     }
-  }, [debouncedSearchString]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [debouncedSearchString, doProfileSearch]);
 
   return (
     <div>
