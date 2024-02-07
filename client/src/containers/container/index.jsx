@@ -1,16 +1,16 @@
 // External dependencies.
 import PropTypes from 'prop-types';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useCallback } from '@wordpress/element';
 
 // Internal dependencies.
 import setBylineMeta from '../../utils/set-byline';
 import BylineSlotWrapper from '../../components/byline-slot-wrapper';
 
-const BylineSlotContainer = ({
+function BylineSlotContainer({
   metaKey,
   store,
-}) => {
+}) {
   const profiles = useSelect((select) => select(store).getProfiles(), []);
 
   const {
@@ -19,7 +19,9 @@ const BylineSlotContainer = ({
     actionReorderProfile: reorderProfile,
   } = useDispatch(store);
 
-  const saveByline = setBylineMeta(dispatch, metaKey);
+  const saveByline = useCallback(() => {
+    setBylineMeta(dispatch, metaKey);
+  }, [metaKey]);
 
   /**
    * Save ALL bylines to the post meta in the expected schema.
@@ -28,10 +30,10 @@ const BylineSlotContainer = ({
    * The redux store schema and the meta schema are different.
    */
   useEffect(() => {
-    if (null !== profiles) {
+    if (profiles !== null) {
       saveByline(profiles);
     }
-  }, [profiles]);
+  }, [profiles, saveByline]);
 
   return (
     <BylineSlotWrapper
@@ -41,7 +43,7 @@ const BylineSlotContainer = ({
       reorderProfile={reorderProfile}
     />
   );
-};
+}
 
 BylineSlotContainer.defaultProps = {
   metaKey: 'byline',

@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const StatsPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const DependencyExtractionWebpackPlugin =
   require('@wordpress/dependency-extraction-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const StylelintPlugin = require('stylelint-webpack-plugin');
 const createWriteWpAssetManifest = require('./wpAssets');
 
@@ -21,6 +22,7 @@ module.exports = function getPlugins(mode) {
         // This maps references to @wordpress/{package-name} to the wp object.
         new DependencyExtractionWebpackPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
+        new ESLintPlugin(),
         new StylelintPlugin({
           configFile: path.join(paths.config, 'stylelint.config.js'),
         }),
@@ -44,6 +46,7 @@ module.exports = function getPlugins(mode) {
         new MiniCssExtractPlugin({
           filename: '[name].css',
         }),
+        new ESLintPlugin(),
         new StylelintPlugin({
           configFile: path.join(paths.config, 'stylelint.config.js'),
         }),

@@ -29,15 +29,13 @@
 
 .freeform-controls,
 .profile-controls {
-
   label {
     display: block;
   }
 }
 
 .freeform-controls {
-
-  .freeformInputGrp {
+  .freeformInputGrp { /* stylelint-disable-line selector-class-pattern */
     align-items: flex-start;
     display: flex;
     margin: rem(5px) 0;
@@ -60,7 +58,6 @@
 
 .profile-controls,
 .profile-user-link {
-
   .components-text-control__input {
     margin: rem(5px) 0 0;
   }
@@ -73,6 +70,7 @@
     width: 100%;
     z-index: 100;
 
+    /* stylelint-disable selector-max-compound-selectors */
     .components-panel #side-sortables & {
       max-width: calc(100% - 48px);
     }
@@ -81,10 +79,11 @@
       background: transparent;
       border: 0;
     }
+    /* stylelint-enable */
   }
 
   .item {
-    background: white;
+    background: #fff;
     border: 0 solid #ccc;
     border-left-width: 1px;
     border-right-width: 1px;
@@ -102,7 +101,7 @@
 
   .item-highlighted {
     background-color: #4095bf;
-    color: white;
+    color: #fff;
   }
 
   .item-disabled {
@@ -118,7 +117,7 @@
   }
 
   .item-header {
-    background-color: #eeeeee;
+    background-color: #eee;
     color: #454545;
     font-weight: 700;
   }
@@ -129,7 +128,6 @@
 }
 
 .byline-manager-meta-box {
-
   label {
     color: #555d66;
     display: block;
@@ -177,16 +175,13 @@
 
 #advanced-sortables,
 #normal-sortables {
-
   .profile-user-link input {
     width: rem(450px);
   }
 }
 
 @media (min-width: 851px) {
-
   #side-sortables {
-
     .menu {
       right: rem(10px);
       width: rem(440px);

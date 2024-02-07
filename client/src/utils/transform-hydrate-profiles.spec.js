@@ -35,7 +35,7 @@ describe('transformHydratedProfiles', () => {
           type: 'byline_id',
         },
       ]);
-    }
+    },
   );
 
   it(
@@ -53,6 +53,6 @@ describe('transformHydratedProfiles', () => {
           },
         },
       ]);
-    }
+    },
   );
 });

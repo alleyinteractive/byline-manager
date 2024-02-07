@@ -1,7 +1,7 @@
 // External dependencies.
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useCallback } from '@wordpress/element';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Autocomplete from 'react-autocomplete';
@@ -9,30 +9,30 @@ import Autocomplete from 'react-autocomplete';
 // Hooks.
 import { useDebounce } from '@uidotdev/usehooks';
 
-const BylineAutocomplete = ({
+function BylineAutocomplete({
   id,
   profiles,
   onUpdate,
   profilesApiUrl,
   addAuthorPlaceholder,
   addAuthorLabel,
-}) => {
+}) {
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
   // Debounce search string from input.
   const debouncedSearchString = useDebounce(search, 750);
 
-  const doProfileSearch = (fragment) => {
+  const doProfileSearch = useCallback((fragment) => {
     apiFetch({ url: addQueryArgs(profilesApiUrl, { s: fragment }) })
       .then((rawResults) => {
         const currentIds = profiles.map((profile) => profile.id);
         const newSearchResults = rawResults.filter(
-          (result) => 0 > currentIds.indexOf(result.id),
+          (result) => currentIds.indexOf(result.id) < 0,
         );
         setSearchResults(newSearchResults);
       });
-  };
+  }, [profilesApiUrl, profiles]);
 
   const inputProps = {
     className: 'components-text-control__input',
@@ -41,17 +41,17 @@ const BylineAutocomplete = ({
     id,
     onKeyDown: (e) => {
       // If the user hits 'enter', stop the parent form from submitting.
-      if (13 === e.keyCode) {
+      if (e.keyCode === 13) {
         e.preventDefault();
       }
     },
   };
 
   useEffect(() => {
-    if ('' !== debouncedSearchString) {
+    if (debouncedSearchString !== '') {
       doProfileSearch(debouncedSearchString);
     }
-  }, [debouncedSearchString]);
+  }, [debouncedSearchString, doProfileSearch]);
 
   return (
     <div className="profile-controls components-base-control__field">
@@ -87,20 +87,18 @@ const BylineAutocomplete = ({
                 'item',
                 {
                   'item-highlighted': isHighlighted,
-                }
+                },
               )
             }
           >
             {item.name}
           </div>
         )}
-        renderInput={(props) =>
-          <input {...props} style={{ width: '100%' }} />
-        }
+        renderInput={(props) => <input {...props} style={{ width: '100%' }} />}
       />
     </div>
   );
-};
+}
 
 BylineAutocomplete.defaultProps = {
   id: 'profiles_autocomplete',

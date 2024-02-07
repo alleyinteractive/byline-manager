@@ -5,16 +5,18 @@ import { createSlotFill, __experimentalDivider as Divider } from '@wordpress/com
 
 const { Fill, Slot } = createSlotFill('BylineManagerPanelInfo');
 
-const BylineManagerPanelInfo = ({ children }) => (
-  <Fill>
-    <PluginPostStatusInfo>
-      <div style={{ width: '100%' }}>
-        <Divider />
-        {children}
-      </div>
-    </PluginPostStatusInfo>
-  </Fill>
-);
+function BylineManagerPanelInfo({ children }) {
+  return (
+    <Fill>
+      <PluginPostStatusInfo>
+        <div style={{ width: '100%' }}>
+          <Divider />
+          {children}
+        </div>
+      </PluginPostStatusInfo>
+    </Fill>
+  );
+}
 
 BylineManagerPanelInfo.Slot = Slot;
 

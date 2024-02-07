@@ -15,14 +15,16 @@ import store from './store';
 // Styles.
 import './styles/styles.scss';
 
-const BylineManagerSlotFill = () => (
-  <BylineManagerPanelInfo>
-    <p>
-      <strong>{__('Byline', 'byline-manager')}</strong>
-    </p>
-    <BylineSlotContainer store={store} />
-  </BylineManagerPanelInfo>
-);
+function BylineManagerSlotFill() {
+  return (
+    <BylineManagerPanelInfo>
+      <p>
+        <strong>{__('Byline', 'byline-manager')}</strong>
+      </p>
+      <BylineSlotContainer store={store} />
+    </BylineManagerPanelInfo>
+  );
+}
 
 // Register our SlotFill provider.
 registerPlugin('byline-manager-panel-info-provider', { render: BylineManagerPanelInfoProvider });

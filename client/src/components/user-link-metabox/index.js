@@ -1,6 +1,6 @@
 // External dependencies.
 import PropTypes from 'prop-types';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useCallback } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import { Button } from '@wordpress/components';
@@ -9,7 +9,7 @@ import Autocomplete from 'react-autocomplete';
 // Hooks.
 import { useDebounce } from '@uidotdev/usehooks';
 
-const UserLinkMetaBox = ({
+function UserLinkMetaBox({
   linkUserPlaceholder,
   linkedToLabel,
   postId,
@@ -17,7 +17,7 @@ const UserLinkMetaBox = ({
   user: rawUser,
   userAlreadyLinked,
   usersApiUrl,
-}) => {
+}) {
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [user, setUser] = useState({});
@@ -25,30 +25,30 @@ const UserLinkMetaBox = ({
   // Debounce search string from input.
   const debouncedSearchString = useDebounce(search, 750);
 
-  const doUserSearch = (fragment) => {
+  const doUserSearch = useCallback((fragment) => {
     apiFetch({ url: addQueryArgs(usersApiUrl, { s: fragment, post: postId }) })
       .then((results) => setSearchResults(results));
-  };
+  }, [postId, usersApiUrl]);
 
   const inputProps = {
     placeholder: linkUserPlaceholder,
     onKeyDown: (e) => {
       // If the user hits 'enter', stop the parent form from submitting.
-      if (13 === e.keyCode) {
+      if (e.keyCode === 13) {
         e.preventDefault();
       }
     },
   };
 
   useEffect(() => {
-    if ('' !== debouncedSearchString) {
+    if (debouncedSearchString !== '') {
       doUserSearch(debouncedSearchString);
     }
-  }, [debouncedSearchString]);
+  }, [debouncedSearchString, doUserSearch]);
 
   useEffect(() => {
     setUser(rawUser);
-  }, []);
+  }, [rawUser]);
 
   return (
     <div className="profile-user-link byline-manager-meta-box">
@@ -89,7 +89,7 @@ const UserLinkMetaBox = ({
           setSearchResults([]);
         }}
         onChange={(__, next) => setSearch(next)}
-        isItemSelectable={(item) => ! item.linked}
+        isItemSelectable={(item) => !item.linked}
         renderMenu={(children) => (
           <div className="menu">
             {children}
@@ -105,8 +105,9 @@ const UserLinkMetaBox = ({
             key={item.id}
           >
             {item.name}
-            {item.linked &&
-              <em>{userAlreadyLinked}</em>}
+            {item.linked
+              ? <em>{userAlreadyLinked}</em>
+              : null}
           </div>
         )}
         wrapperStyle={{
@@ -115,7 +116,7 @@ const UserLinkMetaBox = ({
       />
     </div>
   );
-};
+}
 
 UserLinkMetaBox.defaultProps = {
   user: {},

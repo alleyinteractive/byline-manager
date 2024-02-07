@@ -14,3 +14,4 @@ jobs:
     with:
       run-audit: true
       ci: true
+      node: 20

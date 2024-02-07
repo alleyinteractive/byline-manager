@@ -1,8 +1,93 @@
 /* utility SASS mixins */
+@use 'sass:math';
+
+/* stylelint-disable scss/no-global-function-names */
+
+/**
+ * Convert px to rem or em. Unitless values are assumed to be in px.
+ *
+ * @param {Number}  $px        Single value to convert.
+ * @param {Boolean} $em        Use `em` units if true.
+ * @param {Number}  $base-size Root font size on which to base conversions.
+ *
+ * @returns {String} A rem or em value.
+ */
+@function ai-px-to-relative($px, $em, $base-size) {
+  @if (0 == $px or 'em' == unit($px) or 'rem' == unit($px)) {
+    @return $px;
+  }
+
+  $unit: if($em == true, 1em, 1rem);
+
+  @return math.div(ai-strip-units($px), $base-size) * $unit;
+}
+
+/**
+ * Convert a list of px values (with or without the 'px' string) to either rem or em.
+ *
+ * @param {Number|List} $values     Single value or list of values to convert.
+ * @param {Boolean}     $em         Use `em` units if true.
+ * @param {Number}      $base-value Root font size on which to base conversions.
+ *
+ * @returns {List|Number} A list of values, or a single value.
+ */
+@function ai-px-to-relative-list($values, $em, $base-value) {
+  $relative-values: ();
+
+  @for $i from 1 through length($values) {
+    $value: nth($values, $i);
+
+    $rem-value: if(string == type-of($value),
+    $value,
+    ai-px-to-relative(nth($values, $i), $em, $base-value));
+
+    $relative-values: append($relative-values, $rem-value);
+  }
+
+  @return if(
+    1 < length($relative-values),
+    $relative-values,
+    nth($relative-values, 1)
+  );
+}
+
+/**
+ * Convert a list of px values (with or without the 'px' string) to em.
+ *
+ * @param {List}   $values     Single value or list of values to convert.
+ * @param {Number} $base-value Root font size on which to base conversions.
+ */
+@function em($values, $base-value: 16) {
+  @return ai-px-to-relative-list($values, true, $base-value);
+}
+
+/**
+ * Convert a list of px values (with or without the 'px' string) to rem.
+ *
+ * @param {List}   $values     Single value or list of values to convert.
+ * @param {Number} $base-value Root font size on which to base conversions.
+ */
+@function rem($values, $base-value: 16) {
+  @return ai-px-to-relative-list($values, false, $base-value);
+}
+
+/**
+ * Strip CSS units from a value.
+ *
+ * @param {String} $value A CSS length value.
+ * @returns {String} A unitless value.
+ */
+@function ai-strip-units($value) {
+  @if (type-of($value) == 'number' and not unitless($value)) {
+    @return math.div($value, ($value * 0 + 1));
+  }
+
+  @return $value;
+}
 
 @mixin buttonReset {
   background-color: transparent;
-  border: none;
+  border: 0 none;
   border-radius: 0;
   outline: none;
   overflow: visible;
