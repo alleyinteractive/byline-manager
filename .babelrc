@@ -1,18 +1,16 @@
 {
   "plugins": [
-    "transform-runtime",
+    "@babel/plugin-transform-runtime",
     "react-hot-loader/babel",
-    "transform-object-rest-spread",
-    "transform-class-properties",
     ["module-resolver", {
       "root": [
         "./client/**",
         "./client/src/**"
-      ],
+      ]
     }]
   ],
   "presets": [
-    "env",
-    "react"
+    "@babel/preset-env",
+    "@babel/preset-react"
   ]
 }

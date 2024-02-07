@@ -8,13 +8,13 @@
  * @return {Array} Array of profiles ready to be saved to post meta.
  */
 const transformHydratedProfiles = (items) => {
-  if (0 >= items.length) {
+  if (items.length <= 0) {
     return [];
   }
 
   return items.map((value) => {
     // Profile type.
-    if (value.byline_id && 'number' === typeof value.id) {
+    if (value.byline_id && typeof value.id === 'number') {
       return {
         type: 'byline_id',
         atts: {

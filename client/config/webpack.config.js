@@ -12,7 +12,7 @@ module.exports = (env, argv) => {
     },
     optimization: {
       moduleIds: 'named',
-      noEmitOnErrors: true,
+      emitOnErrors: false,
       minimize: 'production' === mode,
     },
     output: getOutput(mode),

@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { Button } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 
-const BylineFreeform = ({
+function BylineFreeform({
   id,
   addFreeformLabel,
   addFreeformPlaceholder,
   addFreeformButtonLabel,
   onUpdate,
-}) => {
+}) {
   const [textByline, setTextByline] = useState('');
 
   const generateKey = (pre) => `${pre}-${new Date().getTime()}`;
@@ -53,7 +53,7 @@ const BylineFreeform = ({
           className="button"
           size="small"
           variant="secondary"
-          disabled={! textByline}
+          disabled={!textByline}
           onClick={onSubmit}
         >
           {addFreeformButtonLabel}
@@ -61,7 +61,7 @@ const BylineFreeform = ({
       </div>
     </div>
   );
-};
+}
 
 BylineFreeform.defaultProps = {
   id: 'byline_freeform',

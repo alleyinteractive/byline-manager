@@ -1,6 +1,6 @@
 // External dependencies.
 import PropTypes from 'prop-types';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useCallback } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import classNames from 'classnames';
@@ -72,7 +72,7 @@ const BylineList = SortableContainer(({
   </ol>
 ));
 
-const BylineProfiles = ({
+function BylineProfiles({
   autocompleteInputId,
   freeformInputId,
   addAuthorLabel,
@@ -83,7 +83,7 @@ const BylineProfiles = ({
   profiles: profilesRaw,
   profilesApiUrl,
   removeAuthorLabel,
-}) => {
+}) {
   const [profiles, setProfiles] = useState(profilesRaw);
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -98,7 +98,7 @@ const BylineProfiles = ({
 
   const removeItem = (id) => {
     const index = profiles.findIndex((item) => item.id === id);
-    if (0 <= index) {
+    if (index >= 0) {
       setProfiles([
         ...profiles.slice(0, index),
         ...profiles.slice(index + 1),
@@ -106,16 +106,16 @@ const BylineProfiles = ({
     }
   };
 
-  const doProfileSearch = (fragment) => {
+  const doProfileSearch = useCallback((fragment) => {
     apiFetch({ url: addQueryArgs(profilesApiUrl, { s: fragment }) })
       .then((rawResults) => {
         const currentIds = profiles.map((profile) => profile.id);
         const newSearchResults = rawResults.filter(
-          (result) => 0 > currentIds.indexOf(result.id),
+          (result) => currentIds.indexOf(result.id) < 0,
         );
         setSearchResults(newSearchResults);
       });
-  };
+  }, [profiles, profilesApiUrl]);
 
   const generateKey = (pre) => `${pre}-${new Date().getTime()}`;
 
@@ -126,17 +126,17 @@ const BylineProfiles = ({
     id: autocompleteInputId,
     onKeyDown: (e) => {
       // If the user hits 'enter', stop the parent form from submitting.
-      if (13 === e.keyCode) {
+      if (e.keyCode === 13) {
         e.preventDefault();
       }
     },
   };
 
   useEffect(() => {
-    if ('' !== debouncedSearchString) {
+    if (debouncedSearchString !== '') {
       doProfileSearch(debouncedSearchString);
     }
-  }, [debouncedSearchString]);
+  }, [debouncedSearchString, doProfileSearch]);
 
   return (
     <div>
@@ -173,7 +173,7 @@ const BylineProfiles = ({
                     'item',
                     {
                       'item-highlighted': isHighlighted,
-                    }
+                    },
                   )
                 }
                 key={item.id}
@@ -205,7 +205,7 @@ const BylineProfiles = ({
             <Button
               label={addFreeformButtonLabel}
               className="button"
-              disabled={! value}
+              disabled={!value}
               size="small"
               variant="secondary"
               onClick={(e) => {
@@ -237,7 +237,7 @@ const BylineProfiles = ({
       {/* eslint-enable jsx-a11y/label-has-for */}
     </div>
   );
-};
+}
 
 BylineProfiles.defaultProps = {
   autocompleteInputId: 'profiles_autocomplete',
