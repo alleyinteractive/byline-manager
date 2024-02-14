@@ -17,17 +17,18 @@ const initUserLinkMetaBox = () => {
     usersApiUrl,
   } = bylineData;
 
-  ReactDOM.createRoot(
-    <UserLinkMetaBox
-      linkUserPlaceholder={linkUserPlaceholder}
-      linkedToLabel={linkedToLabel}
-      postId={+postId}
-      unlinkLabel={unlinkLabel}
-      user={user}
-      userAlreadyLinked={userAlreadyLinked}
-      usersApiUrl={usersApiUrl}
-    />,
-    userLinkEl,
+  ReactDOM.createRoot(userLinkEl).render(
+    (
+      <UserLinkMetaBox
+        linkUserPlaceholder={linkUserPlaceholder}
+        linkedToLabel={linkedToLabel}
+        postId={+postId}
+        unlinkLabel={unlinkLabel}
+        user={user}
+        userAlreadyLinked={userAlreadyLinked}
+        usersApiUrl={usersApiUrl}
+      />
+    ),
   );
 };
 
