@@ -19,9 +19,8 @@ function BylineSlotContainer({
     actionReorderProfile: reorderProfile,
   } = useDispatch(store);
 
-  const saveByline = useCallback(() => {
-    setBylineMeta(dispatch, metaKey);
-  }, [metaKey]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const saveByline = useCallback(setBylineMeta(dispatch, metaKey), [metaKey]);
 
   /**
    * Save ALL bylines to the post meta in the expected schema.
