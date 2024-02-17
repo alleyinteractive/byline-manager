@@ -63,7 +63,7 @@
     "stylelint-order": "^6.0.4",
     "stylelint-webpack-plugin": "^5.0.0",
     "url-loader": "^4.1.1",
-    "webpack": "^5.90.1",
+    "webpack": "^5.90.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1"
   },
