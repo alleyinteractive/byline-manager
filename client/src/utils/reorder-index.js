@@ -12,7 +12,7 @@ import { arrayMoveImmutable as arrayMove } from 'array-move';
 const reorderIndex = (profiles, oldIndex, newIndex) => arrayMove(
   profiles,
   oldIndex,
-  newIndex
+  newIndex,
 );
 
 export default reorderIndex;

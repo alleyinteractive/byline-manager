@@ -1,7 +1,7 @@
 // Internal dependencies.
 import { MODIFY_ACTION_TYPES } from '../actions-types';
-import removeIndex from './../../utils/remove-index';
-import reorderIndex from './../../utils/reorder-index';
+import removeIndex from '../../utils/remove-index';
+import reorderIndex from '../../utils/reorder-index';
 
 const reducer = (state = [], action = {}) => {
   const {

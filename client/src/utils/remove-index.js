@@ -8,7 +8,7 @@
 const removeIndex = (profiles, id) => {
   const index = profiles.findIndex((item) => item.id === id);
 
-  if (0 <= index) {
+  if (index >= 0) {
     return profiles.filter((item) => item.id !== id);
   }
 

@@ -10,7 +10,7 @@ import BylineAutocomplete from '../byline-autocomplete';
 import BylineFreeform from '../byline-freeform';
 import BylineList from '../byline-list';
 
-const BylineSlotWrapper = ({
+function BylineSlotWrapper({
   addAuthorLabel,
   addAuthorPlaceholder,
   addFreeformButtonLabel,
@@ -24,43 +24,45 @@ const BylineSlotWrapper = ({
   removeAuthorLabel,
   removeProfile,
   reorderProfile,
-}) => (
-  <div className="components-base-control">
-    {null === profiles ? (
-      <div style={{ textAlign: 'center' }}>
-        <Spinner />
-      </div>
-    ) : (
-      <Fragment>
-        <BylineAutocomplete
-          id={autocompleteInputId}
-          profiles={profiles}
-          onUpdate={addProfile}
-          profilesApiUrl={profilesApiUrl || bylineData.profilesApiUrl}
-          addAuthorPlaceholder={addAuthorPlaceholder || bylineData.addAuthorPlaceholder}
-          addAuthorLabel={addAuthorLabel || bylineData.addAuthorLabel}
-        />
-        <BylineFreeform
-          id={freeformInputId}
-          onUpdate={addProfile}
-          addFreeformLabel={addFreeformLabel || bylineData.addFreeformLabel}
-          addFreeformPlaceholder={addFreeformPlaceholder || bylineData.addFreeformPlaceholder}
-          addFreeformButtonLabel={addFreeformButtonLabel || bylineData.addFreeformButtonLabel}
-        />
-        {0 !== profiles.length ? (
-          <BylineList
+}) {
+  return (
+    <div className="components-base-control">
+      {profiles === null ? (
+        <div style={{ textAlign: 'center' }}>
+          <Spinner />
+        </div>
+      ) : (
+        <Fragment>
+          <BylineAutocomplete
+            id={autocompleteInputId}
             profiles={profiles}
-            onSortEnd={reorderProfile}
-            lockAxis="y"
-            helperClass="byline-list-item"
-            removeItem={removeProfile}
-            removeAuthorLabel={removeAuthorLabel || bylineData.removeAuthorLabel}
+            onUpdate={addProfile}
+            profilesApiUrl={profilesApiUrl || bylineData.profilesApiUrl}
+            addAuthorPlaceholder={addAuthorPlaceholder || bylineData.addAuthorPlaceholder}
+            addAuthorLabel={addAuthorLabel || bylineData.addAuthorLabel}
           />
-        ) : null}
-      </Fragment>
-    )}
-  </div>
-);
+          <BylineFreeform
+            id={freeformInputId}
+            onUpdate={addProfile}
+            addFreeformLabel={addFreeformLabel || bylineData.addFreeformLabel}
+            addFreeformPlaceholder={addFreeformPlaceholder || bylineData.addFreeformPlaceholder}
+            addFreeformButtonLabel={addFreeformButtonLabel || bylineData.addFreeformButtonLabel}
+          />
+          {profiles.length !== 0 ? (
+            <BylineList
+              profiles={profiles}
+              onSortEnd={reorderProfile}
+              lockAxis="y"
+              helperClass="byline-list-item"
+              removeItem={removeProfile}
+              removeAuthorLabel={removeAuthorLabel || bylineData.removeAuthorLabel}
+            />
+          ) : null}
+        </Fragment>
+      )}
+    </div>
+  );
+}
 
 BylineSlotWrapper.defaultProps = {
   addAuthorLabel: null,

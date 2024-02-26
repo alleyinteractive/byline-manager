@@ -6,11 +6,11 @@ import PropTypes from 'prop-types';
 // Internal dependencies.
 import BylineProfiles from '../byline-profiles';
 
-const BylineMetaBox = ({
+function BylineMetaBox({
   bylineMetaBox: {
     profiles = [],
   },
-}) => {
+}) {
   const {
     addAuthorLabel,
     addAuthorPlaceholder,
@@ -21,7 +21,7 @@ const BylineMetaBox = ({
     removeAuthorLabel,
   } = bylineData;
 
-  if (! profiles) {
+  if (!profiles) {
     return null;
   }
 
@@ -40,7 +40,7 @@ const BylineMetaBox = ({
       />
     </div>
   );
-};
+}
 
 BylineMetaBox.propTypes = {
   bylineMetaBox: PropTypes.shape({

@@ -5,11 +5,9 @@
  */
 function flatten(obj) {
   return Object.keys(obj)
-    .reduce(
-      (acc, curr) => (
-        Object.assign({}, acc, obj[curr])
-      ), {}
-    );
+    .reduce((acc, curr) => (
+      { ...acc, ...obj[curr] }
+    ), {});
 }
 
 // Support importing module from NodeJS context.
