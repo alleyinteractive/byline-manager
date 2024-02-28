@@ -160,7 +160,7 @@ function get_asset_dependencies( string $asset ) : array {
 	}
 
 	// Ensure the filepath is valid.
-	if ( validate_path( $dependency_file ) ) {
+	if ( ! validate_path( $dependency_file ) ) {
 		return [];
 	}
 
