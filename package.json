@@ -28,7 +28,7 @@
     ]
   },
   "devDependencies": {
-    "@alleyinteractive/eslint-config": "^0.1.5",
+    "@alleyinteractive/eslint-config": "^0.1.6",
     "@alleyinteractive/stylelint-config": "^0.0.2",
     "@babel/cli": "^7.23.9",
     "@babel/core": "^7.23.9",
