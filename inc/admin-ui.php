@@ -298,7 +298,7 @@ function remove_author_dropdown() {
 	// Allow filtering of post types to remove author dropdown.
 	$post_types = apply_filters( 'byline_manager_remove_author_dropdown', [] );
 	// If no post types are provided, do nothing.
-	if ( empty ( $post_types ) || ! is_array( $post_types ) ) {
+	if ( empty( $post_types ) || ! is_array( $post_types ) ) {
 		return;
 	}
 
