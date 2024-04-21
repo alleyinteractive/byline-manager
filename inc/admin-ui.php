@@ -291,8 +291,6 @@ add_action( 'manage_profile_posts_custom_column', __NAMESPACE__ . '\render_posts
 /**
  * Remove the author dropdown from the post editor.
  * Done by removing author support.
- *
- * @return void
  */
 function remove_author_dropdown() {
 	// Allow filtering of post types to remove author dropdown.
