@@ -287,3 +287,24 @@ function render_posts_column( $column, $post_id ): void {
 	}
 }
 add_action( 'manage_profile_posts_custom_column', __NAMESPACE__ . '\render_posts_column', 10, 2 );
+
+/**
+ * Remove the author dropdown from the post editor.
+ * Done by removing author support.
+ *
+ * @return void
+ */
+function remove_author_dropdown() {
+	// Allow filtering of post types to remove author dropdown.
+	$post_types = apply_filters( 'byline_manager_remove_author_dropdown', [] );
+	// If no post types are provided, do nothing.
+	if ( empty ( $post_types ) || ! is_array( $post_types ) ) {
+		return;
+	}
+
+	// Remove author support from the provided post types.
+	foreach ( $post_types as $post_type ) {
+		remove_post_type_support( $post_type, 'author' );
+	}
+}
+add_action( 'admin_init', __NAMESPACE__ . '\remove_author_dropdown' );
