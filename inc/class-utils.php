@@ -26,7 +26,10 @@ class Utils {
 	 * @return string[] Post types with author support.
 	 */
 	public static function get_supported_post_types(): array {
-		$post_types = get_post_types_by_support( 'author' );
+		static $post_types;
+		if ( ! isset( $post_types ) ) {
+			$post_types = get_post_types_by_support( 'author' );
+		}
 
 		/**
 		 * Filter the list of supported post types. Defaults to all post types
