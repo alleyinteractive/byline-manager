@@ -21,16 +21,16 @@ use WP_Error;
 class Utils {
 
 	/**
-	 * Get an array of post types that support authors.
+	 * Get an array of post types that should support bylines.
+	 * By default, all public post types are supported.
 	 *
 	 * @return string[] Post types with author support.
 	 */
 	public static function get_supported_post_types(): array {
-		$post_types = get_post_types_by_support( 'author' );
+		$post_types = get_post_types( [ 'public' => true ], 'names' );
 
 		/**
-		 * Filter the list of supported post types. Defaults to all post types
-		 * supporting 'author'.
+		 * Filter the list of supported post types. Defaults to all public post types
 		 *
 		 * @param array $post_types Post types with which to use Byline Manager.
 		 */
