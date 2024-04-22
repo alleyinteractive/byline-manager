@@ -287,3 +287,23 @@ function render_posts_column( $column, $post_id ): void {
 	}
 }
 add_action( 'manage_profile_posts_custom_column', __NAMESPACE__ . '\render_posts_column', 10, 2 );
+
+/**
+ * Remove the author support from post types.
+ * This is done to prevent the author dropdown from being displayed in the post editor.
+ */
+function remove_author_support() {
+	/**
+	 * Filter the list of post types that should not have author support.
+	 * Defaults to all post types that support Byline Manager.
+	 *
+	 * @param string[] $post_types Post types with author support removed.
+	 */
+	$post_types = apply_filters( 'byline_manager_remove_author_support', Utils::get_supported_post_types() );
+
+	// Remove author support from the provided post types.
+	foreach ( $post_types as $post_type ) {
+		remove_post_type_support( $post_type, 'author' );
+	}
+}
+add_action( 'admin_init', __NAMESPACE__ . '\remove_author_support' );

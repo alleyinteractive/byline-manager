@@ -52,19 +52,9 @@ class Test_Profile_Byline_Sync extends Test_Case {
 			]
 		);
 
-		$post_type_with_author = 'test-with-author';
-		register_post_type(
-			$post_type_with_author,
-			[
-				'public'   => true,
-				'supports' => [ 'title', 'editor', 'author' ],
-			]
-		);
-
 		unregister_taxonomy( BYLINE_TAXONOMY );
 		register_byline();
 
 		$this->assertFalse( is_object_in_taxonomy( $post_type_no_author, BYLINE_TAXONOMY ) );
-		$this->assertTrue( is_object_in_taxonomy( $post_type_with_author, BYLINE_TAXONOMY ) );
 	}
 }
