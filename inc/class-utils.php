@@ -30,7 +30,7 @@ class Utils {
 		$post_types = get_post_types( [ 'public' => true ], 'names' );
 
 		/**
-		 * Filter the list of supported post types. Defaults to all public post types
+		 * Filter the list of supported post types. Defaults to all public post types.
 		 *
 		 * @param array $post_types Post types with which to use Byline Manager.
 		 */

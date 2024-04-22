@@ -293,12 +293,12 @@ add_action( 'manage_profile_posts_custom_column', __NAMESPACE__ . '\render_posts
  * This is done to prevent the author dropdown from being displayed in the post editor.
  */
 function remove_author_support() {
-	// Allow filtering of post types to remove author support.
-	$post_types = apply_filters( 'byline_manager_remove_author_support', [] );
-	// If no post types are provided, do nothing.
-	if ( empty( $post_types ) || ! is_array( $post_types ) ) {
-		$post_types = get_post_types( [ 'public' => true ], 'names' );
-	}
+	/**
+	 * Filter the list of post types that should not have author support. Defaults to all public post types.
+	 *
+	 * @param string[] $post_types Post types with author support removed.
+	 */
+	$post_types = apply_filters( 'byline_manager_remove_author_support', get_post_types( [ 'public' => true ], 'names' ) );
 
 	// Remove author support from the provided post types.
 	foreach ( $post_types as $post_type ) {
