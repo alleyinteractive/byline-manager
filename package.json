@@ -30,7 +30,7 @@
   "devDependencies": {
     "@alleyinteractive/eslint-config": "^0.1.6",
     "@alleyinteractive/stylelint-config": "^0.0.2",
-    "@babel/cli": "^7.24.5",
+    "@babel/cli": "^7.24.6",
     "@babel/core": "^7.24.5",
     "@babel/plugin-transform-runtime": "^7.24.3",
     "@babel/preset-env": "^7.24.5",
@@ -58,7 +58,7 @@
     "sass": "^1.77.2",
     "sass-loader": "^14.2.1",
     "style-loader": "^4.0.0",
-    "stylelint": "^16.5.0",
+    "stylelint": "^16.6.0",
     "stylelint-config-sass-guidelines": "^11.1.0",
     "stylelint-order": "^6.0.4",
     "stylelint-webpack-plugin": "^5.0.0",
