@@ -31,8 +31,8 @@ add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\filter_wpseo_schema_graph', 
  * @return string Filtered tag.
  */
 function filter_wpseo_meta_author( $author_name, $presentation ): string {
-	$id   = $presentation?->context?->post?->ID;
-	$type = $presentation?->model?->object_sub_type;
+	$id   = $presentation->context->post->ID;
+	$type = $presentation->model->object_sub_type;
 
 	if ( $id && $type && Utils::is_post_type_supported( $type ) ) {
 		$author_name = get_the_byline( $id );
@@ -49,8 +49,8 @@ function filter_wpseo_meta_author( $author_name, $presentation ): string {
  * @return array Filtered data.
  */
 function filter_wpseo_enhanced_slack_data( $data, $presentation ): array {
-	$id   = $presentation?->context?->post?->ID;
-	$type = $presentation?->model?->object_sub_type;
+	$id   = $presentation->context->post->ID;
+	$type = $presentation->model->object_sub_type;
 
 	if ( $id && $type && Utils::is_post_type_supported( $type ) ) {
 		$byline = get_the_byline( $id );
@@ -74,8 +74,8 @@ function filter_wpseo_enhanced_slack_data( $data, $presentation ): array {
  */
 function filter_wpseo_schema_graph_pieces( $schema_pieces, $context ) {
 	if (
-		'post' === $context?->indexable?->object_type
-		&& Utils::is_post_type_supported( $context?->indexable?->object_sub_type )
+		'post' === $context->indexable->object_type
+		&& Utils::is_post_type_supported( $context->indexable->object_sub_type )
 	) {
 		$schema_pieces = array_filter( $schema_pieces, fn ( $piece ) => ! $piece instanceof Person );
 	}
@@ -107,8 +107,8 @@ function filter_wpseo_schema_graph( $graph, $context ) {
 	 * It's easier to create the schema pieces and generate their output here, rather than filtering the schema
 	 * pieces into 'filter_schema_graph_pieces', because Yoast allows only one node of each '@type' in the graph.
 	 */
-	if ( 'post' === $context?->indexable?->object_type && Utils::is_post_type_supported( $context?->indexable?->object_sub_type ) ) {
-		foreach ( Utils::get_byline_entries_for_post( $context?->indexable?->object_id ) as $entry ) {
+	if ( 'post' === $context->indexable->object_type && Utils::is_post_type_supported( $context->indexable->object_sub_type ) ) {
+		foreach ( Utils::get_byline_entries_for_post( $context->indexable->object_id ) as $entry ) {
 			if ( $entry instanceof Profile ) {
 				$schema_pieces[] = new Profile_Schema( $entry, $helpers, $context );
 			}
