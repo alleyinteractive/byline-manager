@@ -50,11 +50,14 @@ require_once BYLINE_MANAGER_PATH . 'inc/data-structures.php';
 // Admin interfaces.
 require_once BYLINE_MANAGER_PATH . 'inc/admin-ui.php';
 
-// REST API interfaces.
+// REST API integration.
 require_once BYLINE_MANAGER_PATH . 'inc/rest-api.php';
 
-// GraphQL interfaces.
+// WPGraphQL integration.
 require_once BYLINE_MANAGER_PATH . 'inc/graphql.php';
+
+// Yoast SEO integration.
+require_once BYLINE_MANAGER_PATH . 'inc/yoast.php';
 
 // Hook into core filters to output byline.
 require_once BYLINE_MANAGER_PATH . 'inc/core-filters.php';

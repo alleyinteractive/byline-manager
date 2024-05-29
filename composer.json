@@ -16,13 +16,15 @@
         "phpstan/phpstan": "^1.10",
         "szepeviktor/phpstan-wordpress": "^1.1.6",
         "yoast/phpunit-polyfills": "^2.0",
-        "axepress/wp-graphql-stubs": "^1.14"
+        "axepress/wp-graphql-stubs": "^1.14",
+        "yoast/wordpress-seo": "^22.7"
     },
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "alleyinteractive/composer-wordpress-autoloader": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "composer/installers": false
         }
     },
     "scripts": {
@@ -37,5 +39,10 @@
             "@phpstan",
             "@phpunit"
         ]
+    },
+    "extra": {
+        "installer-paths": {
+            "vendor/{$vendor}/{$name}/": ["type:wordpress-plugin"]
+        }
     }
 }
