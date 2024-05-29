@@ -38,6 +38,14 @@ function admin_enqueue_scripts( $hook ): void {
 			true
 		);
 
+		wp_enqueue_script(
+			'byline-manager-blocks',
+			get_asset_path( 'blockEditor.js' ),
+			get_asset_dependencies( 'blockEditor.php' ),
+			get_asset_hash( 'blockEditor.js' ),
+			true
+		);
+
 		// Add Byline data for script.
 		localize_admin_script( 'byline-manager-js' );
 	}

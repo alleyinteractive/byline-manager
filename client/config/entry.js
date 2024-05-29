@@ -15,6 +15,7 @@ module.exports = function getEntry(mode) {
         ],
         blockEditor: [
           path.join(appRoot, 'block-editor.js'),
+          path.join(appRoot, '/blocks/byline/index.ts'),
         ],
       };
 

@@ -18,7 +18,7 @@ module.exports = (env, argv) => {
     output: getOutput(mode),
     plugins: getPlugins(mode),
     resolve: {
-      extensions: ['.js', '.jsx'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
       modules: ['node_modules'],
     },
   };
