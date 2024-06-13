@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace Byline_Manager;
 
+use DOMDocument;
+use DOMNodeList;
+use DOMXPath;
+
 /**
  * Automatically integrate the byline into posts via the `the_author` filter.
  *
@@ -101,3 +105,94 @@ function unset_rewrites( $rules ): array {
 	return $rules;
 }
 add_filter( 'rewrite_rules_array', __NAMESPACE__ . '\unset_rewrites' );
+
+function modify_post_author_block( $block_content, $block, $instance ) {
+	if ( 'core/post-author' === $block['blockName'] ) {
+		global $post;
+
+		$profile_post = '';
+		$meta         = get_post_meta( $post->ID, 'byline', true );
+
+		if ( is_array( $meta ) && ! empty( $meta['profiles'] ) ) {
+			foreach( $meta['profiles'] as $profile ) {
+				// TODO: Handle instance where theres multiple profiles.
+				if ( 'byline_id' === $profile['type'] ) {
+					if ( ! empty( $profile['atts']['post_id'] ) ) {
+						$profile_post = get_post( $profile['atts']['post_id'] );
+					}
+				}
+			}
+		}
+
+		// Check that the profile is a WP_Post.
+		if ( ! is_object( $profile_post ) && ! is_a( $profile_post, 'WP_Post' ) ) {
+			return $block_content;
+		}
+
+		return replace_author_block_author( $block_content, $profile_post );
+	}
+	return $block_content;
+}
+add_filter( 'render_block', __NAMESPACE__ . '\modify_post_author_block', 10, 3 );
+
+/**
+ * Replaces the author in the author block.
+ *
+ * @param string $html
+ * @param \WP_Post $profile_post
+ *
+ * @return string
+ */
+function replace_author_block_author( string $html, \WP_Post $profile_post ): string {
+	$doc = new DOMDocument();
+	libxml_use_internal_errors( true );
+
+	// Convert non-ASCII characters to HTML entities.
+	$doc->loadHTML( mb_encode_numericentity( $html, [ 0x80, 0x10ffff, 0, 0xfffff ], 'UTF-8' ), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+
+	$xpath = new DOMXPath( $doc );
+
+	// Get the new src image.
+	$new_src  = get_the_post_thumbnail_url( $profile_post->ID, 'thumbnail' );
+
+	// Get the new author name.
+	$new_text = $profile_post->post_title;
+
+	// Change the 'src' attribute of the 'img' tag.
+	$image_query_result = $xpath->query( '//div[contains(@class, "wp-block-post-author__avatar")]/img' );
+	$image_node         = ( $image_query_result instanceof DOMNodeList ) ? $image_query_result->item( 0 ) : null;
+	if ( $image_node ) {
+		$image_node->setAttribute( 'src', $new_src );
+		$image_node->setAttribute( 'srcset', $new_src . ' 2x' );
+	}
+
+	// Change the text inside of '.wp-block-post-author__name'
+	$author_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__name")]' )->item( 0 );
+	$author_node         = ( $author_query_result instanceof DOMNodeList ) ? $author_query_result->item( 0 ) : null;
+	if ( $author_node ) {
+		$author_node->nodeValue = $new_text;
+	}
+
+	$newhtml = $doc->saveHTML();
+	return $newhtml;
+}
+
+function get_node_by_class( string $html, string $class): DOMNodeList {
+	$nodes = get_xpath_for_html( $html )->query( sprintf( '//div[@class="%s"]', $class ) );
+
+	return $nodes instanceof DOMNodeList
+		? $nodes
+		: new DOMNodeList();
+}
+
+function get_xpath_for_html( string $html ): DOMXPath {
+	libxml_use_internal_errors( true );
+	$doc = new DOMDocument();
+	$doc->loadHTML( mb_encode_numericentity( $html, [ 0x80, 0x10ffff, 0, 0xfffff ], 'UTF-8' ) );
+	$xpath = new DOMXPath( $doc );
+	libxml_clear_errors();
+
+	return $xpath instanceof DOMXPath
+		? $xpath
+		: new DOMXPath( new DOMDocument() );
+}
