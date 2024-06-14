@@ -161,24 +161,25 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): st
 
 	$xpath = new DOMXPath( $doc );
 
-	// Get the new src image.
-	$new_src  = get_the_post_thumbnail_url( $profile_post->ID, 'thumbnail' );
-
-	// Get the new author name.
-	$new_text = $profile_post->post_title;
-
 	// Change the 'src' attribute of the 'img' tag.
 	$image_query_result = $xpath->query( '//div[contains(@class, "wp-block-post-author__avatar")]/img' );
 	$image_node         = ( $image_query_result instanceof DOMNodeList ) ? $image_query_result->item( 0 ) : null;
-	if ( $image_node ) {
-		$image_node->setAttribute( 'src', $new_src );
-		$image_node->setAttribute( 'srcset', $new_src . ' 2x' );
+	if ( $image_node instanceof \DOMElement ) {
+		// Get the new src image.
+		$new_src  = get_the_post_thumbnail_url( $profile_post->ID, 'thumbnail' );
+
+		if ( $new_src ) {
+			$image_node->setAttribute( 'src', $new_src );
+			$image_node->setAttribute( 'srcset', $new_src . ' 2x' );
+		}
 	}
 
 	// Change the text inside of '.wp-block-post-author__name'
 	$author_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__name")]' )->item( 0 );
 	$author_node         = ( $author_query_result instanceof DOMNodeList ) ? $author_query_result->item( 0 ) : null;
 	if ( $author_node ) {
+		// Get the new author name.
+		$new_text = $profile_post->post_title;
 		$author_node->nodeValue = $new_text;
 	}
 
