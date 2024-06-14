@@ -177,9 +177,23 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): bo
 	// Change the text inside '.wp-block-post-author__name'
 	$name_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__name")]' );
 	$name_node         = ( $name_query_result instanceof DOMNodeList ) ? $name_query_result->item( 0 ) : null;
-	if ( $name_node && property_exists( $profile_post, 'post_title') ) {
-		// Replace the author name.
-		$name_node->nodeValue = $profile_post->post_title;
+	if ( $name_node instanceof \DOMElement && property_exists( $profile_post, 'post_title') ) {
+		// Check if the author name has an anchor.
+		if ( $name_node->getElementsByTagName( 'a' )->length > 0 ) {
+            $anchor_node = $name_node->getElementsByTagName( 'a' )->item( 0 );
+
+			if ( $anchor_node instanceof \DOMElement ) {
+				$anchor_node->nodeValue = $profile_post->post_title;
+				$permalink              = get_permalink( $profile_post->ID );
+
+				if ( $permalink !== false ) {
+					$anchor_node->setAttribute( 'href', $permalink );
+				}
+			}
+        } else {
+			// Replace the author name.
+            $name_node->nodeValue = $profile_post->post_title;
+        }
 	}
 
 	// Change the text inside '.wp-block-post-author__bio'
