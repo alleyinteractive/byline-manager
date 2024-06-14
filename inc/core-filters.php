@@ -174,8 +174,8 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): st
 		}
 	}
 
-	// Change the text inside of '.wp-block-post-author__name'
-	$author_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__name")]' )->item( 0 );
+	// Change the text inside '.wp-block-post-author__name'
+	$author_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__name")]' );
 	$author_node         = ( $author_query_result instanceof DOMNodeList ) ? $author_query_result->item( 0 ) : null;
 	if ( $author_node ) {
 		// Get the new author name.
