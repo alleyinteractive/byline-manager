@@ -134,11 +134,18 @@ function filter_post_author_block( string $block_content, array $block ): string
 		}
 
 		// Check that the profile is a WP_Post.
-		if ( ! is_object( $profile_post ) && ! is_a( $profile_post, 'WP_Post' ) ) {
+		if ( is_null( $profile_post ) || is_string( $profile_post ) || ! is_a( $profile_post, 'WP_Post' ) ) {
 			return $block_content;
 		}
 
-		return replace_author_block_author( $block_content, $profile_post );
+		// Get the new block.
+		$new_author_block = replace_author_block_author( $block_content, $profile_post );
+
+		if ( $new_author_block && is_string( $new_author_block ) ) {
+			return $new_author_block;
+		}
+
+		return $block_content;
 	}
 	return $block_content;
 }
