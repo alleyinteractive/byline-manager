@@ -208,38 +208,3 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): bo
 
 	return $doc->saveHTML();
 }
-
-/**
- * Given arbitrary HTML, returns a DOMElement representation of the root node of the given HTML.
- *
- * @param string $html The HTML to convert to a DOMElement.
- * @param string $class The class name to look for.
- *
- * @return DOMNodeList A DOMNodeList representing the root node of the given HTML.
- */
-function get_node_by_class( string $html, string $class ): DOMNodeList {
-	$nodes = get_xpath_for_html( $html )->query( sprintf( '//div[@class="%s"]', $class ) );
-
-	return $nodes instanceof DOMNodeList
-		? $nodes
-		: new DOMNodeList();
-}
-
-/**
- * Given arbitrary HTML, loads it into a DOMXPath object as a property on this class.
- *
- * @param string $html The HTML to load into a DOMXPath object.
- *
- * @return ?DOMXPath The DOMXPath object for the provided HTML.
- */
-function get_xpath_for_html( string $html ): ?DOMXPath {
-	libxml_use_internal_errors( true );
-	$doc = new DOMDocument();
-	$doc->loadHTML( mb_encode_numericentity( $html, [ 0x80, 0x10ffff, 0, 0xfffff ], 'UTF-8' ) );
-	$xpath = new DOMXPath( $doc );
-	libxml_clear_errors();
-
-	return $xpath instanceof DOMXPath
-		? $xpath
-		: new DOMXPath( new DOMDocument() );
-}
