@@ -110,7 +110,7 @@ add_filter( 'rewrite_rules_array', __NAMESPACE__ . '\unset_rewrites' );
  * Callback function that checks if the rendered block is the `core/post-author`
  * and then gets the byline meta of the current post to then pass along to `replace_author_block_author()`
  *
- * @param string $block_content The block content.
+ * @param string               $block_content The block content.
  * @param array<string, mixed> $block The full block, including name and attributes.
  *
  * @return string The unfiltered or filtered block.
@@ -123,7 +123,7 @@ function filter_post_author_block( string $block_content, array $block ): string
 		$meta         = get_post_meta( $post->ID, 'byline', true );
 
 		if ( is_array( $meta ) && ! empty( $meta['profiles'] ) ) {
-			foreach( $meta['profiles'] as $profile ) {
+			foreach ( $meta['profiles'] as $profile ) {
 				// TODO: Handle instance where theres multiple profiles.
 				if ( 'byline_id' === $profile['type'] ) {
 					if ( ! empty( $profile['atts']['post_id'] ) ) {
@@ -147,10 +147,10 @@ add_filter( 'render_block', __NAMESPACE__ . '\filter_post_author_block', 10, 2 )
 /**
  * Replaces the author in the author block.
  *
- * @param string $html
- * @param \WP_Post $profile_post
+ * @param string   $html Author block html.
+ * @param \WP_Post $profile_post Post object of the profile post type.
  *
- * @return bool|string
+ * @return bool|string Filtered author block.
  */
 function replace_author_block_author( string $html, \WP_Post $profile_post ): bool|string {
 	$doc = new DOMDocument();
@@ -166,7 +166,7 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): bo
 	$image_node         = ( $image_query_result instanceof DOMNodeList ) ? $image_query_result->item( 0 ) : null;
 	if ( $image_node instanceof \DOMElement ) {
 		// Get the new src image.
-		$new_src  = get_the_post_thumbnail_url( $profile_post->ID, 'thumbnail' );
+		$new_src = get_the_post_thumbnail_url( $profile_post->ID, 'thumbnail' );
 
 		if ( $new_src ) {
 			$image_node->setAttribute( 'src', $new_src );
@@ -174,36 +174,36 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): bo
 		}
 	}
 
-	// Change the text inside '.wp-block-post-author__name'
+	// Change the text inside '.wp-block-post-author__name'.
 	$name_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__name")]' );
 	$name_node         = ( $name_query_result instanceof DOMNodeList ) ? $name_query_result->item( 0 ) : null;
-	if ( $name_node instanceof \DOMElement && property_exists( $profile_post, 'post_title') ) {
+	if ( $name_node instanceof \DOMElement && property_exists( $profile_post, 'post_title' ) ) {
 		// Check if the author name has an anchor.
 		if ( $name_node->getElementsByTagName( 'a' )->length > 0 ) {
-            $anchor_node = $name_node->getElementsByTagName( 'a' )->item( 0 );
+			$anchor_node = $name_node->getElementsByTagName( 'a' )->item( 0 );
 
 			if ( $anchor_node instanceof \DOMElement ) {
-				$anchor_node->nodeValue = $profile_post->post_title;
+				$anchor_node->nodeValue = $profile_post->post_title; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				$permalink              = get_permalink( $profile_post->ID );
 
-				if ( $permalink !== false ) {
+				if ( $permalink ) {
 					$anchor_node->setAttribute( 'href', $permalink );
 				}
 			}
-        } else {
+		} else {
 			// Replace the author name.
-            $name_node->nodeValue = $profile_post->post_title;
-        }
+			$name_node->nodeValue = $profile_post->post_title; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		}
 	}
 
-	// Change the text inside '.wp-block-post-author__bio'
+	// Change the text inside '.wp-block-post-author__bio'.
 	$bio_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__bio")]' );
 	$bio_node         = ( $bio_query_result instanceof DOMNodeList ) ? $bio_query_result->item( 0 ) : null;
-	if ( $bio_node && property_exists( $profile_post, 'post_content') ) {
+	if ( $bio_node && property_exists( $profile_post, 'post_content' ) ) {
 		// Replace the author bio.
-		$content = apply_filters( 'the_content', $profile_post->post_content );
-		$content = str_replace( [ '<p>', '</p>' ], '', $content );
-		$bio_node->nodeValue = $content;
+		$content             = apply_filters( 'the_content', $profile_post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		$content             = str_replace( [ '<p>', '</p>' ], '', $content );
+		$bio_node->nodeValue = $content; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 
 	return $doc->saveHTML();
@@ -213,10 +213,11 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): bo
  * Given arbitrary HTML, returns a DOMElement representation of the root node of the given HTML.
  *
  * @param string $html The HTML to convert to a DOMElement.
+ * @param string $class The class name to look for.
  *
  * @return DOMNodeList A DOMNodeList representing the root node of the given HTML.
  */
-function get_node_by_class( string $html, string $class): DOMNodeList {
+function get_node_by_class( string $html, string $class ): DOMNodeList {
 	$nodes = get_xpath_for_html( $html )->query( sprintf( '//div[@class="%s"]', $class ) );
 
 	return $nodes instanceof DOMNodeList
