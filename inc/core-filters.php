@@ -150,9 +150,9 @@ add_filter( 'render_block', __NAMESPACE__ . '\filter_post_author_block', 10, 2 )
  * @param string $html
  * @param \WP_Post $profile_post
  *
- * @return string
+ * @return bool|string
  */
-function replace_author_block_author( string $html, \WP_Post $profile_post ): string {
+function replace_author_block_author( string $html, \WP_Post $profile_post ): bool|string {
 	$doc = new DOMDocument();
 	libxml_use_internal_errors( true );
 
@@ -182,8 +182,7 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): st
 		$author_node->nodeValue = $profile_post->post_title;
 	}
 
-	$newhtml = $doc->saveHTML();
-	return $newhtml;
+	return $doc->saveHTML();
 }
 
 /**
