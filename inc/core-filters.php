@@ -177,10 +177,9 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): st
 	// Change the text inside '.wp-block-post-author__name'
 	$author_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__name")]' );
 	$author_node         = ( $author_query_result instanceof DOMNodeList ) ? $author_query_result->item( 0 ) : null;
-	if ( $author_node ) {
-		// Get the new author name.
-		$new_text = $profile_post->post_title;
-		$author_node->nodeValue = $new_text;
+	if ( $author_node && property_exists( $profile_post, 'post_title') ) {
+		// Replace the author name.
+		$author_node->nodeValue = $profile_post->post_title;
 	}
 
 	$newhtml = $doc->saveHTML();
