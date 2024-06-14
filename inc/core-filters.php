@@ -106,7 +106,16 @@ function unset_rewrites( $rules ): array {
 }
 add_filter( 'rewrite_rules_array', __NAMESPACE__ . '\unset_rewrites' );
 
-function modify_post_author_block( $block_content, $block, $instance ) {
+/**
+ * Callback function that checks if the rendered block is the `core/post-author`
+ * and then gets the byline meta of the current post to then pass along to `replace_author_block_author()`
+ *
+ * @param string $block_content The block content.
+ * @param array<string, mixed> $block The full block, including name and attributes.
+ *
+ * @return string The unfiltered or filtered block.
+ */
+function filter_post_author_block( string $block_content, array $block ): string {
 	if ( 'core/post-author' === $block['blockName'] ) {
 		global $post;
 
@@ -133,7 +142,7 @@ function modify_post_author_block( $block_content, $block, $instance ) {
 	}
 	return $block_content;
 }
-add_filter( 'render_block', __NAMESPACE__ . '\modify_post_author_block', 10, 3 );
+add_filter( 'render_block', __NAMESPACE__ . '\filter_post_author_block', 10, 2 );
 
 /**
  * Replaces the author in the author block.
@@ -177,6 +186,13 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): st
 	return $newhtml;
 }
 
+/**
+ * Given arbitrary HTML, returns a DOMElement representation of the root node of the given HTML.
+ *
+ * @param string $html The HTML to convert to a DOMElement.
+ *
+ * @return DOMNodeList A DOMNodeList representing the root node of the given HTML.
+ */
 function get_node_by_class( string $html, string $class): DOMNodeList {
 	$nodes = get_xpath_for_html( $html )->query( sprintf( '//div[@class="%s"]', $class ) );
 
@@ -185,7 +201,14 @@ function get_node_by_class( string $html, string $class): DOMNodeList {
 		: new DOMNodeList();
 }
 
-function get_xpath_for_html( string $html ): DOMXPath {
+/**
+ * Given arbitrary HTML, loads it into a DOMXPath object as a property on this class.
+ *
+ * @param string $html The HTML to load into a DOMXPath object.
+ *
+ * @return ?DOMXPath The DOMXPath object for the provided HTML.
+ */
+function get_xpath_for_html( string $html ): ?DOMXPath {
 	libxml_use_internal_errors( true );
 	$doc = new DOMDocument();
 	$doc->loadHTML( mb_encode_numericentity( $html, [ 0x80, 0x10ffff, 0, 0xfffff ], 'UTF-8' ) );
