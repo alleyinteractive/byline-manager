@@ -175,11 +175,21 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): bo
 	}
 
 	// Change the text inside '.wp-block-post-author__name'
-	$author_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__name")]' );
-	$author_node         = ( $author_query_result instanceof DOMNodeList ) ? $author_query_result->item( 0 ) : null;
-	if ( $author_node && property_exists( $profile_post, 'post_title') ) {
+	$name_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__name")]' );
+	$name_node         = ( $name_query_result instanceof DOMNodeList ) ? $name_query_result->item( 0 ) : null;
+	if ( $name_node && property_exists( $profile_post, 'post_title') ) {
 		// Replace the author name.
-		$author_node->nodeValue = $profile_post->post_title;
+		$name_node->nodeValue = $profile_post->post_title;
+	}
+
+	// Change the text inside '.wp-block-post-author__bio'
+	$bio_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__bio")]' );
+	$bio_node         = ( $bio_query_result instanceof DOMNodeList ) ? $bio_query_result->item( 0 ) : null;
+	if ( $bio_node && property_exists( $profile_post, 'post_content') ) {
+		// Replace the author bio.
+		$content = apply_filters( 'the_content', $profile_post->post_content );
+		$content = str_replace( [ '<p>', '</p>' ], '', $content );
+		$bio_node->nodeValue = $content;
 	}
 
 	return $doc->saveHTML();
