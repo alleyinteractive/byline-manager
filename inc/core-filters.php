@@ -12,6 +12,7 @@ namespace Byline_Manager;
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
+use WP_Post;
 
 /**
  * Automatically integrate the byline into posts via the `the_author` filter.
@@ -119,25 +120,43 @@ function filter_post_author_block( string $block_content, array $block ): string
 	if ( 'core/post-author' === $block['blockName'] ) {
 		global $post;
 
+		$byline_type  = '';
 		$profile_post = '';
+		$text_byline  = '';
 		$meta         = get_post_meta( $post->ID, 'byline', true );
 
 		if ( is_array( $meta ) && ! empty( $meta['profiles'] ) ) {
 			foreach ( $meta['profiles'] as $profile ) {
 				// TODO: Handle instance where theres multiple profiles.
 				if ( 'byline_id' === $profile['type'] && ! empty( $profile['atts']['post_id'] ) ) {
+					// The profile uses a Profile Post ID.
 					$profile_post = get_post( $profile['atts']['post_id'] );
+					$byline_type  = 'profile';
+				}
+
+				if ( 'text' === $profile['type'] && ! empty( $profile['atts']['text'] ) ) {
+					// The profile uses text.
+					$text_byline = $profile['atts']['text'];
+					$byline_type = 'text';
 				}
 			}
 		}
 
-		// Check that the profile is a WP_Post.
-		if ( is_null( $profile_post ) || is_string( $profile_post ) || ! is_a( $profile_post, 'WP_Post' ) ) {
-			return $block_content;
+		// Check that the profile is a text field.
+		if ( ! empty( $text_byline ) && 'text' === $byline_type ) {
+			// Get the new block.
+			$new_author_block = replace_author_block_name( $block_content, $text_byline );
 		}
 
-		// Get the new block.
-		$new_author_block = replace_author_block_author( $block_content, $profile_post );
+		// Check that the profile is a WP_Post.
+		if ( 'profile' === $byline_type ) {
+			if ( is_null( $profile_post ) || is_string( $profile_post ) || ! is_a( $profile_post, 'WP_Post' ) ) {
+				return $block_content;
+			}
+
+			// Get the new block.
+			$new_author_block = replace_author_block_author( $block_content, $profile_post );
+		}
 
 		if ( $new_author_block && is_string( $new_author_block ) ) {
 			return $new_author_block;
@@ -150,14 +169,14 @@ function filter_post_author_block( string $block_content, array $block ): string
 add_filter( 'render_block', __NAMESPACE__ . '\filter_post_author_block', 10, 2 );
 
 /**
- * Replaces the author in the author block.
+ * Replaces the author name, avatar, bio and link in the author block.
  *
- * @param string   $html Author block html.
- * @param \WP_Post $profile_post Post object of the profile post type.
+ * @param string  $html Author block HTML.
+ * @param WP_Post $profile_post Post object of the profile post type.
  *
  * @return bool|string Filtered author block.
  */
-function replace_author_block_author( string $html, \WP_Post $profile_post ): bool|string {
+function replace_author_block_author( string $html, WP_Post $profile_post ): bool|string {
 	$doc = new DOMDocument();
 	libxml_use_internal_errors( true );
 
@@ -211,5 +230,31 @@ function replace_author_block_author( string $html, \WP_Post $profile_post ): bo
 		$bio_node->nodeValue = $content; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 
+	return $doc->saveHTML();
+}
+
+/**
+ * Replaces the author name in the author block.
+ *
+ * @param string $html Author block HTML.
+ * @param string $name The name of the author.
+ *
+ * @return bool|string
+ */
+function replace_author_block_name( string $html, string $name ): bool|string {
+	$doc = new DOMDocument();
+	libxml_use_internal_errors( true );
+
+	// Convert non-ASCII characters to HTML entities.
+	$doc->loadHTML( mb_encode_numericentity( $html, [ 0x80, 0x10ffff, 0, 0xfffff ], 'UTF-8' ), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+
+	$xpath = new DOMXPath( $doc );
+
+	$name_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__name")]' );
+	$name_node         = ( $name_query_result instanceof DOMNodeList ) ? $name_query_result->item( 0 ) : null;
+	if ( $name_node instanceof \DOMElement ) {
+		// Replace the author name.
+		$name_node->nodeValue = $name; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+	}
 	return $doc->saveHTML();
 }
