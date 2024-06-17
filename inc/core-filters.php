@@ -125,10 +125,8 @@ function filter_post_author_block( string $block_content, array $block ): string
 		if ( is_array( $meta ) && ! empty( $meta['profiles'] ) ) {
 			foreach ( $meta['profiles'] as $profile ) {
 				// TODO: Handle instance where theres multiple profiles.
-				if ( 'byline_id' === $profile['type'] ) {
-					if ( ! empty( $profile['atts']['post_id'] ) ) {
-						$profile_post = get_post( $profile['atts']['post_id'] );
-					}
+				if ( 'byline_id' === $profile['type'] && ! empty( $profile['atts']['post_id'] ) ) {
+					$profile_post = get_post( $profile['atts']['post_id'] );
 				}
 			}
 		}
