@@ -120,10 +120,11 @@ function filter_post_author_block( string $block_content, array $block ): string
 	if ( 'core/post-author' === $block['blockName'] ) {
 		global $post;
 
-		$byline_type  = '';
-		$profile_post = '';
-		$text_byline  = '';
-		$meta         = get_post_meta( $post->ID, 'byline', true );
+		$byline_type      = '';
+		$profile_post     = '';
+		$text_byline      = '';
+		$new_author_block = '';
+		$meta             = get_post_meta( $post->ID, 'byline', true );
 
 		if ( is_array( $meta ) && ! empty( $meta['profiles'] ) ) {
 			foreach ( $meta['profiles'] as $profile ) {
