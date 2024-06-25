@@ -55,6 +55,7 @@ class Core_Author_Block {
 	 */
 	public function init(): void {
 		add_filter( 'render_block', [ $this, 'count_post_author_blocks' ], 10, 2 );
+		add_filter( 'render_block_core/post-author', [ $this, 'append_post_author_blocks' ], 12, 2 );
 		add_filter( 'render_block', [ $this, 'filter_post_author_block' ], 15, 2 );
 	}
 
@@ -67,14 +68,41 @@ class Core_Author_Block {
 	 * @return string The block content.
 	 */
 	public function count_post_author_blocks( string $block_content, array $block ): string {
-		if ( 'core/post-author' === $block['blockName'] ) {
-			++$this::$core_author_blocks_count;
-		}
-
 		global $post;
 
 		$this::$bylines = get_post_meta( $post->ID, 'byline', true );
 
+		if ('core/post-author' === $block['blockName']) {
+			++ $this::$core_author_blocks_count;
+		}
+
+		return $block_content;
+	}
+
+	/**
+	 * Appends the core/post-author block to itself, if needed.
+	 *
+	 * @param string $block_content The block content.
+	 * @param array<string, mixed> $block The full block, including name and attributes.
+	 *
+	 * @return string The block content.
+	 */
+	public function append_post_author_blocks( string $block_content, array $block ): string {
+		// Check that we core/post-author blocks and $bylines.
+		if ( ! empty( $this::$core_author_blocks_count ) && ! empty( $this::$bylines ) ) {
+			$blocks_difference = count( $this::$bylines['profiles'] ) - $this::$core_author_blocks_count;
+
+			if ( $blocks_difference > 0 ) {
+				// Generate additional blocks.
+				$additional_blocks = '';
+				for ( $i = 0; $i < $blocks_difference; $i ++ ) {
+					$additional_blocks .= $block_content;
+				}
+
+				// replace the original block with the original + new blocks
+				$block_content = $block_content . $additional_blocks;
+			}
+		}
 		return $block_content;
 	}
 
