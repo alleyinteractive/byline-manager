@@ -38,16 +38,14 @@ class Core_Author_Block {
 	 *
 	 * @var int
 	 */
-	private static int $core_author_blocks_count = 0;
+	public static int $core_author_blocks_count = 0;
 
 	/**
 	 * Array of bylines.
 	 *
 	 * @var array
 	 */
-	private static array $bylines = [];
-
-	private static int $counter = 0;
+	public static array $bylines = [];
 
 	/**
 	 * Initializes
@@ -118,23 +116,24 @@ class Core_Author_Block {
 	 */
 	public function filter_post_author_blocks( string $block_content, int $i ): string {
 		// Setup some empty variables.
-		$new_block = '';
+		$new_block        = '';
 		$byline_type      = '';
 		$profile_post     = '';
 		$text_byline      = '';
 		$new_author_block = '';
+		$profiles         = $this::$bylines['profiles'];
 
 		// Check if the byline uses a Profile Post ID.
-		if ( 'byline_id' === $this::$bylines['profiles'][$i]['type'] && ! empty( $this::$bylines['profiles'][$i]['atts']['post_id'] ) ) {
+		if ( 'byline_id' === $profiles[$i]['type'] && ! empty( $profiles[$i]['atts']['post_id'] ) ) {
 			// Get the byline post.
-			$profile_post = get_post( $this::$bylines['profiles'][$i]['atts']['post_id'] );
+			$profile_post = get_post( $profiles[$i]['atts']['post_id'] );
 			$byline_type  = 'profile';
 		}
 
 		// Check if the byline uses a regular text.
-		if ( 'text' === $this::$bylines['profiles'][$i]['type'] && ! empty( $this::$bylines['profiles'][$i]['atts']['text'] ) ) {
+		if ( 'text' === $profiles[$i]['type'] && ! empty( $profiles[$i]['atts']['text'] ) ) {
 			// Get the byline text.
-			$text_byline = $this::$bylines['profiles'][$i]['atts']['text'];
+			$text_byline = $profiles[$i]['atts']['text'];
 			$byline_type = 'text';
 		}
 
