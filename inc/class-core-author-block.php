@@ -97,14 +97,14 @@ class Core_Author_Block {
 
 			// Check if there's a different in the number of bylines and core author blocks.
 			if ( $blocks_difference > 0 ) {
-				for ( $i = 0; $i < $bylines_count; $i ++ ) {
+				for ( $i = 0; $i < $bylines_count; $i++ ) {
 					$additional_blocks .= $this->filter_post_author_blocks( $block_content, $i );
 				}
 
 				// Replace the original block with the original + new blocks.
 				$block_content = $additional_blocks;
 			} else {
-				$block_content = $this->filter_post_author_blocks( $block_content, 0 );
+				$block_content = $this->filter_post_author_blocks( $block_content, $bylines_count - 1 );
 			}
 		}
 		return $block_content;
@@ -123,6 +123,11 @@ class Core_Author_Block {
 		$text_byline      = '';
 		$new_author_block = '';
 		$profiles         = $this::$bylines['profiles'];
+
+		// Bail if the array item does not exist.
+		if ( empty( $profiles[$i] ) ) {
+			return $block_content;
+		}
 
 		// Check if the byline uses a Profile Post ID.
 		if ( $this->validate_byline_post( $profiles[$i] ) ) {
