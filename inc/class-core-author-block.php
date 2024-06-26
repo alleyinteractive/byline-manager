@@ -94,12 +94,14 @@ class Core_Author_Block {
 			$blocks_difference = $bylines_count - $this::$core_author_blocks_count;
 
 			$additional_blocks = '';
+
+			// Check if there's a different in the number of bylines and core author blocks.
 			if ( $blocks_difference > 0 ) {
 				for ( $i = 0; $i < $bylines_count; $i ++ ) {
 					$additional_blocks .= $this->filter_post_author_blocks( $block_content, $i );
 				}
 
-				// replace the original block with the original + new blocks
+				// Replace the original block with the original + new blocks.
 				$block_content = $additional_blocks;
 			} else {
 				$block_content = $this->filter_post_author_blocks( $block_content, 0 );
@@ -116,7 +118,6 @@ class Core_Author_Block {
 	 */
 	public function filter_post_author_blocks( string $block_content, int $i ): string {
 		// Setup some empty variables.
-		$new_block        = '';
 		$byline_type      = '';
 		$profile_post     = '';
 		$text_byline      = '';
@@ -124,14 +125,14 @@ class Core_Author_Block {
 		$profiles         = $this::$bylines['profiles'];
 
 		// Check if the byline uses a Profile Post ID.
-		if ( 'byline_id' === $profiles[$i]['type'] && ! empty( $profiles[$i]['atts']['post_id'] ) ) {
+		if ( $this->validate_byline_post( $profiles[$i] ) ) {
 			// Get the byline post.
 			$profile_post = get_post( $profiles[$i]['atts']['post_id'] );
 			$byline_type  = 'profile';
 		}
 
 		// Check if the byline uses a regular text.
-		if ( 'text' === $profiles[$i]['type'] && ! empty( $profiles[$i]['atts']['text'] ) ) {
+		if ( $this->validate_byline_text( $profiles[$i] ) ) {
 			// Get the byline text.
 			$text_byline = $profiles[$i]['atts']['text'];
 			$byline_type = 'text';
@@ -146,6 +147,7 @@ class Core_Author_Block {
 		// Check if the profile is a WP_Post.
 		if ( 'profile' === $byline_type ) {
 			if ( is_null( $profile_post ) || is_string( $profile_post ) || ! is_a( $profile_post, 'WP_Post' ) ) {
+				// Return the original block if something is wrong with the profile post.
 				return $block_content;
 			}
 
@@ -153,11 +155,12 @@ class Core_Author_Block {
 			$new_author_block = $this->replace_author_block_author( $block_content, $profile_post );
 		}
 
+		// Make sure the new block is valid.
 		if ( $new_author_block && is_string( $new_author_block ) ) {
-			$new_block = $new_author_block;
+			$block_content = $new_author_block;
 		}
 
-		return $new_block;
+		return $block_content;
 	}
 
 	/**
@@ -249,5 +252,13 @@ class Core_Author_Block {
 			$name_node->nodeValue = $name; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 		return $doc->saveHTML();
+	}
+
+	private function validate_byline_text( array $profile ) {
+		return 'text' === $profile['type'] && ! empty( $profile['atts']['text'] );
+	}
+
+	private function validate_byline_post( array $profile ): bool {
+		return 'byline_id' === $profile['type'] && ! empty( $profile['atts']['post_id'] );
 	}
 }
