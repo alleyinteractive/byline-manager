@@ -56,7 +56,7 @@ class Core_Author_Block {
 	 */
 	public function init(): void {
 		add_filter( 'render_block', [ $this, 'count_post_author_blocks' ], 10, 2 );
-		add_filter( 'render_block_core/post-author', [ $this, 'append_post_author_blocks' ], 12, 2 );
+		add_filter( 'render_block_core/post-author', [ $this, 'append_and_filter_post_author_blocks' ], 12, 2 );
 	}
 
 	/**
@@ -80,50 +80,53 @@ class Core_Author_Block {
 	}
 
 	/**
-	 * Appends the core/post-author block to itself, if needed.
+	 * Filters the post author block data to use the bylines, also duplicates the post author block as many times
+	 * as necessary to output all the bylines.
 	 *
 	 * @param string $block_content The block content.
 	 * @param array<string, mixed> $block The full block, including name and attributes.
 	 *
 	 * @return string The block content.
 	 */
-	public function append_post_author_blocks( string $block_content, array $block ): string {
-		// Check that we core/post-author blocks and $bylines.
-		if ( ! empty( $this::$core_author_blocks_count ) && ! empty( $this::$bylines ) ) {
-			$blocks_difference = count( $this::$bylines['profiles'] ) - $this::$core_author_blocks_count;
+	public function append_and_filter_post_author_blocks( string $block_content, array $block ): string {
+		// Check that we have core author blocks and $bylines.
+		if ( ! empty( $this::$core_author_blocks_count ) && ! empty( $this::$bylines['profiles'] ) ) {
+			$bylines_count = count( $this::$bylines['profiles'] );
+			// Calculate any difference between the bylines and the core author blocks.
+			$blocks_difference = $bylines_count - $this::$core_author_blocks_count;
 
 			if ( $blocks_difference > 0 ) {
 				// Generate additional blocks.
 				$additional_blocks = '';
-				$counter = 0;
-				for ( $i = 0; $i < $blocks_difference; $i ++ ) {
+
+				for ( $i = 0; $i < $bylines_count; $i ++ ) {
+					// Setup some empty variables.
 					$byline_type      = '';
 					$profile_post     = '';
 					$text_byline      = '';
 					$new_author_block = '';
-					++$counter;
 
-					if ( ! empty( $this::$bylines['profiles'] ) ) {
-						if ( 'byline_id' === $this::$bylines['profiles'][$counter]['type'] && ! empty( $this::$bylines['profiles'][$counter]['atts']['post_id'] ) ) {
-							// The profile uses a Profile Post ID.
-							$profile_post = get_post( $this::$bylines['profiles'][$counter]['atts']['post_id'] );
-							$byline_type  = 'profile';
-						}
-
-						if ( 'text' === $this::$bylines['profiles'][$counter]['type'] && ! empty( $this::$bylines['profiles'][$counter]['atts']['text'] ) ) {
-							// The profile uses text.
-							$text_byline = $this::$bylines['profiles'][$counter]['atts']['text'];
-							$byline_type = 'text';
-						}
+					// Check if the byline uses a Profile Post ID.
+					if ( 'byline_id' === $this::$bylines['profiles'][$i]['type'] && ! empty( $this::$bylines['profiles'][$i]['atts']['post_id'] ) ) {
+						// Get the byline post.
+						$profile_post = get_post( $this::$bylines['profiles'][$i]['atts']['post_id'] );
+						$byline_type  = 'profile';
 					}
 
-					// Check that the profile is a text field.
+					// Check if the byline uses a regular text.
+					if ( 'text' === $this::$bylines['profiles'][$i]['type'] && ! empty( $this::$bylines['profiles'][$i]['atts']['text'] ) ) {
+						// Get the byline text.
+						$text_byline = $this::$bylines['profiles'][$i]['atts']['text'];
+						$byline_type = 'text';
+					}
+
+					// Check if the profile is a text field.
 					if ( ! empty( $text_byline ) && 'text' === $byline_type ) {
 						// Get the new block.
 						$new_author_block = $this->replace_author_block_name( $block_content, $text_byline );
 					}
 
-					// Check that the profile is a WP_Post.
+					// Check if the profile is a WP_Post.
 					if ( 'profile' === $byline_type ) {
 						if ( is_null( $profile_post ) || is_string( $profile_post ) || ! is_a( $profile_post, 'WP_Post' ) ) {
 							return $block_content;
@@ -139,7 +142,7 @@ class Core_Author_Block {
 				}
 
 				// replace the original block with the original + new blocks
-				$block_content = $block_content . $additional_blocks;
+				$block_content = $additional_blocks;
 			}
 		}
 		return $block_content;
