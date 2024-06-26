@@ -95,57 +95,70 @@ class Core_Author_Block {
 			// Calculate any difference between the bylines and the core author blocks.
 			$blocks_difference = $bylines_count - $this::$core_author_blocks_count;
 
+			$additional_blocks = '';
 			if ( $blocks_difference > 0 ) {
-				// Generate additional blocks.
-				$additional_blocks = '';
-
 				for ( $i = 0; $i < $bylines_count; $i ++ ) {
-					// Setup some empty variables.
-					$byline_type      = '';
-					$profile_post     = '';
-					$text_byline      = '';
-					$new_author_block = '';
-
-					// Check if the byline uses a Profile Post ID.
-					if ( 'byline_id' === $this::$bylines['profiles'][$i]['type'] && ! empty( $this::$bylines['profiles'][$i]['atts']['post_id'] ) ) {
-						// Get the byline post.
-						$profile_post = get_post( $this::$bylines['profiles'][$i]['atts']['post_id'] );
-						$byline_type  = 'profile';
-					}
-
-					// Check if the byline uses a regular text.
-					if ( 'text' === $this::$bylines['profiles'][$i]['type'] && ! empty( $this::$bylines['profiles'][$i]['atts']['text'] ) ) {
-						// Get the byline text.
-						$text_byline = $this::$bylines['profiles'][$i]['atts']['text'];
-						$byline_type = 'text';
-					}
-
-					// Check if the profile is a text field.
-					if ( ! empty( $text_byline ) && 'text' === $byline_type ) {
-						// Get the new block.
-						$new_author_block = $this->replace_author_block_name( $block_content, $text_byline );
-					}
-
-					// Check if the profile is a WP_Post.
-					if ( 'profile' === $byline_type ) {
-						if ( is_null( $profile_post ) || is_string( $profile_post ) || ! is_a( $profile_post, 'WP_Post' ) ) {
-							return $block_content;
-						}
-
-						// Get the new block.
-						$new_author_block = $this->replace_author_block_author( $block_content, $profile_post );
-					}
-
-					if ( $new_author_block && is_string( $new_author_block ) ) {
-						$additional_blocks .= $new_author_block;
-					}
+					$additional_blocks .= $this->filter_post_author_blocks( $block_content, $i );
 				}
 
 				// replace the original block with the original + new blocks
 				$block_content = $additional_blocks;
+			} else {
+				$block_content = $this->filter_post_author_blocks( $block_content, 0 );
 			}
 		}
 		return $block_content;
+	}
+
+	/**
+	 * @param string $block_content The block content.
+	 * @param int $i Used as an array key.
+	 *
+	 * @return string The modified core author block.
+	 */
+	public function filter_post_author_blocks( string $block_content, int $i ): string {
+		// Setup some empty variables.
+		$new_block = '';
+		$byline_type      = '';
+		$profile_post     = '';
+		$text_byline      = '';
+		$new_author_block = '';
+
+		// Check if the byline uses a Profile Post ID.
+		if ( 'byline_id' === $this::$bylines['profiles'][$i]['type'] && ! empty( $this::$bylines['profiles'][$i]['atts']['post_id'] ) ) {
+			// Get the byline post.
+			$profile_post = get_post( $this::$bylines['profiles'][$i]['atts']['post_id'] );
+			$byline_type  = 'profile';
+		}
+
+		// Check if the byline uses a regular text.
+		if ( 'text' === $this::$bylines['profiles'][$i]['type'] && ! empty( $this::$bylines['profiles'][$i]['atts']['text'] ) ) {
+			// Get the byline text.
+			$text_byline = $this::$bylines['profiles'][$i]['atts']['text'];
+			$byline_type = 'text';
+		}
+
+		// Check if the profile is a text field.
+		if ( ! empty( $text_byline ) && 'text' === $byline_type ) {
+			// Get the new block.
+			$new_author_block = $this->replace_author_block_name( $block_content, $text_byline );
+		}
+
+		// Check if the profile is a WP_Post.
+		if ( 'profile' === $byline_type ) {
+			if ( is_null( $profile_post ) || is_string( $profile_post ) || ! is_a( $profile_post, 'WP_Post' ) ) {
+				return $block_content;
+			}
+
+			// Get the new block.
+			$new_author_block = $this->replace_author_block_author( $block_content, $profile_post );
+		}
+
+		if ( $new_author_block && is_string( $new_author_block ) ) {
+			$new_block = $new_author_block;
+		}
+
+		return $new_block;
 	}
 
 	/**
