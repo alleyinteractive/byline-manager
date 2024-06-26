@@ -60,7 +60,7 @@ class Core_Author_Block {
 	/**
 	 * Counts the number of core/post-author blocks and bylines.
 	 *
-	 * @param string $block_content The block content.
+	 * @param string               $block_content The block content.
 	 * @param array<string, mixed> $block The full block, including name and attributes.
 	 *
 	 * @return string The block content.
@@ -70,7 +70,7 @@ class Core_Author_Block {
 
 		$this::$bylines = get_post_meta( $post->ID, 'byline', true );
 
-		if ('core/post-author' === $block['blockName']) {
+		if ( 'core/post-author' === $block['blockName'] ) {
 			++ $this::$core_author_blocks_count;
 		}
 
@@ -81,7 +81,7 @@ class Core_Author_Block {
 	 * Filters the post author block data to use the bylines, also duplicates the post author block as many times
 	 * as necessary to output all the bylines.
 	 *
-	 * @param string $block_content The block content.
+	 * @param string               $block_content The block content.
 	 * @param array<string, mixed> $block The full block, including name and attributes.
 	 *
 	 * @return string The block content.
@@ -98,25 +98,27 @@ class Core_Author_Block {
 			// Check if there's a different in the number of bylines and core author blocks.
 			if ( $blocks_difference > 0 ) {
 				for ( $i = 0; $i < $bylines_count; $i++ ) {
-					$additional_blocks .= $this->filter_post_author_blocks( $block_content, $i );
+					$additional_blocks .= $this->filter_post_author_block( $block_content, $i );
 				}
 
 				// Replace the original block with the original + new blocks.
 				$block_content = $additional_blocks;
 			} else {
-				$block_content = $this->filter_post_author_blocks( $block_content, $bylines_count - 1 );
+				$block_content = $this->filter_post_author_block( $block_content, $bylines_count - 1 );
 			}
 		}
 		return $block_content;
 	}
 
 	/**
+	 * Filters the author block data with byline info
+	 *
 	 * @param string $block_content The block content.
-	 * @param int $i Used as an array key.
+	 * @param int    $i Used as an array key.
 	 *
 	 * @return string The modified core author block.
 	 */
-	public function filter_post_author_blocks( string $block_content, int $i ): string {
+	public function filter_post_author_block( string $block_content, int $i ): string {
 		// Setup some empty variables.
 		$byline_type      = '';
 		$profile_post     = '';
@@ -125,21 +127,21 @@ class Core_Author_Block {
 		$profiles         = $this::$bylines['profiles'];
 
 		// Bail if the array item does not exist.
-		if ( empty( $profiles[$i] ) ) {
+		if ( empty( $profiles[ $i ] ) ) {
 			return $block_content;
 		}
 
 		// Check if the byline uses a Profile Post ID.
-		if ( $this->validate_byline_post( $profiles[$i] ) ) {
+		if ( $this->validate_byline_post( $profiles[ $i ] ) ) {
 			// Get the byline post.
-			$profile_post = get_post( $profiles[$i]['atts']['post_id'] );
+			$profile_post = get_post( $profiles[ $i ]['atts']['post_id'] );
 			$byline_type  = 'profile';
 		}
 
 		// Check if the byline uses a regular text.
-		if ( $this->validate_byline_text( $profiles[$i] ) ) {
+		if ( $this->validate_byline_text( $profiles[ $i ] ) ) {
 			// Get the byline text.
-			$text_byline = $profiles[$i]['atts']['text'];
+			$text_byline = $profiles[ $i ]['atts']['text'];
 			$byline_type = 'text';
 		}
 
@@ -259,10 +261,24 @@ class Core_Author_Block {
 		return $doc->saveHTML();
 	}
 
+	/**
+	 * Validates the byline text profile.
+	 *
+	 * @param array $profile The profile to be validated.
+	 *
+	 * @return bool Returns true if the profile is valid, false otherwise.
+	 */
 	private function validate_byline_text( array $profile ) {
 		return 'text' === $profile['type'] && ! empty( $profile['atts']['text'] );
 	}
 
+	/**
+	 * Validates the profile for the byline post type.
+	 *
+	 * @param array $profile The profile data.
+	 *
+	 * @return bool Returns true if the profile is valid for the byline post type. Otherwise, returns false.
+	 */
 	private function validate_byline_post( array $profile ): bool {
 		return 'byline_id' === $profile['type'] && ! empty( $profile['atts']['post_id'] );
 	}
