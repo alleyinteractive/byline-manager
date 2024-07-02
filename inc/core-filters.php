@@ -110,4 +110,4 @@ add_filter( 'rewrite_rules_array', __NAMESPACE__ . '\unset_rewrites' );
 function filter_core_author_block(): void {
 	Core_Author_Block::get_instance();
 }
-filter_core_author_block();
+add_action( 'wp', __NAMESPACE__ . '\filter_core_author_block' );
