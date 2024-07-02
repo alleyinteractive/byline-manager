@@ -2,7 +2,8 @@
 /**
  * Core Author Block class file
  *
- * This class is to filter the core post author block so that it displays info from the Byline Manager.
+ * This class filters the core post author block so that it displays info from the Byline Manager.
+ * It also duplicates the core post author block as many times as necessary to display all the bylines.
  *
  * @package Byline_Manager
  */
