@@ -34,13 +34,6 @@ class Core_Author_Block {
 	use Singleton;
 
 	/**
-	 * Count of core author blocks.
-	 *
-	 * @var int
-	 */
-	public static int $core_author_blocks_count = 0;
-
-	/**
 	 * Array of bylines.
 	 *
 	 * @var array
@@ -48,33 +41,28 @@ class Core_Author_Block {
 	public static array $bylines = [];
 
 	/**
+	 * Boolean that controls when to render the author blocks.
+	 *
+	 * @var bool
+	 */
+	public static bool $render = true;
+
+	/**
 	 * Initializes
+	 *
+	 * Gets required bylines post meta and setups a filter.
 	 *
 	 * @return void
 	 */
 	public function init(): void {
-		add_filter( 'render_block', [ $this, 'count_post_author_blocks' ], 10, 2 );
-		add_filter( 'render_block_core/post-author', [ $this, 'append_and_filter_post_author_blocks' ], 12, 2 );
-	}
-
-	/**
-	 * Counts the number of core/post-author blocks and bylines.
-	 *
-	 * @param string               $block_content The block content.
-	 * @param array<string, mixed> $block The full block, including name and attributes.
-	 *
-	 * @return string The block content.
-	 */
-	public function count_post_author_blocks( string $block_content, array $block ): string {
 		global $post;
 
-		$this::$bylines = get_post_meta( $post->ID, 'byline', true );
-
-		if ( 'core/post-author' === $block['blockName'] ) {
-			++ $this::$core_author_blocks_count;
+		if ( ! empty( $post ) && property_exists( $post, 'ID' ) ) {
+			// Get the byline meta and set it to our property.
+			$this::$bylines = get_post_meta( $post->ID, 'byline', true );
 		}
 
-		return $block_content;
+		add_filter( 'render_block_core/post-author', [ $this, 'append_and_filter_post_author_blocks' ], 10, 2 );
 	}
 
 	/**
@@ -87,26 +75,29 @@ class Core_Author_Block {
 	 * @return string The block content.
 	 */
 	public function append_and_filter_post_author_blocks( string $block_content, array $block ): string {
-		// Check that we have core author blocks and $bylines.
-		if ( ! empty( $this::$core_author_blocks_count ) && ! empty( $this::$bylines['profiles'] ) ) {
+		// Check that render is true and that we have bylines.
+		if ( $this::$render && ! empty( $this::$bylines['profiles'] ) ) {
+			// Count the bylines.
 			$bylines_count = count( $this::$bylines['profiles'] );
-			// Calculate any difference between the bylines and the core author blocks.
-			$blocks_difference = $bylines_count - $this::$core_author_blocks_count;
 
+			// A string variable that will be used for the final rendered content.
 			$additional_blocks = '';
 
-			// Check if there's a different in the number of bylines and core author blocks.
-			if ( $blocks_difference > 0 ) {
-				for ( $i = 0; $i < $bylines_count; $i++ ) {
-					$additional_blocks .= $this->filter_post_author_block( $block_content, $i );
-				}
-
-				// Replace the original block with the original + new blocks.
-				$block_content = $additional_blocks;
-			} else {
-				$block_content = $this->filter_post_author_block( $block_content, $bylines_count - 1 );
+			// Loop through the total bylines count.
+			for ( $i = 0; $i < $bylines_count; $i++ ) {
+				// Filter the block and append it to our string variable.
+				$additional_blocks .= $this->filter_post_author_block( $block_content, $i );
 			}
+
+			// Replace the original block with the new blocks.
+			$block_content = $additional_blocks;
+
+			// Update our boolean to not render anymore.
+			$this::$render = false;
+		} else {
+			return '';
 		}
+
 		return $block_content;
 	}
 
