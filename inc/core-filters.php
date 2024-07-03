@@ -104,8 +104,6 @@ add_filter( 'rewrite_rules_array', __NAMESPACE__ . '\unset_rewrites' );
 
 /**
  * Filter the core author block.
- *
- * @return void
  */
 function filter_core_author_block(): void {
 	Core_Author_Block::get_instance();

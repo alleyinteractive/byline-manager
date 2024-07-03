@@ -5,7 +5,7 @@
  * @package Byline_Manager
  */
 
-declare( strict_types = 1 );
+declare(strict_types=1);
 
 namespace Byline_Manager\traits;
 
@@ -18,7 +18,7 @@ trait Singleton {
 	/**
 	 * Singleton instance for this class.
 	 *
-	 * @var self
+	 * @var self|null
 	 */
 	private static $instance = null;
 
@@ -42,6 +42,5 @@ trait Singleton {
 	/**
 	 * Private constructor to prevent instantiation from outside the class.
 	 */
-	final private function __construct() {
-	}
+	final private function __construct() {}
 }

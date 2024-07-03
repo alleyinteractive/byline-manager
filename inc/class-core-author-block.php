@@ -8,7 +8,7 @@
  * @package Byline_Manager
  */
 
-declare( strict_types = 1 );
+declare(strict_types=1);
 
 namespace Byline_Manager;
 
@@ -24,7 +24,7 @@ use DOMNodeList;
 use DOMXPath;
 
 /**
- * Conditions
+ * Core_Author_Block class.
  */
 class Core_Author_Block {
 	/**
@@ -52,8 +52,6 @@ class Core_Author_Block {
 	 * Initializes
 	 *
 	 * Gets required bylines post meta and setups a filter.
-	 *
-	 * @return void
 	 */
 	public function init(): void {
 		global $post;
@@ -75,7 +73,7 @@ class Core_Author_Block {
 	 *
 	 * @return string The block content.
 	 */
-	public function append_and_filter_post_author_blocks( string $block_content, array $block ): string {
+	public function append_and_filter_post_author_blocks( $block_content, $block ): string {
 		// Check that render is true and that we have bylines.
 		if ( $this::$render && ! empty( $this::$bylines['profiles'] ) ) {
 			// Count the bylines.
@@ -106,11 +104,11 @@ class Core_Author_Block {
 	 * Filters the author block data with byline info
 	 *
 	 * @param string $block_content The block content.
-	 * @param int    $i Used as an array key.
+	 * @param int    $index Used as an array key.
 	 *
 	 * @return string The modified core author block.
 	 */
-	public function filter_post_author_block( string $block_content, int $i ): string {
+	public function filter_post_author_block( string $block_content, int $index ): string {
 		// Setup some empty variables.
 		$byline_type      = '';
 		$profile_post     = '';
@@ -119,19 +117,19 @@ class Core_Author_Block {
 		$profiles         = $this::$bylines['profiles'];
 
 		// Bail if the array item does not exist.
-		if ( empty( $profiles[ $i ] ) ) {
+		if ( empty( $profiles[ $index ] ) ) {
 			return $block_content;
 		}
 
 		// Check if the byline uses a Profile Post ID.
-		if ( $this->validate_byline_post( $profiles[ $i ] ) ) {
+		if ( $this->validate_byline_post( $profiles[ $index ] ) ) {
 			// Get the byline post.
-			$profile_post = get_post( $profiles[ $i ]['atts']['post_id'] );
+			$profile_post = get_post( $profiles[ $index ]['atts']['post_id'] );
 			$byline_type  = 'profile';
 		}
 
 		// Check if the byline uses a regular text.
-		if ( $this->validate_byline_text( $profiles[ $i ] ) ) {
+		if ( $this->validate_byline_text( $profiles[ $index ] ) ) {
 			// Get the byline text.
 			$text_byline = $profiles[ $i ]['atts']['text'];
 			$byline_type = 'text';
@@ -260,7 +258,7 @@ class Core_Author_Block {
 	 *
 	 * @return bool Returns true if the profile is valid, false otherwise.
 	 */
-	private function validate_byline_text( array $profile ) {
+	private function validate_byline_text( array $profile ): bool {
 		return 'text' === $profile['type'] && ! empty( $profile['atts']['text'] );
 	}
 
