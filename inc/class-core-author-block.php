@@ -94,6 +94,8 @@ class Core_Author_Block {
 			// Update our boolean to not render anymore.
 			$this::$render = false;
 		} else {
+			// Essentially $this::$render is false, so return an empty string. Anything returned here will
+			// print after our block(s), which we do not want.
 			return '';
 		}
 
