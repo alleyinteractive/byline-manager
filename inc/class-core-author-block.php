@@ -84,7 +84,7 @@ class Core_Author_Block {
 
 			// Loop through the total bylines count.
 			for ( $i = 0; $i < $bylines_count; $i++ ) {
-				// Filter the block and append it to our string variable.
+				// Filter the block and append it to our string variable, essentially duplicating it.
 				$additional_blocks .= $this->filter_post_author_block( $block_content, $i );
 			}
 
@@ -133,7 +133,7 @@ class Core_Author_Block {
 		// Check if the byline uses a regular text.
 		if ( $this->validate_byline_text( $profiles[ $index ] ) ) {
 			// Get the byline text.
-			$text_byline = $profiles[ $i ]['atts']['text'];
+			$text_byline = $profiles[ $index ]['atts']['text'];
 			$byline_type = 'text';
 		}
 
