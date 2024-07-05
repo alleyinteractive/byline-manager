@@ -58,7 +58,8 @@ class Core_Author_Block {
 
 		if ( ! empty( $post ) && property_exists( $post, 'ID' ) ) {
 			// Get the byline meta and set it to our property.
-			$this::$bylines = get_post_meta( $post->ID, 'byline', true );
+			$byline = get_post_meta( $post->ID, 'byline', true );
+			$this::$bylines = ! empty ( $byline ) ? $byline : [];
 		}
 
 		add_filter( 'render_block_core/post-author', [ $this, 'append_and_filter_post_author_blocks' ], 10, 2 );
