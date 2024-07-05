@@ -258,4 +258,33 @@ class Test_Core_Filters extends Test_Case {
 		$this->assertNotSame( '', $display_name );
 		$this->assertSame( $author_name, $display_name );
 	}
+
+	/**
+	 * Test that the core author block's author name can be filtered using a byline author.
+	 */
+	public function test_replace_author_block_author(): void {
+		global $post;
+
+		// Create a WP user to be the post author.
+		$user = static::factory()->user->create_and_get([
+			'display_name' => 'Author Name',
+			'description'  => 'This is a test author bio.',
+		]);
+
+		// Create a post with the author block.
+		$post = static::factory()->post->create_and_get([
+			'post_author'  => $user->ID,
+			'post_content' => '<!-- wp:post-author {"showBio":true,"byline":"Here is my byline","isLink":true,"linkTarget":"_blank"} /-->',
+		]);
+
+		// Render the post content.
+		$rendered_content = apply_filters( 'the_content', $post->post_content );
+
+		// Call our replace method and pass it the rendered content and a byline post.
+		$filtered_content = Core_Author_Block::get_instance()->replace_author_block_author( $rendered_content, $this->b1->post );
+
+		// Assert that the original author in the block content is replaced.
+		$this->assertStringNotContainsString( 'Author Name', $filtered_content );
+		$this->assertStringContainsString('Byline 1', $filtered_content );
+	}
 }
