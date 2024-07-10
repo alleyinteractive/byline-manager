@@ -22,6 +22,6 @@ function autoload( $cls ): void {
 	$dirs = explode( '\\', $cls );
 	$cls  = array_pop( $dirs );
 
-	require_once BYLINE_MANAGER_PATH . rtrim( '/inc/' . implode( '/', $dirs ), '/' ) . '/class-' . $cls . '.php';
+	require_once BYLINE_MANAGER_PATH . rtrim( 'inc/' . implode( '/', $dirs ), '/' ) . '/class-' . $cls . '.php';
 }
 spl_autoload_register( '\Byline_Manager\autoload' );
