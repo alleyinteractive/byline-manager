@@ -61,3 +61,5 @@ require_once BYLINE_MANAGER_PATH . 'inc/yoast.php';
 
 // Hook into core filters to output byline.
 require_once BYLINE_MANAGER_PATH . 'inc/core-filters.php';
+
+require_once BYLINE_MANAGER_PATH . 'inc/class-core-author-block.php';
