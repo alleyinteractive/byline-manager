@@ -104,7 +104,7 @@ class Core_Author_Block {
 	}
 
 	/**
-	 * Filters the author block data with byline info
+	 * Filters the author block data with byline info.
 	 *
 	 * @param string $block_content The block content.
 	 * @param int    $index Used as an array key.
