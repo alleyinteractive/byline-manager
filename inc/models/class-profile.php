@@ -34,6 +34,13 @@ class Profile {
 	public $post;
 
 	/**
+	 * Profile Term ID.
+	 *
+	 * @var WP_Term
+	 */
+	public $term_id;
+
+	/**
 	 * Create a new Profile object.
 	 *
 	 * @param array $args Arguments with which to create the new object.
