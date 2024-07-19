@@ -36,7 +36,7 @@ class Profile {
 	/**
 	 * Profile Term ID.
 	 *
-	 * @var WP_Term
+	 * @var int
 	 */
 	public $term_id;
 
