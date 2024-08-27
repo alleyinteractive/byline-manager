@@ -24,6 +24,7 @@ function BylineAutocomplete({
   const debouncedSearchString = useDebounce(search, 750);
 
   const doProfileSearch = useCallback((fragment) => {
+    console.log('url', profilesApiUrl);
     apiFetch({ url: addQueryArgs(profilesApiUrl, { s: fragment }) })
       .then((rawResults) => {
         const currentIds = profiles.map((profile) => profile.id);

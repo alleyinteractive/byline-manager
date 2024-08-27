@@ -9,6 +9,7 @@ import { Fragment } from '@wordpress/element';
 import BylineAutocomplete from '../byline-autocomplete';
 import BylineFreeform from '../byline-freeform';
 import BylineList from '../byline-list';
+import BylinePostpicker from '../byline-postpicker';
 
 function BylineSlotWrapper({
   addAuthorLabel,
@@ -25,6 +26,7 @@ function BylineSlotWrapper({
   removeProfile,
   reorderProfile,
 }) {
+  console.log('profiles', profiles);
   return (
     <div className="components-base-control">
       {profiles === null ? (
@@ -40,6 +42,11 @@ function BylineSlotWrapper({
             profilesApiUrl={profilesApiUrl || bylineData.profilesApiUrl}
             addAuthorPlaceholder={addAuthorPlaceholder || bylineData.addAuthorPlaceholder}
             addAuthorLabel={addAuthorLabel || bylineData.addAuthorLabel}
+          />
+          <BylinePostpicker
+            addAuthorLabel={addAuthorLabel || bylineData.addAuthorLabel}
+            onUpdate={addProfile}
+            profilesApiUrl={profilesApiUrl || bylineData.profilesApiUrl}
           />
           <BylineFreeform
             id={freeformInputId}
