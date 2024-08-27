@@ -1,7 +1,8 @@
+// External dependencies.
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import { useCallback } from '@wordpress/element';
-import { PostPicker } from "@alleyinteractive/block-editor-tools";
+import { PostPicker } from '@alleyinteractive/block-editor-tools';
 import PropTypes from 'prop-types';
 
 function BylinePostpicker({

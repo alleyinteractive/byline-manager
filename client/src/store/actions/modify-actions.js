@@ -7,18 +7,10 @@ import { MODIFY_ACTION_TYPES } from '../actions-types';
  *
  * @param {Object} profile Hydrated profile.
  */
-// export const actionAddProfile = (profile) => ({
-//   type: MODIFY_ACTION_TYPES.ADD_PROFILE,
-//   payload: profile,
-// });
-
-export const actionAddProfile = (profile) => {
-  console.log('profile', profile);
-  return {
-    type: MODIFY_ACTION_TYPES.ADD_PROFILE,
-    payload: profile,
-  };
-};
+export const actionAddProfile = (profile) => ({
+  type: MODIFY_ACTION_TYPES.ADD_PROFILE,
+  payload: profile,
+});
 
 /**
  * Create action to remove a profile by ID from the current array of profiles.

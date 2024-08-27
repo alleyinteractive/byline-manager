@@ -6,19 +6,16 @@ import { Spinner } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
 
 // Internal dependencies.
-import BylineAutocomplete from '../byline-autocomplete';
 import BylineFreeform from '../byline-freeform';
 import BylineList from '../byline-list';
 import BylinePostpicker from '../byline-postpicker';
 
 function BylineSlotWrapper({
   addAuthorLabel,
-  addAuthorPlaceholder,
   addFreeformButtonLabel,
   addFreeformLabel,
   addFreeformPlaceholder,
   addProfile,
-  autocompleteInputId,
   freeformInputId,
   profiles,
   profilesApiUrl,
@@ -26,7 +23,6 @@ function BylineSlotWrapper({
   removeProfile,
   reorderProfile,
 }) {
-  console.log('profiles', profiles);
   return (
     <div className="components-base-control">
       {profiles === null ? (
@@ -35,14 +31,6 @@ function BylineSlotWrapper({
         </div>
       ) : (
         <Fragment>
-          <BylineAutocomplete
-            id={autocompleteInputId}
-            profiles={profiles}
-            onUpdate={addProfile}
-            profilesApiUrl={profilesApiUrl || bylineData.profilesApiUrl}
-            addAuthorPlaceholder={addAuthorPlaceholder || bylineData.addAuthorPlaceholder}
-            addAuthorLabel={addAuthorLabel || bylineData.addAuthorLabel}
-          />
           <BylinePostpicker
             addAuthorLabel={addAuthorLabel || bylineData.addAuthorLabel}
             onUpdate={addProfile}
@@ -73,11 +61,9 @@ function BylineSlotWrapper({
 
 BylineSlotWrapper.defaultProps = {
   addAuthorLabel: null,
-  addAuthorPlaceholder: null,
   addFreeformButtonLabel: null,
   addFreeformLabel: null,
   addFreeformPlaceholder: null,
-  autocompleteInputId: 'profiles_autocomplete',
   freeformInputId: 'byline_freeform',
   profiles: [],
   profilesApiUrl: null,
@@ -86,12 +72,10 @@ BylineSlotWrapper.defaultProps = {
 
 BylineSlotWrapper.propTypes = {
   addAuthorLabel: PropTypes.string,
-  addAuthorPlaceholder: PropTypes.string,
   addFreeformButtonLabel: PropTypes.string,
   addFreeformLabel: PropTypes.string,
   addFreeformPlaceholder: PropTypes.string,
   addProfile: PropTypes.func.isRequired,
-  autocompleteInputId: PropTypes.string,
   freeformInputId: PropTypes.string,
   profiles: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.oneOfType([
