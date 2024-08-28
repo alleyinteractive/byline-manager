@@ -69,7 +69,7 @@ function rest_profile_search( WP_REST_Request $request ): WP_REST_Response {
 			'numberposts'      => 10,
 			'suppress_filters' => false,
 			'orderby'          => 'relevance',
-			'include'          => [$request->get_param( 'id' )],
+			'include'          => [ $request->get_param( 'id' ) ],
 		]
 	);
 
