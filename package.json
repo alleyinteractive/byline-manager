@@ -68,6 +68,7 @@
     "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
+    "@alleyinteractive/block-editor-tools": "^0.10.2",
     "@uidotdev/usehooks": "^2.4.1",
     "@wordpress/api-fetch": "^6.47.0",
     "@wordpress/components": "^25.8.14",
