@@ -67,9 +67,9 @@ function rest_profile_search( WP_REST_Request $request ): WP_REST_Response {
 		[
 			'post_type'        => PROFILE_POST_TYPE,
 			'numberposts'      => 10,
-			's'                => $request->get_param( 's' ),
 			'suppress_filters' => false,
 			'orderby'          => 'relevance',
+			'include'          => [ $request->get_param( 'id' ) ],
 		]
 	);
 
