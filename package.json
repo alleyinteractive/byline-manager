@@ -50,7 +50,7 @@
     "postcss": "^8.4.45",
     "postcss-calc": "^10.0.2",
     "postcss-custom-media": "^11.0.3",
-    "postcss-custom-properties": "^14.0.1",
+    "postcss-custom-properties": "^14.0.2",
     "postcss-focus": "^7.0.0",
     "postcss-import": "^16.1.0",
     "postcss-loader": "^8.1.1",
