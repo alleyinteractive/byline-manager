@@ -17,7 +17,7 @@
         "szepeviktor/phpstan-wordpress": "^1.1.6",
         "yoast/phpunit-polyfills": "^3.0",
         "axepress/wp-graphql-stubs": "^1.14",
-        "yoast/wordpress-seo": "^23.1"
+        "yoast/wordpress-seo": "^24.0"
     },
     "config": {
         "allow-plugins": {
