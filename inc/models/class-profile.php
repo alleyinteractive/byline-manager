@@ -19,11 +19,14 @@ use WP_User;
  *
  * Dynamic properties.
  *
+ * @property int    $byline_id    Term ID for the profile.
+ * @property string $description  Profile description.
+ * @property string $display_name Display name for the profile.
+ * @property string $link         Profile permalink.
  * @property int    $post_id      Post ID for the profile.
  * @property int    $term_id      Term ID for the profile.
- * @property string $display_name Display name for the profile.
+ * @property string $user_nicename User nicename.
  * @property string $user_url     User url.
- * @property string $link         Profile permalink.
  */
 class Profile {
 	/**
@@ -31,7 +34,21 @@ class Profile {
 	 *
 	 * @var WP_Post
 	 */
-	public $post;
+	public WP_Post $post;
+
+	/**
+	 * Profile post ID.
+	 *
+	 * @var int
+	 */
+	public int $post_id;
+
+	/**
+	 * Profile term ID.
+	 *
+	 * @var int
+	 */
+	public int $term_id;
 
 	/**
 	 * Create a new Profile object.
