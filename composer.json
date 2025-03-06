@@ -20,7 +20,6 @@
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^9.5",
         "szepeviktor/phpstan-wordpress": "^1.1.6",
-        "yoast/phpunit-polyfills": "^4.0",
         "yoast/wordpress-seo": "^24.0",
         "nunomaduro/collision": "^6"
     },
