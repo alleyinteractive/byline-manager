@@ -67,7 +67,8 @@ class Test_Core_Filters extends Test_Case {
 			],
 		];
 
-		$post              = static::factory()->post->create_and_get( [ 'post_author' => $user_id ] );
+		$post = static::factory()->post->create_and_get( [ 'post_author' => $user_id ] );
+
 		setup_postdata( $post );
 	}
 
