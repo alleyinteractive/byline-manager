@@ -9,6 +9,9 @@
             "email": "info@alley.com"
         }
     ],
+    "require": {
+        "php": "^8.1"
+    },
     "require-dev": {
         "alleyinteractive/alley-coding-standards": "^1.0",
         "axepress/wp-graphql-stubs": "^2.0",

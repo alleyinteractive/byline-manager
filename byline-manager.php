@@ -8,9 +8,9 @@
  * Text Domain:     byline-manager
  * Domain Path:     /languages
  * Version:         0.6.0
- * Requires WP:     5.9
- * Requires PHP:    8.0
- * Tested up to:    6.4
+ * Requires WP:     6.3
+ * Requires PHP:    8.1
+ * Tested up to:    6.5
  *
  * @package Byline_Manager
  */
