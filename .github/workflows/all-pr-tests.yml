@@ -2,6 +2,9 @@ name: "All Pull Request Tests"
 
 on:
   pull_request:
+    branches:
+      - production
+    types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
   # We use a single job to ensure that all steps run in the same environment and
