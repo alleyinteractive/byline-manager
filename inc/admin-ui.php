@@ -101,10 +101,10 @@ function user_link_meta_box( $post ): void {
  */
 function get_profile_data_for_meta_box( Profile $profile ): array {
 	$profile_data = [
-		'id'        => $profile->post_id,
-		'byline_id' => absint( get_post_meta( $profile->post_id, 'byline_id', true ) ),
+		'id'        => $profile->post->ID,
+		'byline_id' => absint( get_post_meta( $profile->post->ID, 'byline_id', true ) ),
 		'name'      => $profile->display_name,
-		'image'     => get_the_post_thumbnail_url( $profile->post_id, [ 50, 50 ] ),
+		'image'     => get_the_post_thumbnail_url( $profile->post->ID, [ 50, 50 ] ),
 	];
 
 	/**
