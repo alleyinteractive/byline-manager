@@ -172,9 +172,19 @@ class Profile {
 	 *
 	 * Profiles are always fetched by static fetchers.
 	 *
+	 * @throws \InvalidArgumentException If the post ID is invalid.
+	 *
 	 * @param int|WP_Post $post Post ID or object of a profile.
 	 */
-	private function __construct( $post ) {
+	private function __construct( int|WP_Post $post ) {
+		if ( is_int( $post ) ) {
+			$post = get_post( $post );
+		}
+
+		if ( ! $post ) {
+			throw new \InvalidArgumentException( 'Invalid post ID' );
+		}
+
 		$this->post = $post;
 	}
 

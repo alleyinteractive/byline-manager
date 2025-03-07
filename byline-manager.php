@@ -10,7 +10,7 @@
  * Version:         0.6.0
  * Requires WP:     6.3
  * Requires PHP:    8.1
- * Tested up to:    6.5
+ * Tested up to:    6.7
  *
  * @package Byline_Manager
  */
