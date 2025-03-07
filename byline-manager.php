@@ -7,7 +7,7 @@
  * Author URI:      https://alley.com
  * Text Domain:     byline-manager
  * Domain Path:     /languages
- * Version:         0.6.0
+ * Version:         0.6.1
  * Requires WP:     6.3
  * Requires PHP:    8.1
  * Tested up to:    6.7
