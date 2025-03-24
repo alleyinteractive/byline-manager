@@ -129,7 +129,7 @@ function modify_author_feed_query( $query ) {
 				'numberposts' => 1,
 				'fields'      => 'ids',
 			]
-		)[0] ?? null;
+		)[0] ?? 0;
 		if ( ! $profile_post_id ) {
 			return; // Profile not found, exit early.
 		}
