@@ -121,13 +121,14 @@ function modify_author_feed_query( $query ) {
 	// Check if the query is a feed and if it's a profile post type feed.
 	if ( $query->is_feed() && $query->is_main_query() && isset( $query->query_vars[ FEED_PROFILE_QUERY_VAR ] ) ) {
 		// Get the profile post by slug.
-		$profile_post_id = get_posts(
+		$profile_post_id = get_posts( // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
 			[
-				'name'        => $query->get( FEED_PROFILE_QUERY_VAR ), // Slug of the post.
-				'post_type'   => PROFILE_POST_TYPE,
-				'post_status' => 'publish',
-				'numberposts' => 1,
-				'fields'      => 'ids',
+				'name'             => $query->get( FEED_PROFILE_QUERY_VAR ), // Slug of the post.
+				'post_type'        => PROFILE_POST_TYPE,
+				'post_status'      => 'publish',
+				'numberposts'      => 1,
+				'fields'           => 'ids',
+				'suppress_filters' => false,
 			]
 		)[0] ?? 0;
 		if ( ! $profile_post_id ) {
