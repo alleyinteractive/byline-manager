@@ -120,19 +120,21 @@ add_action( 'wp', __NAMESPACE__ . '\filter_core_author_block' );
 function modify_author_feed_query( $query ) {
 	// Check if the query is a feed and if it's a profile post type feed.
 	if ( $query->is_feed() && $query->is_main_query() && isset( $query->query_vars[ FEED_PROFILE_QUERY_VAR ] ) ) {
-		// Get the profile slug from the query.
-		$profile_slug = $query->get( FEED_PROFILE_QUERY_VAR );
-
-		// Find the profile post by slug.
-		$profile_post = get_page_by_path( $profile_slug, OBJECT, 'profile' );
-
+		// Get the profile post by slug.
+		$profile_post = get_posts(
+			[
+				'name'        => $query->get( FEED_PROFILE_QUERY_VAR ), // Slug of the post.
+				'post_type'   => PROFILE_POST_TYPE,
+				'post_status' => 'publish',
+				'numberposts' => 1,
+			] 
+		)[0] ?? null;
 		if ( ! $profile_post ) {
 			return; // Profile not found, exit early.
 		}
 
 		// Get the byline ID from the profile post.
 		$byline_id = (int) get_post_meta( $profile_post->ID, 'byline_id', true );
-
 		if ( ! $byline_id ) {
 			return; // No byline ID found, exit early.
 		}
