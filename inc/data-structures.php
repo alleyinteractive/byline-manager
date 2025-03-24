@@ -17,11 +17,15 @@ const PROFILE_POST_TYPE = 'profile';
 // The byline taxonomy slug.
 const BYLINE_TAXONOMY = 'byline';
 
+// The feed profile query var.
+const FEED_PROFILE_QUERY_VAR = 'feed_profile';
+
 /**
  * Create the profile post type.
  */
 function register_profile(): void {
 	global $wp_rewrite;
+	$author_slug = apply_filters( 'byline_manager_rewrite_slug', $wp_rewrite->author_base );
 
 	register_post_type( // phpcs:ignore WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral
 		PROFILE_POST_TYPE,
@@ -66,10 +70,10 @@ function register_profile(): void {
 				/**
 				 * Filters the rewrite slug of the profile post type.
 				 *
-				 * @param string $slug The rewrite slug. Default is the default
+				 * @param string $author_slug The rewrite slug. Default is the default
 				 *                     base for the author permalink structure.
 				 */
-				'slug'    => apply_filters( 'byline_manager_rewrite_slug', $wp_rewrite->author_base ),
+				'slug'    => $author_slug,
 				'feeds'   => true,
 				'pages'   => true,
 				'ep_mask' => EP_AUTHORS,
@@ -85,8 +89,23 @@ function register_profile(): void {
 			'graphql_plural_name' => 'profiles',
 		]
 	);
+
+	// Add rewrite rule for the profile feed.
+	add_rewrite_rule( "^{$author_slug}/([^/]*)/feed/?$", 'index.php?' . FEED_PROFILE_QUERY_VAR . '=$matches[1]&feed=rss2', 'top' );
 }
 add_action( 'init', __NAMESPACE__ . '\register_profile' );
+
+/**
+ * Filter query vars to include the feed_profile parameter.
+ *
+ * @param array $query_vars Query vars.
+ * @return array Modified query vars.
+ */
+function filter_query_vars( $query_vars ) {
+	$query_vars[] = FEED_PROFILE_QUERY_VAR;
+	return $query_vars;
+}
+add_filter( 'query_vars', __NAMESPACE__ . '\filter_query_vars' );
 
 /**
  * Create the hidden byline taxonomy.
