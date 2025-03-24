@@ -115,9 +115,9 @@ add_action( 'wp', __NAMESPACE__ . '\filter_core_author_block' );
 /**
  * Modify the author feed query to fetch posts associated with a profile.
  *
- * @param WP_Query $query The query object.
+ * @param \WP_Query $query The query object.
  */
-function modify_author_feed_query( $query ) {
+function modify_author_feed_query( \WP_Query $query ): void {
 	// Check if the query is a feed and if it's a profile post type feed.
 	if ( $query->is_feed() && $query->is_main_query() && isset( $query->query_vars[ FEED_PROFILE_QUERY_VAR ] ) ) {
 		// Get the profile post by slug.
