@@ -9,15 +9,19 @@
             "email": "info@alley.com"
         }
     ],
+    "require": {
+        "php": "^8.1"
+    },
     "require-dev": {
         "alleyinteractive/alley-coding-standards": "^1.0",
-        "mantle-framework/testkit": "^0.12.4",
+        "axepress/wp-graphql-stubs": "^2.0",
+        "mantle-framework/testkit": "^1.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^9.5",
         "szepeviktor/phpstan-wordpress": "^1.1.6",
-        "yoast/phpunit-polyfills": "^4.0",
-        "axepress/wp-graphql-stubs": "^2.0",
-        "yoast/wordpress-seo": "^24.0"
+        "yoast/wordpress-seo": "^24.0",
+        "nunomaduro/collision": "^6"
     },
     "config": {
         "allow-plugins": {
@@ -39,10 +43,5 @@
             "@phpstan",
             "@phpunit"
         ]
-    },
-    "extra": {
-        "installer-paths": {
-            "vendor/{$vendor}/{$name}/": ["type:wordpress-plugin"]
-        }
     }
 }

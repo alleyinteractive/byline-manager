@@ -26,23 +26,30 @@ class Test_Core_Filters extends Test_Case {
 
 		\Mantle\Testing\Utils::delete_all_posts();
 
-		$user_id           = static::factory()->user->create(
+		$user_id = static::factory()->user->create(
 			[
 				'role' => 'editor',
 			]
 		);
-		$this->b1          = Profile::create(
+
+		$this->b1 = Profile::create(
 			[
 				'post_name'  => 'b1',
 				'post_title' => 'Byline 1',
 			]
 		);
-		$this->b2          = Profile::create(
+
+		$this->b2 = Profile::create(
 			[
 				'post_name'  => 'b2',
 				'post_title' => 'Byline 2',
 			]
 		);
+
+		if ( is_wp_error( $this->b1 ) || is_wp_error( $this->b2 ) ) {
+			$this->fail( 'Failed to create byline profiles.' );
+		}
+
 		$this->byline_meta = [
 			'byline_entries' => [
 				[
@@ -59,7 +66,9 @@ class Test_Core_Filters extends Test_Case {
 				],
 			],
 		];
-		$post              = static::factory()->post->create_and_get( [ 'post_author' => $user_id ] );
+
+		$post = static::factory()->post->create_and_get( [ 'post_author' => $user_id ] );
+
 		setup_postdata( $post );
 	}
 
@@ -236,7 +245,7 @@ class Test_Core_Filters extends Test_Case {
 		// Link the profile and user, then recheck the url.
 		$this->b1->update_user_link( $post->post_author );
 		$this->assertSame(
-			get_permalink( $this->b1->post_id ),
+			get_permalink( $this->b1->post->ID ),
 			get_author_posts_url( $post->post_author )
 		);
 	}

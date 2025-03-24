@@ -19,11 +19,14 @@ use WP_User;
  *
  * Dynamic properties.
  *
+ * @property int    $byline_id    Term ID for the profile.
+ * @property string $description  Profile description.
+ * @property string $display_name Display name for the profile.
+ * @property string $link         Profile permalink.
  * @property int    $post_id      Post ID for the profile.
  * @property int    $term_id      Term ID for the profile.
- * @property string $display_name Display name for the profile.
+ * @property string $user_nicename User nicename.
  * @property string $user_url     User url.
- * @property string $link         Profile permalink.
  */
 class Profile {
 	/**
@@ -31,7 +34,16 @@ class Profile {
 	 *
 	 * @var WP_Post
 	 */
-	public $post;
+	public WP_Post $post;
+
+	/**
+	 * Profile term ID.
+	 *
+	 * Use {@see Profile::get_term_id()} to access this value.
+	 *
+	 * @var int
+	 */
+	private int $_term_id; // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
 
 	/**
 	 * Create a new Profile object.
@@ -160,9 +172,19 @@ class Profile {
 	 *
 	 * Profiles are always fetched by static fetchers.
 	 *
+	 * @throws \InvalidArgumentException If the post ID is invalid.
+	 *
 	 * @param int|WP_Post $post Post ID or object of a profile.
 	 */
-	private function __construct( $post ) {
+	private function __construct( int|WP_Post $post ) {
+		if ( is_int( $post ) ) {
+			$post = get_post( $post );
+		}
+
+		if ( ! $post ) {
+			throw new \InvalidArgumentException( 'Invalid post ID' );
+		}
+
 		$this->post = $post;
 	}
 
@@ -192,14 +214,14 @@ class Profile {
 
 		return match ( $attribute ) {
 			// Uses the profile link.
-			'link'          => get_permalink( $this->post_id ),
+			'link'          => get_permalink( $post ),
 			// These fields are actually on the Post object.
 			'display_name'  => $post->post_title,
 			'user_nicename' => $post->post_name,
 			'description'   => $post->post_content,
 			'post_id'       => $post->ID,
 			'term_id'       => $this->get_term_id(),
-			default         => get_post_meta( $this->post_id, $attribute, true ),
+			default         => get_post_meta( $this->post->ID, $attribute, true ),
 		};
 	}
 
@@ -209,24 +231,20 @@ class Profile {
 	 * @return int
 	 */
 	private function get_term_id(): int {
-		if ( ! isset( $this->term_id ) ) {
-			$this->term_id = absint( get_post_meta( $this->post_id, 'byline_id', true ) );
+		if ( ! isset( $this->_term_id ) ) {
+			$this->_term_id = absint( get_post_meta( $this->post->ID, 'byline_id', true ) );
 		}
 
-		return absint( $this->term_id );
+		return absint( $this->_term_id );
 	}
 
 	/**
-	 * Get the post object forthe profile.
+	 * Get the post object for the profile.
 	 *
 	 * @return WP_Post|null
 	 */
 	public function get_post(): ?WP_Post {
-		if ( ! $this->post instanceof WP_Post ) {
-			$this->post = get_post( $this->post_id );
-		}
-
-		return $this->post;
+		return $this->post ?? null;
 	}
 
 	/**

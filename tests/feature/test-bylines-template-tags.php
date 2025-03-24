@@ -55,14 +55,14 @@ class Test_Bylines_Template_Tags extends Test_Case {
 		$byline = Utils::get_byline_entries_for_post( $post_id );
 
 		$this->assertCount( 2, $byline );
-		$this->assertEquals( [ $b1->post_id, $b2->post_id ], wp_list_pluck( $byline, 'post_id' ) );
+		$this->assertEquals( [ $b1->post->ID, $b2->post->ID ], wp_list_pluck( $byline, 'post_id' ) );
 
 		// Ensure the order persists.
 		$byline_meta['byline_entries'] = array_reverse( $byline_meta['byline_entries'] );
 		Utils::set_post_byline( $post_id, $byline_meta );
 		$byline = Utils::get_byline_entries_for_post( $post_id );
 		$this->assertCount( 2, $byline );
-		$this->assertEquals( [ $b2->post_id, $b1->post_id ], wp_list_pluck( $byline, 'post_id' ) );
+		$this->assertEquals( [ $b2->post->ID, $b1->post->ID ], wp_list_pluck( $byline, 'post_id' ) );
 
 		// Ensure that adding a text profile item alongside profiles works.
 		$byline_meta['byline_entries'][] = [
@@ -452,7 +452,7 @@ class Test_Bylines_Template_Tags extends Test_Case {
 				'post_title' => 'Byline 2',
 			]
 		);
-		update_post_meta( $b2->post_id, 'user_url', 'https://apple.com' );
+		update_post_meta( $b2->post->ID, 'user_url', 'https://apple.com' );
 
 		$byline_meta = [
 			'byline_entries' => [
