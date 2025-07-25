@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Byline_Manager;
 
 use Byline_Manager\Models\Profile;
+use Byline_Manager\Models\TextProfile;
 use WP_Screen;
 use WP_Post;
 use WP_User;
