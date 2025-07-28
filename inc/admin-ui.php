@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Byline_Manager;
 
 use Byline_Manager\Models\Profile;
+use Byline_Manager\Models\TextProfile;
 use WP_Screen;
 use WP_Post;
 use WP_User;
@@ -307,3 +308,136 @@ function remove_author_support() {
 	}
 }
 add_action( 'admin_init', __NAMESPACE__ . '\remove_author_support' );
+
+/**
+ * Add filters to control columns on the post edit screen.
+ */
+function maybe_modify_post_edit_columns() {
+	/**
+	 * Determine whether the plugin will add an Authors column and modify the title of the Author column on the post list screen.
+	 *
+	 * @param bool $modify True if the plugin should modify the columns on supported post types, false if not.
+	 */
+	if ( apply_filters( 'byline_manager_modify_post_edit_columns', true ) ) {
+		/**
+		 * Filter the list of post types for which we will modify the columns on the post list screen.
+		 *
+		 * @param string[] $post_types List of post types on which the post list columns will be modified.
+		 */
+		$supported_post_types = apply_filters( 'byline_manager_edit_columns_post_types', Utils::get_supported_post_types() );
+		foreach ( $supported_post_types as $post_type ) {
+			add_filter( "manage_{$post_type}_posts_columns", __NAMESPACE__ . '\augment_author_column' );
+			add_action( "manage_{$post_type}_posts_custom_column", __NAMESPACE__ . '\render_byline_column', 10, 2 );
+		}
+	}
+}
+add_action( 'init', __NAMESPACE__ . '\maybe_modify_post_edit_columns' );
+
+/**
+ * Add a 'byline' column in the Posts list table, and rebrand the 'author' column.
+ *
+ * @param string[] $post_columns An associative array of column headings.
+ * @return string[] Updated array.
+ */
+function augment_author_column( $post_columns ) {
+	$screen = get_current_screen();
+
+	if ( ! $screen instanceof WP_Screen ) {
+		return $post_columns;
+	}
+
+	// If there's already a column called 'byline', leave the columns alone.
+	if ( array_key_exists( 'byline', $post_columns ) && ! empty( $post_columns['byline'] ) ) {
+		return $post_columns;
+	}
+
+	// Default placement, in case the post type doesn't support 'author'.
+	$insert_after = 'title';
+
+	if ( post_type_supports( $screen->post_type, 'author' ) ) {
+		$insert_after           = 'author';
+		$post_columns['author'] = __( 'Created By', 'byline-manager' );
+
+		remove_filter( 'the_author', 'Byline_Manager\auto_integrate_byline' );
+	}
+
+	$index = array_search( $insert_after, array_keys( $post_columns ), true );
+
+	if ( is_int( $index ) ) {
+		$target = $index + 1;
+		$added  = [ 'byline' => __( 'Authors', 'byline-manager' ) ];
+
+		$post_columns = array_slice( $post_columns, 0, $target ) + $added + array_slice( $post_columns, $target );
+	}
+
+	return $post_columns;
+}
+
+/**
+ * Renders the 'byline' custom column in the Posts list table.
+ *
+ * @param string $column_name The name of the column to display.
+ * @param int    $post_id     The current post ID.
+ */
+function render_byline_column( $column_name, $post_id ) {
+	if ( 'byline' !== $column_name ) {
+		return;
+	}
+
+	$links = [];
+
+	foreach ( Utils::get_byline_entries_for_post( $post_id ) as $byline ) {
+		if ( $byline instanceof Profile ) {
+			$links[] = admin_column_edit_link(
+				[
+					'post_type'     => get_post_type( $post_id ),
+					BYLINE_TAXONOMY => "profile-{$byline->post_id}",
+				],
+				$byline->display_name
+			);
+		}
+
+		if ( $byline instanceof TextProfile ) {
+			$links[] = $byline->display_name;
+		}
+	}
+
+	/* translators: used between list items. there is a space after the comma */
+	echo wp_kses_post( join( __( ', ', 'byline-manager' ), $links ) );
+}
+
+/**
+ * Create links to edit.php with params.
+ *
+ * @see \WP_Posts_List_Table::get_edit_link().
+ *
+ * @param array  $args  URL parameters for the link.
+ * @param string $label Link text.
+ * @param string $class Optional. Class attribute. Default empty string.
+ * @return string The formatted link string.
+ */
+function admin_column_edit_link( $args, $label, $class = '' ) {
+	$url = add_query_arg( $args, 'edit.php' );
+
+	$class_html   = '';
+	$aria_current = '';
+
+	if ( $class ) {
+		$class_html = sprintf(
+			' class="%s"',
+			esc_attr( $class )
+		);
+
+		if ( 'current' === $class ) {
+			$aria_current = ' aria-current="page"';
+		}
+	}
+
+	return sprintf(
+		'<a href="%s"%s%s>%s</a>',
+		esc_url( $url ),
+		$class_html,
+		$aria_current,
+		wp_kses_post( $label )
+	);
+}
