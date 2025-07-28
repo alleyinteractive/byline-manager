@@ -322,7 +322,7 @@ function maybe_modify_post_edit_columns() {
 		/**
 		 * Filter the list of post types for which we will modify the columns on the post list screen.
 		 *
-		 * @param @param string[] $post_types List of post types on which the post list columns will be modified.
+		 * @param string[] $post_types List of post types on which the post list columns will be modified.
 		 */
 		$supported_post_types = apply_filters( 'byline_manager_edit_columns_post_types', Utils::get_supported_post_types() );
 		foreach ( $supported_post_types as $post_type ) {
