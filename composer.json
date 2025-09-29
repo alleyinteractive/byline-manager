@@ -20,7 +20,7 @@
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^9.5",
         "szepeviktor/phpstan-wordpress": "^1.1.6",
-        "yoast/wordpress-seo": "^25.1",
+        "yoast/wordpress-seo": "^26.0",
         "nunomaduro/collision": "^6"
     },
     "config": {
