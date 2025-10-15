@@ -27,7 +27,7 @@ class Utils {
 	 */
 	public static function get_supported_post_types(): array {
 		static $post_types;
-		if ( ! isset( $post_types ) ) {
+		if ( ! isset( $post_types ) || ! did_action( 'wp_loaded' ) ) {
 			$post_types = get_post_types_by_support( 'author' );
 		}
 

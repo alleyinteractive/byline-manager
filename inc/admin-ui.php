@@ -331,7 +331,7 @@ function maybe_modify_post_edit_columns() {
 		}
 	}
 }
-add_action( 'init', __NAMESPACE__ . '\maybe_modify_post_edit_columns' );
+add_action( 'wp_loaded', __NAMESPACE__ . '\maybe_modify_post_edit_columns' );
 
 /**
  * Add a 'byline' column in the Posts list table, and rebrand the 'author' column.
