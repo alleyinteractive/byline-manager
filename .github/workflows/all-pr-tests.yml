@@ -38,7 +38,7 @@ jobs:
         # Defaults to the latest LTS version.
         uses: alleyinteractive/action-test-node@develop
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Run PHP Tests
         # See https://github.com/alleyinteractive/action-test-php for more options
