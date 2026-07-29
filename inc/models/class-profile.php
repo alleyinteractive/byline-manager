@@ -164,10 +164,8 @@ class Profile {
 	 * @param int $user_id ID for the profile's user.
 	 * @return Profile|false Profile on success, false on failure.
 	 */
-	public static function get_by_user_id( $user_id ): Profile|false {
-		$user_id = (int) $user_id;
-
-		if ( ! ( $user_id > 0 ) ) {
+	public static function get_by_user_id( int $user_id ): Profile|false {
+		if ( ! ( 0 < $user_id ) ) {
 			return false;
 		}
 
@@ -307,7 +305,7 @@ class Profile {
 	public function get_linked_user_id(): int {
 		$user_id = get_post_meta( $this->get_post()->ID, 'user_id', true );
 
-		return is_numeric( $user_id ) && $user_id > 0 ? (int) $user_id : 0;
+		return is_numeric( $user_id ) && 0 < $user_id ? (int) $user_id : 0;
 	}
 
 	/**
