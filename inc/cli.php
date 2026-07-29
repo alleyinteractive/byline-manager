@@ -104,7 +104,7 @@ function migrate_user_meta_to_blog_prefix( $args, $assoc_args ): void {
 					$user_id = $profile->get_linked_user_id();
 
 					if ( ! ( $user_id > 0 ) ) {
-						WP_CLI::debug( sprintf( 'Profile %d has a no linked user ID. Skipping.', $profile->post_id ) );
+						WP_CLI::debug( sprintf( 'Profile %d has no linked user ID. Skipping.', $profile->post_id ) );
 
 						continue;
 					}
