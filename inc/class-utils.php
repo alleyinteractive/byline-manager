@@ -98,7 +98,7 @@ class Utils {
 
 		return array_filter(
 			array_map(
-				function( $entry ) {
+				function ( $entry ) {
 					if ( ! empty( $entry['atts']['post_id'] ) ) {
 						return Profile::get_by_post( $entry['atts']['post_id'] );
 					} elseif ( ! empty( $entry['atts']['text'] ) ) {
@@ -166,7 +166,7 @@ class Utils {
 
 		// Extract the term IDs from the byline meta.
 		$byline_terms = array_map(
-			function( $entry ) {
+			function ( $entry ) {
 				if ( empty( $entry['type'] ) || 'byline_id' !== $entry['type'] || empty( $entry['atts']['byline_id'] ) ) {
 					return null;
 				} else {
@@ -181,7 +181,7 @@ class Utils {
 
 		// Set the byline meta on the post, handling both byline IDs and text items.
 		$profiles = array_map(
-			function( $entry ) {
+			function ( $entry ) {
 				if ( empty( $entry['type'] ) || empty( $entry['atts'] ) ) {
 					// We don't have enough info to process this entry.
 					return null;

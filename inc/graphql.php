@@ -85,7 +85,7 @@ function register_byline_types(): void {
 					],
 					'type'        => 'String',
 					'description' => __( 'Byline text.', 'byline-manager' ),
-					'resolve'     => function( Post $profile, array $args ) {
+					'resolve'     => function ( Post $profile, array $args ) {
 						$post_id = $profile->ID;
 
 						if ( $profile->isPreview ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -124,7 +124,7 @@ function register_byline_types(): void {
 						}
 
 						$bylines = array_map(
-							function( $profile ) {
+							function ( $profile ) {
 								if ( 'byline_id' === $profile['type'] ) {
 									return new Post( get_post( $profile['atts']['post_id'] ) );
 								}

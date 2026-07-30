@@ -31,7 +31,7 @@ define( 'BYLINE_MANAGER_PATH', __DIR__ . '/' );
  *
  * @return bool True if the path is valid, false otherwise.
  */
-function validate_path( string $path ) : bool {
+function validate_path( string $path ): bool {
 	return in_array( validate_file( $path ), [ 0, 2 ], true ) && file_exists( $path );
 }
 
