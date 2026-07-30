@@ -165,32 +165,26 @@ class Profile {
 	 * @return Profile|false Profile on success, false on failure.
 	 */
 	public static function get_by_user_id( int $user_id ): Profile|false {
-		if ( ! ( 0 < $user_id ) ) {
+		if ( ! ( $user_id > 0 ) ) {
 			return false;
 		}
 
 		$profile_id = get_user_meta( $user_id, self::user_meta_key(), true );
 
-		if ( is_numeric( $profile_id ) && $profile_id > 0 ) {
-			$profile = self::get_by_post( $profile_id );
-
-			return $profile instanceof Profile && $profile->get_linked_user_id() === $user_id
-				? $profile
-				: false;
+		if ( ! is_numeric( $profile_id ) || $profile_id <= 0 ) {
+			// Try to fetch by legacy, unprefixed meta key.
+			$profile_id = get_user_meta( $user_id, 'profile_id', true );
 		}
 
-		// Try to fetch by legacy, unprefixed meta key.
-		$profile_id = get_user_meta( $user_id, 'profile_id', true );
-
-		if ( is_numeric( $profile_id ) && $profile_id > 0 ) {
-			$profile = self::get_by_post( $profile_id );
-
-			return $profile instanceof Profile && $profile->get_linked_user_id() === $user_id
-				? $profile
-				: false;
+		if ( ! is_numeric( $profile_id ) || $profile_id <= 0 ) {
+			return false;
 		}
 
-		return false;
+		$profile = self::get_by_post( $profile_id );
+
+		return $profile instanceof Profile && $profile->get_linked_user_id() === $user_id
+			? $profile
+			: false;
 	}
 
 	/**
@@ -305,7 +299,7 @@ class Profile {
 	public function get_linked_user_id(): int {
 		$user_id = get_post_meta( $this->get_post()->ID, 'user_id', true );
 
-		return is_numeric( $user_id ) && 0 < $user_id ? (int) $user_id : 0;
+		return is_numeric( $user_id ) && $user_id > 0 ? (int) $user_id : 0;
 	}
 
 	/**
