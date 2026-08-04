@@ -62,19 +62,17 @@ class Core_Author_Block {
 			$this::$bylines = ! empty( $byline ) ? $byline : [];
 		}
 
-		add_filter( 'render_block_core/post-author', [ $this, 'append_and_filter_post_author_blocks' ], 10, 2 );
+		add_filter( 'render_block_core/post-author', [ $this, 'append_and_filter_post_author_blocks' ] );
 	}
 
 	/**
 	 * Filters the post author block data to use the bylines, also duplicates the post author block as many times
 	 * as necessary to output all the bylines.
 	 *
-	 * @param string               $block_content The block content.
-	 * @param array<string, mixed> $block The full block, including name and attributes.
-	 *
+	 * @param string $block_content The block content.
 	 * @return string The block content.
 	 */
-	public function append_and_filter_post_author_blocks( $block_content, $block ): string {
+	public function append_and_filter_post_author_blocks( $block_content ): string {
 		// Check that render is true and that we have bylines.
 		if ( $this::$render && ! empty( $this::$bylines['profiles'] ) ) {
 			// Count the bylines.

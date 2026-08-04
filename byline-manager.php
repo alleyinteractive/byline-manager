@@ -10,7 +10,7 @@
  * Version:         0.6.4
  * Requires WP:     6.3
  * Requires PHP:    8.1
- * Tested up to:    6.8
+ * Tested up to:    7.0
  *
  * @package Byline_Manager
  */
@@ -31,7 +31,7 @@ define( 'BYLINE_MANAGER_PATH', __DIR__ . '/' );
  *
  * @return bool True if the path is valid, false otherwise.
  */
-function validate_path( string $path ) : bool {
+function validate_path( string $path ): bool {
 	return in_array( validate_file( $path ), [ 0, 2 ], true ) && file_exists( $path );
 }
 
@@ -63,3 +63,6 @@ require_once BYLINE_MANAGER_PATH . 'inc/yoast.php';
 require_once BYLINE_MANAGER_PATH . 'inc/core-filters.php';
 
 require_once BYLINE_MANAGER_PATH . 'inc/class-core-author-block.php';
+
+// WP-CLI commands.
+require_once BYLINE_MANAGER_PATH . 'inc/cli.php';

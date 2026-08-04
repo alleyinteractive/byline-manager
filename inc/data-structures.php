@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Byline_Manager;
 
+use Byline_Manager\Models\Profile;
 use WP_Post;
 
 // The profile post type slug.
@@ -197,10 +198,10 @@ function delete_profile_by_associated_user( $post_id ): void {
 	}
 
 	// Delete metas linking this profile to a user account, if any.
-	$user_id = absint( get_post_meta( $post_id, 'user_id', true ) );
-	if ( $user_id ) {
-		delete_post_meta( $post_id, 'user_id', $user_id );
-		delete_user_meta( $user_id, 'profile_id', $post_id );
+	$profile = Profile::get_by_post( $post_id );
+
+	if ( $profile instanceof Profile ) {
+		$profile->update_user_link( 0 );
 	}
 }
 add_action( 'before_delete_post', __NAMESPACE__ . '\delete_profile_by_associated_user' );
@@ -211,10 +212,10 @@ add_action( 'before_delete_post', __NAMESPACE__ . '\delete_profile_by_associated
  * @param int $user_id User ID.
  */
 function delete_user_by_associated_profile( $user_id ): void {
-	$profile_id = absint( get_user_meta( $user_id, 'profile_id', true ) );
-	if ( $profile_id ) {
-		delete_post_meta( $profile_id, 'user_id', $user_id );
-		delete_user_meta( $user_id, 'profile_id', $profile_id );
+	$profile = Profile::get_by_user_id( $user_id );
+
+	if ( $profile instanceof Profile ) {
+		$profile->update_user_link( 0 );
 	}
 }
 add_action( 'delete_user', __NAMESPACE__ . '\delete_user_by_associated_profile' );
