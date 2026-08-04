@@ -9,10 +9,11 @@ declare(strict_types=1);
 
 namespace Byline_Manager\Models;
 
-use const Byline_Manager\PROFILE_POST_TYPE;
 use WP_Error;
 use WP_Post;
 use WP_User;
+
+use const Byline_Manager\PROFILE_POST_TYPE;
 
 /**
  * Representation of an individual profile.
@@ -141,20 +142,18 @@ class Profile {
 	/**
 	 * Get a profile object based on its term id.
 	 *
-	 * @param int $term_id ID for the profile term.
 	 * @return Profile|false Profile on success, false on failure.
 	 */
-	public static function get_by_term_id( $term_id ): Profile|false {
+	public static function get_by_term_id(): Profile|false {
 		return false;
 	}
 
 	/**
 	 * Get a profile object based on its post slug.
 	 *
-	 * @param string $slug Slug for the profile term.
 	 * @return Profile|false Profile on success, false on failure.
 	 */
-	public static function get_by_slug( $slug ): Profile|false {
+	public static function get_by_slug(): Profile|false {
 		return false;
 	}
 
