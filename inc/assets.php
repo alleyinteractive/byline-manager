@@ -28,7 +28,7 @@ function admin_enqueue_scripts( $hook ): void {
 			|| PROFILE_POST_TYPE === get_post_type()
 		)
 	) {
-		wp_enqueue_style( 'byline-manager-css', get_asset_path( 'main.css' ), [], '0.1.0' );
+		wp_enqueue_style( 'byline-manager-css', get_asset_path( 'main.css' ), [], get_asset_hash( 'main.css' ) );
 
 		wp_enqueue_script(
 			'byline-manager-js',
