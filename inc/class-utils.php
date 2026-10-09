@@ -59,10 +59,9 @@ class Utils {
 	 * @return array {
 	 *     Metadata about the byline for the post.
 	 *
-	 *     @type string $source   One of 'profiles' or 'override'.
-	 *     @type string $override Byline override text.
-	 *     @type array  $profiles Array of profile post IDs and byline term IDs
-	 *                            for each profile.
+	 *     @type array $profiles The byline entries, in order. Each is a `byline_id`
+	 *                           entry holding a profile post ID and byline term ID,
+	 *                           or a `text` entry holding the text.
 	 * }
 	 */
 	public static function get_byline_meta_for_post( $post = null ): array {
@@ -123,8 +122,8 @@ class Utils {
 		if ( ! $term instanceof WP_Term ) {
 			return false;
 		}
-		list( , $post_id ) = explode( '-', $term->name );
-		return absint( $post_id );
+		$name_parts = explode( '-', $term->name );
+		return absint( $name_parts[1] ?? 0 );
 	}
 
 	/**

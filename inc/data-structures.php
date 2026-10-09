@@ -11,6 +11,7 @@ namespace Byline_Manager;
 
 use Byline_Manager\Models\Profile;
 use WP_Post;
+use WP_Term;
 
 // The profile post type slug.
 const PROFILE_POST_TYPE = 'profile';
@@ -155,12 +156,18 @@ function sync_profiles_and_bylines( $post_id, $post, $update ): void {
 		return;
 	}
 
-	// We may at some point want to make updates to the terms.
-	if ( $update ) {
+	// An existing profile only needs a term when it has no working one, for example after a failed insert.
+	if ( $update && get_term( absint( get_post_meta( $post_id, 'byline_id', true ) ), BYLINE_TAXONOMY ) instanceof WP_Term ) {
 		return;
 	}
 
 	$result = wp_insert_term( "profile-{$post_id}", BYLINE_TAXONOMY );
+
+	// A term from an earlier attempt can already exist under this name.
+	if ( is_wp_error( $result ) && 'term_exists' === $result->get_error_code() ) {
+		$result = [ 'term_id' => absint( $result->get_error_data() ) ];
+	}
+
 	if ( is_wp_error( $result ) || empty( $result['term_id'] ) ) {
 		update_post_meta( $post_id, 'byline_id', 'error' );
 	} else {

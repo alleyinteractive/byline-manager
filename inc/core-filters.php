@@ -95,9 +95,9 @@ add_filter( 'author_rewrite_rules', '__return_empty_array' );
  */
 function unset_rewrites( $rules ): array {
 	$profile_post_type_data = get_post_type_object( PROFILE_POST_TYPE );
-	$profile_post_type_slug = $profile_post_type_data->rewrite['slug'];
+	$profile_post_type_slug = preg_quote( $profile_post_type_data->rewrite['slug'], '/' );
 	foreach ( $rules as $rule => $rewrite ) {
-		if ( preg_match( '/^' . $profile_post_type_slug . '.*(trackback)/', $rule ) || preg_match( '/^' . $profile_post_type_slug . '.*(attachment)/', $rule ) || preg_match( '/^' . $profile_post_type_slug . '.*(comment)/', $rule ) ) {
+		if ( preg_match( '/^' . $profile_post_type_slug . '.*(trackback|attachment|comment)/', $rule ) ) {
 			unset( $rules[ $rule ] );
 		}
 	}

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Byline_Manager\Models;
 
+use Byline_Manager\Utils;
 use WP_Error;
 use WP_Post;
 use WP_User;
@@ -142,19 +143,38 @@ class Profile {
 	/**
 	 * Get a profile object based on its term id.
 	 *
+	 * @param int $term_id Byline term ID.
 	 * @return Profile|false Profile on success, false on failure.
 	 */
-	public static function get_by_term_id(): Profile|false {
-		return false;
+	public static function get_by_term_id( int $term_id = 0 ): Profile|false {
+		$post_id = $term_id > 0 ? Utils::get_profile_id_by_byline_id( $term_id ) : false;
+
+		return $post_id ? self::get_by_post( $post_id ) : false;
 	}
 
 	/**
-	 * Get a profile object based on its post slug.
+	 * Get a published profile object based on its post slug.
 	 *
+	 * @param string $slug Profile post slug.
 	 * @return Profile|false Profile on success, false on failure.
 	 */
-	public static function get_by_slug(): Profile|false {
-		return false;
+	public static function get_by_slug( string $slug = '' ): Profile|false {
+		if ( '' === $slug ) {
+			return false;
+		}
+
+		$post_ids = get_posts( // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
+			[
+				'name'             => $slug,
+				'post_type'        => PROFILE_POST_TYPE,
+				'post_status'      => 'publish',
+				'numberposts'      => 1,
+				'fields'           => 'ids',
+				'suppress_filters' => false,
+			]
+		);
+
+		return $post_ids ? self::get_by_post( $post_ids[0] ) : false;
 	}
 
 	/**
