@@ -37,6 +37,16 @@ class Core_Author_Block {
 	use Singleton;
 
 	/**
+	 * Posts whose bylines have been rendered, keyed by post ID.
+	 *
+	 * Only the first post author block of a post renders all of its bylines. Any further blocks for the same
+	 * post render nothing, so authors are not shown twice.
+	 *
+	 * @var array<int, true>
+	 */
+	private array $rendered_posts = [];
+
+	/**
 	 * Initializes
 	 *
 	 * Sets up a filter on the rendered post author block.
@@ -46,8 +56,8 @@ class Core_Author_Block {
 	}
 
 	/**
-	 * Filters the post author block data to use the bylines of the block's post, also duplicates the post author
-	 * block as many times as necessary to output all the bylines.
+	 * Filters the post author block data to use the bylines of the block's post, also duplicates the first post
+	 * author block of a post as many times as necessary to output all the bylines.
 	 *
 	 * @param string         $block_content The block content.
 	 * @param array          $parsed_block  The parsed block. Unused.
@@ -69,6 +79,14 @@ class Core_Author_Block {
 		if ( '' === trim( (string) $block_content ) ) {
 			return (string) $block_content;
 		}
+
+		// The bylines of this post are already rendered by an earlier block. Anything returned here would print
+		// after them.
+		if ( isset( $this->rendered_posts[ $post_id ] ) ) {
+			return '';
+		}
+
+		$this->rendered_posts[ $post_id ] = true;
 
 		$additional_blocks = '';
 

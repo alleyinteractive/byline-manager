@@ -129,9 +129,9 @@ class Test_Core_Author_Block extends Test_Case {
 	}
 
 	/**
-	 * Every post author block on a page is filtered, not only the first.
+	 * The first post author block of a post renders every byline, and further blocks for it render nothing.
 	 */
-	public function test_every_post_author_block_is_filtered() {
+	public function test_first_post_author_block_renders_every_byline() {
 		$b1 = $this->create_profile( 'Byline 1' );
 		$b2 = $this->create_profile( 'Byline 2' );
 
@@ -142,9 +142,23 @@ class Test_Core_Author_Block extends Test_Case {
 
 		$output = $this->render_post( $post_id );
 
-		// Two blocks, each duplicated once per byline entry.
-		$this->assertSame( 2, substr_count( $output, '>Byline 1<' ) );
-		$this->assertSame( 2, substr_count( $output, '>Byline 2<' ) );
+		$this->assertSame( 1, substr_count( $output, '>Byline 1<' ) );
+		$this->assertSame( 1, substr_count( $output, '>Byline 2<' ) );
+		$this->assertSame( 1, substr_count( $output, 'Body' ) );
+	}
+
+	/**
+	 * Each post renders its own bylines once, as in a query loop.
+	 */
+	public function test_each_post_renders_its_bylines_once() {
+		$b1 = $this->create_profile( 'Byline 1' );
+		$b2 = $this->create_profile( 'Byline 2' );
+
+		$first  = $this->create_post( [ $this->profile_entry( $b1 ) ] );
+		$second = $this->create_post( [ $this->profile_entry( $b2 ) ] );
+
+		$this->assertStringContainsString( '>Byline 1<', $this->render_post( $first ) );
+		$this->assertStringContainsString( '>Byline 2<', $this->render_post( $second ) );
 	}
 
 	/**
