@@ -25,7 +25,7 @@ function auto_integrate_byline( $author_name ): string {
 	if ( is_feed() ) {
 		$profiles = Utils::get_byline_entries_for_post();
 		if ( ! empty( $profiles[0] ) ) {
-			return $profiles[0]->display_name;
+			return wp_strip_all_tags( $profiles[0]->display_name );
 		}
 	}
 
