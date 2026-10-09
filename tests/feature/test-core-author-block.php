@@ -256,4 +256,24 @@ class Test_Core_Author_Block extends Test_Case {
 			Core_Author_Block::get_instance()->append_and_filter_post_author_blocks( '', $parsed, $block )
 		);
 	}
+
+	/**
+	 * Code that sets the deprecated static properties does not fail and does not change the output.
+	 */
+	public function test_deprecated_static_properties_can_still_be_set() {
+		$this->assertTrue( property_exists( Core_Author_Block::class, 'bylines' ) );
+		$this->assertTrue( property_exists( Core_Author_Block::class, 'render' ) );
+
+		$profile = $this->create_profile( 'Byline 1' );
+		$post_id = $this->create_post( [ $this->profile_entry( $profile ) ] );
+
+		Core_Author_Block::$bylines = [];
+		Core_Author_Block::$render  = false;
+
+		$output = $this->render_post( $post_id );
+
+		Core_Author_Block::$render = true;
+
+		$this->assertStringContainsString( '>Byline 1<', $output );
+	}
 }

@@ -37,6 +37,24 @@ class Core_Author_Block {
 	use Singleton;
 
 	/**
+	 * Array of bylines.
+	 *
+	 * @deprecated Unused. Each block reads the byline of its own post. Kept so code that sets it does not fail.
+	 *
+	 * @var array
+	 */
+	public static array $bylines = [];
+
+	/**
+	 * Boolean that controlled when to render the author blocks.
+	 *
+	 * @deprecated Unused. Rendering is tracked per post. Kept so code that sets it does not fail.
+	 *
+	 * @var bool
+	 */
+	public static bool $render = true;
+
+	/**
 	 * Posts whose bylines have been rendered, keyed by post ID.
 	 *
 	 * Only the first post author block of a post renders all of its bylines. Any further blocks for the same
