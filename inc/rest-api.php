@@ -209,39 +209,13 @@ function byline_meta_schema(): array {
 	];
 }
 
-/**
- * Sanitize the byline meta so text entries only carry markup allowed in post content.
- *
- * @param mixed $meta Byline meta.
- * @return mixed Sanitized byline meta.
- */
-function sanitize_byline_meta( $meta ) {
-	if ( ! is_array( $meta ) || empty( $meta['profiles'] ) || ! is_array( $meta['profiles'] ) ) {
-		return $meta;
-	}
-
-	foreach ( $meta['profiles'] as $index => $entry ) {
-		if (
-			is_array( $entry )
-			&& isset( $entry['type'], $entry['atts']['text'] )
-			&& 'text' === $entry['type']
-			&& is_string( $entry['atts']['text'] )
-		) {
-			$meta['profiles'][ $index ]['atts']['text'] = wp_kses_post( $entry['atts']['text'] );
-		}
-	}
-
-	return $meta;
-}
-
 register_post_meta(
 	'',
 	'byline',
 	[
-		'single'            => true,
-		'type'              => 'object',
-		'sanitize_callback' => __NAMESPACE__ . '\sanitize_byline_meta',
-		'show_in_rest'      => [
+		'single'       => true,
+		'type'         => 'object',
+		'show_in_rest' => [
 			'schema' => byline_meta_schema(),
 		],
 	]
