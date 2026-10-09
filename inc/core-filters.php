@@ -134,22 +134,23 @@ function modify_author_feed_query( \WP_Query $query ): void {
 				'suppress_filters' => false,
 			]
 		)[0] ?? 0;
+		// A profile that does not exist has no feed. Respond with a 404 and no posts.
 		if ( ! $profile_post_id ) {
-			return; // Profile not found, exit early.
+			$query->set_404();
+			status_header( 404 );
+			nocache_headers();
 		}
 
-		// Get the byline ID from the profile post.
-		$byline_id = (int) get_post_meta( $profile_post_id, 'byline_id', true );
-		if ( ! $byline_id ) {
-			return; // No byline ID found, exit early.
-		}
+		// Get the byline ID from the profile post. Without a profile or a byline term there are no posts to match,
+		// so the feed is empty instead of falling back to every post.
+		$byline_id = $profile_post_id ? (int) get_post_meta( $profile_post_id, 'byline_id', true ) : 0;
 
 		// Set the tax query.
 		$query->set(
 			'tax_query',
 			[
 				[
-					'taxonomy' => 'byline',
+					'taxonomy' => BYLINE_TAXONOMY,
 					'field'    => 'term_id',
 					'terms'    => $byline_id,
 				],
