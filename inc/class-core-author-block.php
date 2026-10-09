@@ -18,8 +18,10 @@ namespace Byline_Manager;
  * @phpstan-use-trait-for-class Singleton
  */
 use Byline_Manager\traits\Singleton;
+use WP_Block;
 use WP_Post;
 use DOMDocument;
+use DOMNode;
 use DOMNodeList;
 use DOMXPath;
 
@@ -35,87 +37,85 @@ class Core_Author_Block {
 	use Singleton;
 
 	/**
-	 * Array of bylines.
-	 *
-	 * @var array
-	 */
-	public static array $bylines = [];
-
-	/**
-	 * Boolean that controls when to render the author blocks.
-	 *
-	 * @var bool
-	 */
-	public static bool $render = true;
-
-	/**
 	 * Initializes
 	 *
-	 * Gets required bylines post meta and setups a filter.
+	 * Sets up a filter on the rendered post author block.
 	 */
 	public function init(): void {
-		global $post;
-
-		if ( ! empty( $post ) && property_exists( $post, 'ID' ) ) {
-			// Get the byline meta and set it to our property.
-			$byline         = get_post_meta( $post->ID, 'byline', true );
-			$this::$bylines = ! empty( $byline ) ? $byline : [];
-		}
-
-		add_filter( 'render_block_core/post-author', [ $this, 'append_and_filter_post_author_blocks' ] );
+		add_filter( 'render_block_core/post-author', [ $this, 'append_and_filter_post_author_blocks' ], 10, 3 );
 	}
 
 	/**
-	 * Filters the post author block data to use the bylines, also duplicates the post author block as many times
-	 * as necessary to output all the bylines.
+	 * Filters the post author block data to use the bylines of the block's post, also duplicates the post author
+	 * block as many times as necessary to output all the bylines.
 	 *
-	 * @param string $block_content The block content.
+	 * @param string         $block_content The block content.
+	 * @param array          $parsed_block  The parsed block. Unused.
+	 * @param WP_Block|mixed $block         The block instance, used to find the post the block is rendered for.
 	 * @return string The block content.
 	 */
-	public function append_and_filter_post_author_blocks( $block_content ): string {
-		// Check that render is true and that we have bylines.
-		if ( $this::$render && ! empty( $this::$bylines['profiles'] ) ) {
-			// Count the bylines.
-			$bylines_count = count( $this::$bylines['profiles'] );
+	public function append_and_filter_post_author_blocks( $block_content, $parsed_block = [], $block = null ): string {
+		$post_id  = $block instanceof WP_Block && ! empty( $block->context['postId'] )
+			? (int) $block->context['postId']
+			: (int) get_the_ID();
+		$profiles = $this->get_byline_profiles( $post_id );
 
-			// A string variable that will be used for the final rendered content.
-			$additional_blocks = '';
-
-			// Loop through the total bylines count.
-			for ( $i = 0; $i < $bylines_count; $i++ ) {
-				// Filter the block and append it to our string variable, essentially duplicating it.
-				$additional_blocks .= $this->filter_post_author_block( $block_content, $i );
-			}
-
-			// Replace the original block with the new blocks.
-			$block_content = $additional_blocks;
-
-			// Update our boolean to not render anymore.
-			$this::$render = false;
-		} else {
-			// Essentially $this::$render is false, so return an empty string. Anything returned here will
-			// print after our block(s), which we do not want.
+		// A post without a byline does not render an author block.
+		if ( empty( $profiles ) ) {
 			return '';
 		}
 
-		return $block_content;
+		// Nothing to filter when the core block rendered nothing.
+		if ( '' === trim( (string) $block_content ) ) {
+			return (string) $block_content;
+		}
+
+		$additional_blocks = '';
+
+		// Filter the block once per byline and append it, essentially duplicating it.
+		foreach ( array_keys( $profiles ) as $index ) {
+			$additional_blocks .= $this->filter_post_author_block( (string) $block_content, $index, $profiles );
+		}
+
+		return $additional_blocks;
+	}
+
+	/**
+	 * Gets the byline entries for a post.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return array[] Byline entries, in order.
+	 */
+	private function get_byline_profiles( int $post_id ): array {
+		if ( $post_id <= 0 ) {
+			return [];
+		}
+
+		$byline = get_post_meta( $post_id, 'byline', true );
+
+		if ( ! is_array( $byline ) || empty( $byline['profiles'] ) || ! is_array( $byline['profiles'] ) ) {
+			return [];
+		}
+
+		return array_values( $byline['profiles'] );
 	}
 
 	/**
 	 * Filters the author block data with byline info.
 	 *
-	 * @param string $block_content The block content.
-	 * @param int    $index Used as an array key.
+	 * @param string       $block_content The block content.
+	 * @param int          $index         Used as an array key.
+	 * @param array[]|null $profiles      Byline entries. Defaults to the entries of the current post.
 	 *
 	 * @return string The modified core author block.
 	 */
-	public function filter_post_author_block( string $block_content, int $index ): string {
+	public function filter_post_author_block( string $block_content, int $index, ?array $profiles = null ): string {
 		// Setup some empty variables.
 		$byline_type      = '';
 		$profile_post     = '';
 		$text_byline      = '';
 		$new_author_block = '';
-		$profiles         = $this::$bylines['profiles'];
+		$profiles       ??= $this->get_byline_profiles( (int) get_the_ID() );
 
 		// Bail if the array item does not exist.
 		if ( empty( $profiles[ $index ] ) ) {
@@ -200,8 +200,8 @@ class Core_Author_Block {
 				$anchor_node = $name_node->getElementsByTagName( 'a' )->item( 0 );
 
 				if ( $anchor_node instanceof \DOMElement ) {
-					$anchor_node->nodeValue = $profile_post->post_title; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					$permalink              = get_permalink( $profile_post->ID );
+					$this->set_node_text( $anchor_node, $profile_post->post_title );
+					$permalink = get_permalink( $profile_post->ID );
 
 					if ( $permalink ) {
 						$anchor_node->setAttribute( 'href', $permalink );
@@ -209,7 +209,7 @@ class Core_Author_Block {
 				}
 			} else {
 				// Replace the author name.
-				$name_node->nodeValue = $profile_post->post_title; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				$this->set_node_text( $name_node, $profile_post->post_title );
 			}
 		}
 
@@ -247,9 +247,37 @@ class Core_Author_Block {
 		$name_node         = ( $name_query_result instanceof DOMNodeList ) ? $name_query_result->item( 0 ) : null;
 		if ( $name_node instanceof \DOMElement ) {
 			// Replace the author name.
-			$name_node->nodeValue = $name; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$this->set_node_text( $name_node, $name );
 		}
 		return $doc->saveHTML();
+	}
+
+	/**
+	 * Replaces the content of a node with plain text.
+	 *
+	 * Setting `nodeValue` parses its value for entities, which empties the node when the text holds a bare
+	 * ampersand. A text node keeps the text as given and the serializer escapes it. Names can arrive entity-encoded
+	 * (`Smith &amp; Jones`) or as typed (`Smith & Jones`), so tags are stripped and entities decoded first.
+	 *
+	 * @param DOMNode $node Node to change.
+	 * @param string  $text Text, which may contain entities.
+	 */
+	private function set_node_text( DOMNode $node, string $text ): void {
+		$document = $node->ownerDocument; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+
+		if ( ! $document instanceof DOMDocument ) {
+			return;
+		}
+
+		while ( $node->firstChild ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$node->removeChild( $node->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		}
+
+		$node->appendChild(
+			$document->createTextNode(
+				html_entity_decode( wp_strip_all_tags( $text ), ENT_QUOTES | ENT_HTML5, 'UTF-8' )
+			)
+		);
 	}
 
 	/**
