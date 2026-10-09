@@ -57,4 +57,55 @@ class Test_Profile_Byline_Sync extends Test_Case {
 
 		$this->assertFalse( is_object_in_taxonomy( $post_type_no_author, BYLINE_TAXONOMY ) );
 	}
+
+	/**
+	 * Saving a profile whose term insert failed creates the term.
+	 */
+	public function test_save_creates_a_term_for_a_profile_without_one() {
+		$term_id = absint( get_post_meta( $this->profile_id, 'byline_id', true ) );
+
+		wp_delete_term( $term_id, BYLINE_TAXONOMY );
+		update_post_meta( $this->profile_id, 'byline_id', 'error' );
+
+		wp_update_post( [ 'ID' => $this->profile_id, 'post_title' => 'Updated' ] );
+
+		$new_term_id = absint( get_post_meta( $this->profile_id, 'byline_id', true ) );
+
+		$this->assertGreaterThan( 0, $new_term_id );
+		$this->assertInstanceOf( '\WP_Term', get_term( $new_term_id, BYLINE_TAXONOMY ) );
+	}
+
+	/**
+	 * Saving a profile whose meta is marked as failed reuses the term that already exists.
+	 */
+	public function test_save_reuses_an_existing_term() {
+		$term_id = absint( get_post_meta( $this->profile_id, 'byline_id', true ) );
+
+		update_post_meta( $this->profile_id, 'byline_id', 'error' );
+
+		wp_update_post( [ 'ID' => $this->profile_id, 'post_title' => 'Updated' ] );
+
+		$this->assertSame( $term_id, absint( get_post_meta( $this->profile_id, 'byline_id', true ) ) );
+		$this->assertCount(
+			1,
+			get_terms(
+				[
+					'taxonomy'   => BYLINE_TAXONOMY,
+					'hide_empty' => false,
+					'name'       => "profile-{$this->profile_id}",
+				]
+			)
+		);
+	}
+
+	/**
+	 * Saving a profile that has a working term leaves it alone.
+	 */
+	public function test_save_keeps_a_working_term() {
+		$term_id = absint( get_post_meta( $this->profile_id, 'byline_id', true ) );
+
+		wp_update_post( [ 'ID' => $this->profile_id, 'post_title' => 'Updated' ] );
+
+		$this->assertSame( $term_id, absint( get_post_meta( $this->profile_id, 'byline_id', true ) ) );
+	}
 }
