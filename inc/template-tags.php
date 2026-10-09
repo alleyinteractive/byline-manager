@@ -80,7 +80,7 @@ function get_the_byline_posts_links( $post = null ): string {
 			$args = apply_filters( 'bylines_posts_links', $args, $entry );
 
 			if ( empty( $args['href'] ) ) {
-				$single_item = $args['text'];
+				$single_item = wp_kses_post( $args['text'] );
 			} else {
 				$single_item = sprintf(
 					'<a href="%1$s" title="%2$s" class="%3$s" rel="%4$s">%5$s</a>',
@@ -123,10 +123,10 @@ function get_the_byline_links( $post = null ): string {
 					esc_url( $entry->user_url ),
 					// Translators: refers to the profile's website.
 					esc_attr( sprintf( __( 'Visit %s&#8217;s website', 'byline-manager' ), $entry->display_name ) ),
-					$entry->display_name
+					esc_html( $entry->display_name )
 				);
 			} else {
-				return $entry->display_name;
+				return wp_kses_post( $entry->display_name );
 			}
 		}
 	);

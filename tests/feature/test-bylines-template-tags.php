@@ -609,4 +609,136 @@ class Test_Bylines_Template_Tags extends Test_Case {
 		);
 		$this->assertSame( '<a href="https://website.test/">Test Override 3</a>', get_echo( '\Byline_Manager\the_byline_links' ) );
 	}
+
+	/**
+	 * Create a post whose byline is a single text entry.
+	 *
+	 * @param string $text Text entry.
+	 * @return int Post ID.
+	 */
+	private function create_post_with_text_byline( string $text ): int {
+		$post_id = static::factory()->post->create();
+
+		Utils::set_post_byline(
+			$post_id,
+			[
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => $text,
+						],
+					],
+				],
+			]
+		);
+
+		return $post_id;
+	}
+
+	/**
+	 * Create a profile whose title contains markup, bypassing the post title filters.
+	 *
+	 * @param string $title Profile title.
+	 * @return Profile
+	 */
+	private function create_profile_with_raw_title( string $title ): Profile {
+		kses_remove_filters();
+
+		$profile = Profile::create(
+			[
+				'post_name'  => 'raw-title',
+				'post_title' => $title,
+			]
+		);
+
+		kses_init_filters();
+
+		return $profile;
+	}
+
+	/**
+	 * Script tags in a text entry are removed from `get_the_byline_posts_links()`.
+	 */
+	public function test_get_the_byline_posts_links_text_entry_strips_script() {
+		$post_id = $this->create_post_with_text_byline( 'Wire <script>alert(1)</script>Services' );
+
+		$output = get_the_byline_posts_links( $post_id );
+
+		$this->assertStringNotContainsString( '<script', $output );
+		$this->assertStringContainsString( 'Wire', $output );
+	}
+
+	/**
+	 * Safe markup in a text entry is kept by `get_the_byline_posts_links()`.
+	 */
+	public function test_get_the_byline_posts_links_text_entry_keeps_safe_markup() {
+		$post_id = $this->create_post_with_text_byline( '<em>Staff</em> Report' );
+
+		$this->assertSame( '<em>Staff</em> Report', get_the_byline_posts_links( $post_id ) );
+	}
+
+	/**
+	 * Script tags in a text entry are removed from `get_the_byline_links()`.
+	 */
+	public function test_get_the_byline_links_text_entry_strips_script() {
+		$post_id = $this->create_post_with_text_byline( 'Wire <script>alert(1)</script>Services' );
+
+		$output = get_the_byline_links( $post_id );
+
+		$this->assertStringNotContainsString( '<script', $output );
+		$this->assertStringContainsString( 'Wire', $output );
+	}
+
+	/**
+	 * A profile name with markup is escaped inside the website link.
+	 */
+	public function test_get_the_byline_links_escapes_profile_name_in_website_link() {
+		$profile = $this->create_profile_with_raw_title( 'Bob <script>alert(1)</script>' );
+		update_post_meta( $profile->post->ID, 'user_url', 'https://example.test' );
+
+		$post_id = static::factory()->post->create();
+		Utils::set_post_byline(
+			$post_id,
+			[
+				'byline_entries' => [
+					[
+						'type' => 'byline_id',
+						'atts' => [
+							'byline_id' => $profile->term_id,
+						],
+					],
+				],
+			]
+		);
+
+		$output = get_the_byline_links( $post_id );
+
+		$this->assertStringNotContainsString( '<script', $output );
+		$this->assertStringContainsString( '&lt;script&gt;', $output );
+	}
+
+	/**
+	 * A profile name with markup has script tags removed when there is no website link.
+	 */
+	public function test_get_the_byline_links_strips_script_from_profile_name_without_website() {
+		$profile = $this->create_profile_with_raw_title( 'Bob <script>alert(1)</script>' );
+
+		$post_id = static::factory()->post->create();
+		Utils::set_post_byline(
+			$post_id,
+			[
+				'byline_entries' => [
+					[
+						'type' => 'byline_id',
+						'atts' => [
+							'byline_id' => $profile->term_id,
+						],
+					],
+				],
+			]
+		);
+
+		$this->assertStringNotContainsString( '<script', get_the_byline_links( $post_id ) );
+	}
 }

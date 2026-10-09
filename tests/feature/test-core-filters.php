@@ -236,6 +236,37 @@ class Test_Core_Filters extends Test_Case {
 		$this->assertEquals( 'Test RSS Override 1', $creator[0]['content'] );
 	}
 
+	/**
+	 * Test that markup in a text entry is removed from the rss dc:creator element.
+	 */
+	public function test_rss_elements_byline_override_strips_markup() {
+		global $post;
+		Utils::set_post_byline(
+			$post->ID,
+			[
+				'byline_entries' => [
+					[
+						'type' => 'text',
+						'atts' => [
+							'text' => '<b>Bold</b> Staff',
+						],
+					],
+				],
+			]
+		);
+
+		$this->get( '/?feed=rss2' );
+		$feed = $this->do_rss2();
+		$xml  = xml_to_array( $feed );
+
+		$items   = xml_find( $xml, 'rss', 'channel', 'item' );
+		$item    = reset( $items );
+		$creator = xml_find( $item['child'], 'dc:creator' );
+
+		$this->assertCount( 1, $creator );
+		$this->assertEquals( 'Bold Staff', $creator[0]['content'] );
+	}
+
 	public function test_author_link() {
 		global $post;
 
