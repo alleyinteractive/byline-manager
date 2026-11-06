@@ -14,3 +14,4 @@ composer.lock
 # Client build files
 client/build/
 /vendor
+.phpunit.cache

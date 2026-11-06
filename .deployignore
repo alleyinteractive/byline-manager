@@ -19,3 +19,5 @@ DOCKER_ENV
 phpunit.xml
 .phpcs
 Makefile
+phpstan.neon.dist
+phpunit.xml.dist

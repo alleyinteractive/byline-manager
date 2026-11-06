@@ -6,7 +6,7 @@ Manage an article's byline and author profiles.
 
 ## Requirements
 
-Byline Manager requires PHP 8.1+. It is developed for use on WordPress 6.3+,
+Byline Manager requires PHP 8.3+. It is developed for use on WordPress 6.3+,
 though it may also work on earlier versions.
 
 ## License

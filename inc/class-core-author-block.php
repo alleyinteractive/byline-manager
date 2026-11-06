@@ -12,11 +12,6 @@ declare(strict_types=1);
 
 namespace Byline_Manager;
 
-/**
- * Sets up the Singleton trait use.
- *
- * @phpstan-use-trait-for-class Singleton
- */
 use Byline_Manager\traits\Singleton;
 use WP_Post;
 use DOMDocument;
@@ -137,14 +132,14 @@ class Core_Author_Block {
 		}
 
 		// Check if the profile is a text field.
-		if ( ! empty( $text_byline ) && 'text' === $byline_type ) {
+		if ( ! empty( $text_byline ) ) {
 			// Get the new block.
 			$new_author_block = $this->replace_author_block_name( $block_content, $text_byline );
 		}
 
 		// Check if the profile is a WP_Post.
 		if ( 'profile' === $byline_type ) {
-			if ( is_null( $profile_post ) || is_string( $profile_post ) || ! is_a( $profile_post, 'WP_Post' ) ) {
+			if ( ! $profile_post instanceof WP_Post ) {
 				// Return the original block if something is wrong with the profile post.
 				return $block_content;
 			}
@@ -194,7 +189,7 @@ class Core_Author_Block {
 		// Change the text inside '.wp-block-post-author__name'.
 		$name_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__name")]' );
 		$name_node         = ( $name_query_result instanceof DOMNodeList ) ? $name_query_result->item( 0 ) : null;
-		if ( $name_node instanceof \DOMElement && property_exists( $profile_post, 'post_title' ) ) {
+		if ( $name_node instanceof \DOMElement ) {
 			// Check if the author name has an anchor.
 			if ( $name_node->getElementsByTagName( 'a' )->length > 0 ) {
 				$anchor_node = $name_node->getElementsByTagName( 'a' )->item( 0 );
@@ -216,7 +211,7 @@ class Core_Author_Block {
 		// Change the text inside '.wp-block-post-author__bio'.
 		$bio_query_result = $xpath->query( '//p[contains(@class, "wp-block-post-author__bio")]' );
 		$bio_node         = ( $bio_query_result instanceof DOMNodeList ) ? $bio_query_result->item( 0 ) : null;
-		if ( $bio_node && property_exists( $profile_post, 'post_content' ) ) {
+		if ( $bio_node ) {
 			// Replace the author bio.
 			$content             = apply_filters( 'the_content', $profile_post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			$content             = str_replace( [ '<p>', '</p>' ], '', $content );
