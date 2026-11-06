@@ -35,6 +35,7 @@
     "@babel/preset-env": "^7.25.8",
     "@babel/preset-react": "^7.24.7",
     "@wordpress/dependency-extraction-webpack-plugin": "^6.40.1",
+    "ajv": "^8.20.0",
     "autoprefixer": "^10.4.21",
     "babel-loader": "^9.2.1",
     "css-loader": "^7.1.2",
