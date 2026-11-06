@@ -263,7 +263,7 @@ class Profile {
 	 * @return WP_Post|null
 	 */
 	public function get_post(): ?WP_Post {
-		return $this->post ?? null;
+		return $this->post;
 	}
 
 	/**

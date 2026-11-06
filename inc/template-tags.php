@@ -141,6 +141,7 @@ function get_the_byline_links( $post = null ): string {
  * @return string
  */
 function byline_render( $byline, $render_callback, $args = [] ): string {
+	// @phpstan-ignore function.alreadyNarrowedType (public template tag; the callback isn't natively typed)
 	if ( empty( $byline ) || ! is_callable( $render_callback ) ) {
 		return '';
 	}
