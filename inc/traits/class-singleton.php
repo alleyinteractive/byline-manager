@@ -31,6 +31,7 @@ trait Singleton {
 		if ( null === self::$instance ) {
 			self::$instance = new static();
 
+			// @phpstan-ignore function.alreadyNarrowedType (not every class using this trait defines init())
 			if ( method_exists( self::$instance, 'init' ) ) {
 				self::$instance->init();
 			}
