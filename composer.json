@@ -20,7 +20,7 @@
         "php-stubs/wp-cli-stubs": "^2.12",
         "phpstan/extension-installer": "^1.4.3",
         "phpstan/phpstan": "^2.3.5",
-        "phpunit/phpunit": "^12.5",
+        "phpunit/phpunit": "^13.4",
         "szepeviktor/phpstan-wordpress": "^2.0.4",
         "yoast/wordpress-seo": "^28.8"
     },
