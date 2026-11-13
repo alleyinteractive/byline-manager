@@ -235,6 +235,20 @@ function set_profile_user_link( $post_id, $post ): void {
 
 	if ( ! wp_is_post_revision( $post ) ) {
 		$profile = Profile::get_by_post( $post );
+
+		// The picker only offers users without a profile, but the request can name any user. Keep the current link
+		// when the user does not exist or already belongs to another profile.
+		if ( $new_user_id > 0 ) {
+			$linked_profile = Profile::get_by_user_id( $new_user_id );
+
+			if (
+				false === get_userdata( $new_user_id )
+				|| ( $linked_profile instanceof Profile && $linked_profile->post_id !== $profile->post_id )
+			) {
+				return;
+			}
+		}
+
 		$profile->update_user_link( $new_user_id );
 	}
 }
