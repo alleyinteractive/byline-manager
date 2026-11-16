@@ -1,15 +1,15 @@
+<?xml version="1.0"?>
 <phpunit
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
 	bootstrap="tests/bootstrap.php"
 	backupGlobals="false"
 	colors="true"
-	convertErrorsToExceptions="true"
-	convertNoticesToExceptions="true"
-	convertWarningsToExceptions="true"
-	printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"
+	cacheDirectory=".phpunit.cache"
 >
 	<testsuites>
 		<testsuite name="Test Suite">
-			<directory prefix="test-" suffix=".php">tests</directory>
+			<directory prefix="Test_" suffix=".php">tests</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

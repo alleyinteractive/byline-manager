@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Byline_Manager;
 
+use Byline_Manager\Models\Profile;
+
 /**
  * Automatically integrate the byline into posts via the `the_author` filter.
  *
@@ -70,9 +72,10 @@ add_action( 'rss2_item', __NAMESPACE__ . '\rss_add_additional_authors' );
  * @return string Author's posts URL.
  */
 function override_author_link( $link, $author_id ): string {
-	$profile_id = absint( get_user_meta( $author_id, 'profile_id', true ) );
-	if ( $profile_id ) {
-		return get_permalink( $profile_id ) ?: '';
+	$profile = Profile::get_by_user_id( $author_id );
+
+	if ( $profile instanceof Profile ) {
+		return $profile->link ?: '';
 	} else {
 		return '';
 	}

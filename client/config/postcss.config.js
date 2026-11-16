@@ -4,7 +4,7 @@ const calc = require('postcss-calc');
 const cssImport = require('postcss-import');
 const customProps = require('postcss-custom-properties');
 const customMedia = require('postcss-custom-media');
-const nested = require('postcss-nested');
+const nested = require('postcss-nested').default;
 const focus = require('postcss-focus');
 
 // Other imports.

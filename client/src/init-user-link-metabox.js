@@ -1,7 +1,7 @@
 /* global bylineData */
 
 import ReactDOM from 'react-dom';
-import UserLinkMetaBox from 'components/user-link-metabox';
+import UserLinkMetaBox from './components/user-link-metabox';
 
 const initUserLinkMetaBox = () => {
   const userLinkEl = document.getElementById('byline-manager-user-link-root');

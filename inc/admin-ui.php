@@ -134,11 +134,12 @@ function get_profile_data_for_meta_box( Profile $profile ): array {
  * }
  */
 function get_user_data_for_meta_box( WP_User $user, $current_post_id = null ): array {
-	$linked_id = absint( get_user_meta( $user->ID, 'profile_id', true ) );
+	$linked_profile = Profile::get_by_user_id( $user->ID );
+
 	return [
 		'id'     => $user->ID,
 		'name'   => $user->display_name,
-		'linked' => boolval( $linked_id ) && $linked_id !== $current_post_id,
+		'linked' => $linked_profile instanceof Profile && $linked_profile->post_id !== $current_post_id,
 	];
 }
 

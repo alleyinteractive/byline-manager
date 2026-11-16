@@ -2,9 +2,6 @@
   "root": true,
   "extends": ["@alleyinteractive/eslint-config"],
   "settings": {
-    "import/resolver": {
-      "babel-module": {}
-    },
     "webpack": {
       "config": "./client/config/webpack.config.js"
     }

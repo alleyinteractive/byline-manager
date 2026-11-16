@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies, max-len */
 const fs = require('fs');
 const path = require('path');
-const chalk = require('chalk');
 
 /**
  * Build JSON object containing a global hash and map of asset names to the output filename of that asset.
@@ -60,7 +59,7 @@ module.exports = (stats, opts) => {
 
     if (assetRegex.test(value)) {
       // eslint-disable-next-line max-len, no-console
-      console.log(chalk.red(`Attempted to write invalid value '${value}' to static asset JSON manifest. All JSON values must match ${assetRegex}`));
+      console.warn(`Attempted to write invalid value '${ value }' to static asset JSON manifest. All JSON values must match ${ assetRegex }`);
       return true;
     }
 

@@ -139,7 +139,7 @@ function localize_admin_script( $handle ): void {
  *
  * @return string The asset's hash.
  */
-function get_asset_hash( string $asset ) : string {
+function get_asset_hash( string $asset ): string {
 	return get_asset_property( $asset, 'hash' )
 		?? BYLINE_MANAGER_ASSET_MAP['hash']
 		?? '1.0.0';
@@ -152,7 +152,7 @@ function get_asset_hash( string $asset ) : string {
  *
  * @return array An array of dependencies for this asset.
  */
-function get_asset_dependencies( string $asset ) : array {
+function get_asset_dependencies( string $asset ): array {
 	// Get the path to the PHP file containing the dependencies.
 	$dependency_file = get_asset_path( $asset, true );
 	if ( empty( $dependency_file ) ) {
@@ -182,7 +182,7 @@ function get_asset_dependencies( string $asset ) : array {
  *
  * @return string The asset URL.
  */
-function get_asset_path( string $asset, bool $dir = false ) : string {
+function get_asset_path( string $asset, bool $dir = false ): string {
 	// Try to get the relative path.
 	$relative_path = get_asset_property( $asset, 'path' );
 	if ( empty( $relative_path ) ) {
@@ -204,7 +204,7 @@ function get_asset_path( string $asset, bool $dir = false ) : string {
  * @param string $prop The property to get from the entry object.
  * @return string|null The asset property based on entry and type.
  */
-function get_asset_property( string $asset, string $prop ) : ?string {
+function get_asset_property( string $asset, string $prop ): ?string {
 	/*
 	 * Appending a '.' ensures the explode() doesn't generate a notice while
 	 * allowing the variable names to be more readable via list().
@@ -222,7 +222,7 @@ function get_asset_property( string $asset, string $prop ) : ?string {
  * @param string $path File path.
  * @return array The asset map.
  */
-function read_asset_map( string $path ) : array {
+function read_asset_map( string $path ): array {
 	if ( validate_path( $path ) ) {
 		ob_start();
 		include $path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.IncludingFile, WordPressVIPMinimum.Files.IncludingFile.UsingVariable

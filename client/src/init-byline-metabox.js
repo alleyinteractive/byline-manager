@@ -1,7 +1,7 @@
 /* global bylineData */
 
 import ReactDOM from 'react-dom';
-import BylineMetaBox from 'components/byline-metabox';
+import BylineMetaBox from './components/byline-metabox';
 
 const initBylineMetaBox = () => {
   const { bylineMetaBox } = bylineData;

@@ -6,3 +6,4 @@ parameters:
 
 	scanFiles:
 		- vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php
+		- vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
